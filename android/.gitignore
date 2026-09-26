@@ -1,0 +1,2 @@
+# Kotlin 2.x compiler session data (the repository .gitignore covers .gradle, build and local.properties)
+.kotlin/

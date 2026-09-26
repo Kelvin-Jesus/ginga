@@ -1,0 +1,29 @@
+# Tab2Mac Android receiver — dependency versions.
+#
+# Compatibility (checked 2026-09-25):
+# - AGP 9.3.x needs Gradle >= 9.5.0 and JDK 17, supports compileSdk up to 37
+#   (developer.android.com/build/releases/agp-9-3-0-release-notes).
+# - KGP 2.4.20 is documented for Gradle 7.6.3–9.7.x and AGP 8.5.2–9.3.x
+#   (kotlinlang.org/docs/gradle-configure-project.html). AGP 9 ships built-in Kotlin with a
+#   runtime dependency on KGP 2.2.10; declaring the Kotlin plugins below at the root upgrades it.
+# - Gradle 9.7.1 (gradle/wrapper/gradle-wrapper.properties) is within both ranges.
+[versions]
+agp = "9.3.3"
+kotlin = "2.4.20"
+kotlinx-coroutines = "1.11.0"
+kotlinx-serialization = "1.11.0"
+junit4 = "4.13.2"
+
+[libraries]
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+junit4 = { module = "junit:junit", version.ref = "junit4" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
