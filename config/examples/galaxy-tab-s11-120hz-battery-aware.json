@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "display": {
+    "profile": "galaxy-tab-s11",
+    "refreshRate": 120
+  },
+  "power": {
+    "batteryRefreshRate": 60
+  },
+  "streaming": {
+    "encoderPower": "automatic"
+  }
+}

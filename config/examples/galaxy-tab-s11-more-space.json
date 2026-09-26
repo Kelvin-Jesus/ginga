@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "display": {
+    "profile": "galaxy-tab-s11",
+    "resolution": { "width": 1440, "height": 900 },
+    "hiDPI": true,
+    "refreshRate": 60,
+    "arrangement": { "placement": "above", "alignment": "center" }
+  },
+  "capture": { "limitToPanelResolution": true }
+}

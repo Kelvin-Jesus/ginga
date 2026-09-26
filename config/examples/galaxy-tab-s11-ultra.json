@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "display": {
+    "profile": "galaxy-tab-s11-ultra",
+    "resolution": { "width": 1480, "height": 924 },
+    "refreshRate": 60,
+    "arrangement": { "placement": "right", "alignment": "start" }
+  }
+}

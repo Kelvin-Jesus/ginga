@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "display": {
+    "profile": "galaxy-tab-s11",
+    "resolution": { "width": 1280, "height": 800 },
+    "hiDPI": true,
+    "refreshRate": 60,
+    "orientation": "landscape",
+    "arrangement": { "placement": "right", "alignment": "center" }
+  },
+  "capture": {
+    "pixelFormat": "420v",
+    "showsCursor": true,
+    "queueDepth": 5,
+    "limitToPanelResolution": true
+  },
+  "diagnostics": { "overlayEnabled": true, "sampleIntervalSeconds": 1 }
+}

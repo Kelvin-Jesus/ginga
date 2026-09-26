@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "display": {
+    "profile": "galaxy-tab-s11",
+    "resolution": { "width": 1280, "height": 800 },
+    "refreshRate": 120,
+    "orientation": "portrait",
+    "arrangement": { "placement": "left", "alignment": "start" }
+  }
+}

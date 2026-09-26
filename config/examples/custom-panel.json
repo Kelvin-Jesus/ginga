@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "display": {
+    "name": "Workshop Tablet",
+    "identity": { "vendorID": 20514, "productID": 21248, "serialNumber": 2 },
+    "panel": {
+      "nativePixels": { "width": 2000, "height": 1200 },
+      "physicalSize": { "widthMillimeters": 229.0, "heightMillimeters": 137.4 },
+      "maxRefreshRate": 90
+    },
+    "resolution": { "width": 1000, "height": 600 },
+    "extraResolutions": [ { "width": 1200, "height": 720 }, { "width": 1280, "height": 768 } ],
+    "hiDPI": true,
+    "refreshRate": 60,
+    "orientation": "landscape",
+    "arrangement": { "placement": "below", "alignment": "center" }
+  },
+  "capture": { "pixelFormat": "420v", "queueDepth": 6 }
+}
