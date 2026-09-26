@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tab2Mac</string>
+    <string name="title">Tab2Mac receiver</string>
+    <string name="subtitle">This tablet becomes an extended display of your Mac.</string>
+
+    <string name="section_connection">Connection</string>
+    <string name="usb_heading">USB cable (Connect)</string>
+    <string name="usb_instructions">Direct USB, no developer options needed: with Tab2Mac running on the Mac, plug in the cable. Android asks to open Tab2Mac for “Second display for your Mac”; tick “Always” and the display opens by itself next time.\n\nADB, with USB debugging on: connect the cable and start Tab2Mac on the Mac (it runs this for you):</string>
+    <string name="usb_command">adb reverse tcp:47800 tcp:47800</string>
+    <string name="usb_instructions_after">Then tap Connect. The tablet connects to 127.0.0.1:47800, which adb forwards to the Mac.</string>
+
+    <string name="wifi_heading">Wi‑Fi</string>
+    <string name="wifi_searching">Looking for Macs on this network… Tab2Mac on the Mac must have Wi‑Fi turned on, on the same network.</string>
+    <string name="wifi_pick">Pick a Mac. The first time, both screens show a code to compare.</string>
+    <string name="wifi_connect">Connect</string>
+    <string name="wifi_pair_again">Pair again</string>
+    <string name="wifi_status_paired">Paired · touch and hold to forget</string>
+    <string name="wifi_status_new">Not paired yet</string>
+    <string name="wifi_status_changed">Its identity changed. Pair again only if you trust this Mac.</string>
+    <string name="forget_title">Forget %1$s?</string>
+    <string name="forget_message">This tablet will ask to pair again next time.</string>
+    <string name="forget">Forget</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="direct_start">Direct connection (no router)</string>
+    <string name="direct_cancel">Cancel direct connection</string>
+    <string name="direct_permissions_denied">A direct connection needs the Bluetooth and nearby Wi‑Fi devices permissions.</string>
+
+    <string name="pairing_title">Pair with %1$s?</string>
+    <string name="pairing_compare">Check that your Mac shows the same code, then confirm on both devices.</string>
+    <string name="pairing_waiting">Confirmed on this tablet. Now confirm on %1$s.</string>
+    <string name="pairing_match">Codes match</string>
+
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="open_stream">Show display</string>
+
+    <string name="section_settings">Settings</string>
+    <string name="auto_reconnect">Reconnect automatically</string>
+    <string name="preferred_refresh">Preferred refresh rate</string>
+    <string name="refresh_mac">Mac decides</string>
+    <string name="refresh_60">60 Hz</string>
+    <string name="refresh_120">120 Hz (more battery)</string>
+    <string name="fast_decoder">Faster decoding (uses more battery)</string>
+    <string name="show_diagnostics">Show diagnostics overlay</string>
+
+    <string name="stream_waiting">Waiting for video…</string>
+</resources>

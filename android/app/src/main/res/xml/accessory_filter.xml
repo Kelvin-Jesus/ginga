@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The Mac's AOA identity (PROTOCOL.md §5, AccessoryIdentity in :transport): when an accessory
+    with these strings attaches, Android offers to open Tab2Mac. Matched exactly; the test
+    AccessoryFilterTest keeps this file and AccessoryIdentity in step.
+-->
+<resources>
+    <usb-accessory
+        manufacturer="Tab2Mac"
+        model="Tab2Mac Receiver" />
+</resources>
