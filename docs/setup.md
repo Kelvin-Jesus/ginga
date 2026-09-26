@@ -78,7 +78,7 @@ Nothing to type: the password is new every session and never shown.
 
 ## 3e. Keyboard cover, other devices
 
-- **A keyboard attached to the tablet** (Book Cover Keyboard, Bluetooth or USB) types on the Mac while the stream is in front, like an iPad keyboard with Sidecar. The Mac's keyboard layout applies (choose the one printed on the keyboard, e.g. Brazilian ABNT2). ⊞/Samsung is ⌘; Control Panel › Tablet can put ⌘ on Ctrl instead.
+- **A keyboard attached to the tablet** (Book Cover Keyboard, Bluetooth or USB) types on the Mac while the stream is in front, like an iPad keyboard with Sidecar. The Mac's keyboard layout applies (choose the one printed on the keyboard, e.g. Brazilian ABNT2). ⊞/Samsung is ⌘; Control Panel › Tablet can put ⌘ on Ctrl instead. The cover's **touchpad** moves the Mac pointer (Android's own arrow is hidden over the stream), taps click, and two fingers scroll, with inertia.
 - **Fingers**: by default a finger is a mouse (tap clicks). "One finger: Only scrolls" makes it work like Sidecar, where fingers scroll and the pen points.
 - **Other Samsung devices and phones** work the same way: the display takes the device's panel (a Tab S9 FE+ gets 2560×1600 up to 90 Hz, an S25 Ultra 3120×1440 up to 120 Hz). Direct USB needs no setup on any of them; the tablet app is the same APK.
 

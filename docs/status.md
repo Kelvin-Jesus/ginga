@@ -20,7 +20,9 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 | Touch mode "gestures" (Sidecar-like) | 🧪 | |
 | S Pen as a pen tablet (proximity, pressure, tilt, eraser) | ✅ | real pen: pressure 0–0.89, tilt −0.2…0.73 |
 | Keyboard cover / hardware keyboard (KEY) | ✅ partly | Book Cover Keyboard Slim (EF-DX730) types on the Mac; a Latin American cover used as US matches the Mac's U.S. layouts key for key; the ISO key left of Z now types `\ |` like on the tablet (🧪 retest) |
-| Pointer as a side channel (CURSOR) | ✅ | overlay at the exact position; capture without pointer. Fixed: shapes weren't resent after a HELLO restart (pointer invisible) — 🧪 retest |
+| Pointer as a side channel (CURSOR) | ✅ | overlay at the exact position with the right image (arrow over the desktop, checked by screenshot); the image is read again after the pointer stops, and shapes are resent after a HELLO restart |
+| Book Cover touchpad (mouse hover, clicks, two-finger scroll) | 🧪 | Android reports it as a mouse with a finger tool; now sent as a mouse (the Mac pointer follows), two-finger swipes scroll, Android's own arrow is hidden over the video. Needs a hand on the touchpad |
+| Decoder stall recovery (MediaTek stops taking input after a stream error) | 🧪 | restart after 1 s without input; seen once on the device (35 s frozen video) |
 | No-router mode (tablet network + BLE handover + CoreWLAN) | ✅ partly | 2026‑09‑26: BLE handover, join and TLS session on the tablet's network, 60 fps. The way back failed (a 28 s scan fought macOS auto-join); rewritten as `NetworkRestore` (8 unit tests) — 🧪 retest, then latency/fps vs normal Wi‑Fi and tablet energy |
 | Other devices (Tab S9 FE+, S25 Ultra, any Android) | 🧪 | profiles + panel from HELLO + decoder cap; not tried on those devices |
 | Headless `t2m run` | ✅ | idle: 28.7 MB vs 61.7 MB for the app, 0 % CPU |
