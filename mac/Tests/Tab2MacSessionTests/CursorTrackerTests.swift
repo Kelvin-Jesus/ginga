@@ -17,3 +17,54 @@ struct CursorTrackerTests {
         #expect(single.width * 2 == shape.width || abs(single.width * 2 - shape.width) <= 1)
     }
 }
+
+@MainActor
+@Suite("CursorTracker settling")
+struct CursorTrackerSettlingTests {
+    static func shape(_ id: UInt32) -> CursorTracker.Shape {
+        CursorTracker.Shape(id: id, width: 32, height: 32, hotspotX: 0, hotspotY: 0, png: Data([UInt8(id)]))
+    }
+
+    /// A tap jumps the pointer onto the tablet while the image is still the I-beam of the window
+    /// it left; the app under it sets the arrow a moment later. The arrow must follow without
+    /// another move.
+    @Test func theImageIsReadAgainAfterThePointerStops() async throws {
+        var system = Self.shape(3)  // I-beam when the move is seen
+        var samples: [CursorTracker.Sample] = []
+        let tracker = CursorTracker(scale: 2, readShape: { _ in system }) { samples.append($0) }
+        tracker.report(CGPoint(x: -600, y: 400))
+        #expect(samples.map(\.shape?.id) == [3])
+        system = Self.shape(5)  // the arrow, once the app under the pointer set it
+        #expect(await eventually { samples.map(\.shape?.id) == [3, 5] })
+        #expect(samples.last?.location == CGPoint(x: -600, y: 400))
+        withExtendedLifetime(tracker) {}  // the checks hold it weakly, as the host holds it in the app
+    }
+
+    /// Nothing is sent again when the image didn't change, and nothing after stop.
+    @Test func noRepeatsAndNothingAfterStop() async throws {
+        var system = Self.shape(3)
+        var samples: [CursorTracker.Sample] = []
+        let tracker = CursorTracker(scale: 2, readShape: { _ in system }) { samples.append($0) }
+        tracker.report(CGPoint(x: 1, y: 1))
+        try await Task.sleep(for: .milliseconds(500))
+        #expect(samples.count == 1)
+        tracker.report(CGPoint(x: 2, y: 2))
+        tracker.stop()
+        system = Self.shape(9)
+        try await Task.sleep(for: .milliseconds(500))
+        #expect(samples.count == 2)
+    }
+
+    /// Lazy apps: the image changes only after the first look; the later look catches it.
+    @Test func aLaterLookCatchesLazyApps() async throws {
+        var system = Self.shape(3)
+        var reads = 0
+        var samples: [CursorTracker.Sample] = []
+        let tracker = CursorTracker(scale: 2, readShape: { _ in reads += 1; return system }) { samples.append($0) }
+        tracker.report(CGPoint(x: 1, y: 1))
+        #expect(await eventually { reads >= 2 })  // the move, then the first look: still 3
+        system = Self.shape(7)
+        #expect(await eventually { samples.map(\.shape?.id) == [3, 7] })
+        withExtendedLifetime(tracker) {}
+    }
+}

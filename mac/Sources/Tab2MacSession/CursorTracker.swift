@@ -6,7 +6,10 @@ import Tab2MacCore
 /// instead of a captured, encoded and decoded frame.
 ///
 /// Event-driven: mouse-move monitors, nothing polls. The shape is read at most every 100 ms
-/// while the pointer moves (rendering it to PNG is the only real work here).
+/// while the pointer moves (rendering it to PNG is the only real work here), and again shortly
+/// after it stops: apps set the pointer image only after they see the move, so the image read
+/// with the event can still be the previous one (an I-beam from the window the pointer left).
+/// A jump, such as a tap on the tablet, has no later move to correct it.
 @MainActor
 public final class CursorTracker {
     public struct Shape: Sendable, Hashable {
@@ -41,10 +44,24 @@ public final class CursorTracker {
     private var monitors: [Any] = []
     private var shape: Shape?
     private var lastShapeCheck: MediaTime?
+    private let readShape: @MainActor (CGFloat) -> Shape?
+    private var lastLocation: CGPoint?
+    private var lastMove: MediaTime?
+    private var moves = 0
+    private var settlePending = false
+    /// After the pointer stops: a first look once apps had time to set their image, and a later
+    /// one for those that update lazily (terminals, web views).
+    static let settleDelay: Duration = .milliseconds(100)
+    static let lateSettleDelay: Duration = .milliseconds(300)
     private static let events: NSEvent.EventTypeMask = [.mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged]
 
-    public init(scale: CGFloat, onSample: @escaping @MainActor (Sample) -> Void) {
+    public convenience init(scale: CGFloat, onSample: @escaping @MainActor (Sample) -> Void) {
+        self.init(scale: scale, readShape: { Self.currentShape(scale: $0) }, onSample: onSample)
+    }
+
+    init(scale: CGFloat, readShape: @escaping @MainActor (CGFloat) -> Shape?, onSample: @escaping @MainActor (Sample) -> Void) {
         self.scale = scale
+        self.readShape = readShape
         self.onSample = onSample
     }
 
@@ -71,6 +88,7 @@ public final class CursorTracker {
     public func stop() {
         monitors.forEach(NSEvent.removeMonitor)
         monitors = []
+        lastLocation = nil  // pending re-checks find nothing to send
     }
 
     private func moved(_ event: NSEvent) {
@@ -78,13 +96,52 @@ public final class CursorTracker {
         report(location)
     }
 
-    private func report(_ location: CGPoint) {
+    func report(_ location: CGPoint) {
         let now = MediaTime.now()
         if lastShapeCheck.map({ now - $0 >= .milliseconds(100) }) ?? true {
             lastShapeCheck = now
-            if let current = Self.currentShape(scale: scale) { shape = current }
+            if let current = readShape(scale) { shape = current }
         }
+        lastLocation = location
+        lastMove = now
+        moves &+= 1
         onSample(Sample(location: location, shape: shape))
+        if !settlePending {
+            settlePending = true
+            after(Self.settleDelay) { $0.settle() }
+        }
+    }
+
+    /// One pending check at a time, pushed back while the pointer keeps moving.
+    private func settle() {
+        let idle = lastMove.map { MediaTime.now() - $0 } ?? Self.settleDelay
+        if idle < Self.settleDelay {
+            after(Self.settleDelay - idle) { $0.settle() }
+            return
+        }
+        settlePending = false
+        recheckShape()
+        let movesNow = moves
+        after(Self.lateSettleDelay) { tracker in
+            if tracker.moves == movesNow { tracker.recheckShape() }
+        }
+    }
+
+    /// Sends the pointer again, where it is, if its image changed since the last sample.
+    private func recheckShape() {
+        guard let location = lastLocation, let current = readShape(scale), current.id != shape?.id else { return }
+        shape = current
+        lastShapeCheck = .now()
+        onSample(Sample(location: location, shape: current))
+    }
+
+    private func after(_ delay: Duration, _ work: @escaping @MainActor (CursorTracker) -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay.inSeconds) { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self else { return }
+                work(self)
+            }
+        }
     }
 
     /// The pointer image as the display shows it, rendered at `scale`.
