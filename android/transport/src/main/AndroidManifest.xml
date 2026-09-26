@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- TCP to 127.0.0.1:47800, tunnelled to the Mac by `adb reverse`. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+</manifest>
