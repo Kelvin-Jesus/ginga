@@ -1,0 +1,18 @@
+{
+  "decoded" : {
+    "fields" : {
+      "action" : 0,
+      "eventTimeUs" : 5000900,
+      "modifiers" : 2,
+      "sequence" : 12,
+      "usage" : 4
+    },
+    "flags" : 1,
+    "stream" : 2,
+    "type" : "KEY"
+  },
+  "decodeOnly" : false,
+  "description" : "Shift+A pressed on a keyboard cover: usage 0x04 with left shift held",
+  "hex" : "54320114000100020000001400140000000c00000000004c4ec4000000040002",
+  "name" : "key-down"
+}

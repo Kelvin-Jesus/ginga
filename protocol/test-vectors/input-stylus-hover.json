@@ -1,0 +1,30 @@
+{
+  "decoded" : {
+    "fields" : {
+      "action" : 5,
+      "eventTimeUs" : 987655000000,
+      "kind" : 2,
+      "pointers" : [
+        {
+          "buttons" : 0,
+          "distance" : 12,
+          "pointerId" : 0,
+          "pressure" : 0,
+          "tiltX" : 1200,
+          "tiltY" : -3400,
+          "toolType" : 2,
+          "x" : 1000,
+          "y" : 2000
+        }
+      ],
+      "sequence" : 7
+    },
+    "flags" : 0,
+    "stream" : 2,
+    "type" : "INPUT"
+  },
+  "decodeOnly" : false,
+  "description" : "S Pen hovering with tilt",
+  "hex" : "543201110000000200000023001000000007000000e5f4d34fc002050100120002000003e807d0000004b0f2b8000c",
+  "name" : "input-stylus-hover"
+}

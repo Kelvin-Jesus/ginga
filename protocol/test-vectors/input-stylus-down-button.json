@@ -1,0 +1,30 @@
+{
+  "decoded" : {
+    "fields" : {
+      "action" : 0,
+      "eventTimeUs" : 987655016000,
+      "kind" : 2,
+      "pointers" : [
+        {
+          "buttons" : 4,
+          "distance" : 0,
+          "pointerId" : 0,
+          "pressure" : 30000,
+          "tiltX" : 1100,
+          "tiltY" : -3300,
+          "toolType" : 2,
+          "x" : 1010,
+          "y" : 2020
+        }
+      ],
+      "sequence" : 8
+    },
+    "flags" : 0,
+    "stream" : 2,
+    "type" : "INPUT"
+  },
+  "decodeOnly" : false,
+  "description" : "S Pen touching with the side button held",
+  "hex" : "543201110000000200000023001000000008000000e5f4d38e4002000100120002000403f207e47530044cf31c0000",
+  "name" : "input-stylus-down-button"
+}

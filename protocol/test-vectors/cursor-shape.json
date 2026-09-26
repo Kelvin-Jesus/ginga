@@ -1,0 +1,19 @@
+{
+  "decoded" : {
+    "fields" : {
+      "height" : 44,
+      "hotspotX" : 8,
+      "hotspotY" : 6,
+      "pngHex" : "89504e470d0a1a0a0001",
+      "shapeId" : 7,
+      "width" : 34
+    },
+    "flags" : 1,
+    "stream" : 3,
+    "type" : "CURSOR_SHAPE"
+  },
+  "decodeOnly" : false,
+  "description" : "Shape 7: a 34×44 image (stream pixels) with its hotspot, PNG bytes shortened",
+  "hex" : "543201130001000300000018000e000000070022002c0008000689504e470d0a1a0a0001",
+  "name" : "cursor-shape"
+}

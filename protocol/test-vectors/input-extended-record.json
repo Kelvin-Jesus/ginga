@@ -1,0 +1,30 @@
+{
+  "decoded" : {
+    "fields" : {
+      "action" : 2,
+      "eventTimeUs" : 987655032000,
+      "kind" : 1,
+      "pointers" : [
+        {
+          "buttons" : 0,
+          "distance" : 0,
+          "pointerId" : 0,
+          "pressure" : 0,
+          "tiltX" : 0,
+          "tiltY" : 0,
+          "toolType" : 1,
+          "x" : 32768,
+          "y" : 16384
+        }
+      ],
+      "sequence" : 9
+    },
+    "flags" : 0,
+    "stream" : 2,
+    "type" : "INPUT"
+  },
+  "decodeOnly" : true,
+  "description" : "Newer sender appended header and record fields; skip to headerLength/recordLength",
+  "hex" : "54320111000000020000002b001400000009000000e5f4d3ccc001020102030401001600010000800040000000000000000000cafebabe",
+  "name" : "input-extended-record"
+}

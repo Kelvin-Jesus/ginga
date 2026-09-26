@@ -1,0 +1,30 @@
+{
+  "decoded" : {
+    "fields" : {
+      "action" : 0,
+      "eventTimeUs" : 987654321000,
+      "kind" : 1,
+      "pointers" : [
+        {
+          "buttons" : 0,
+          "distance" : 0,
+          "pointerId" : 0,
+          "pressure" : 65535,
+          "tiltX" : 0,
+          "tiltY" : 0,
+          "toolType" : 1,
+          "x" : 32768,
+          "y" : 16384
+        }
+      ],
+      "sequence" : 1
+    },
+    "flags" : 0,
+    "stream" : 2,
+    "type" : "INPUT"
+  },
+  "decodeOnly" : false,
+  "description" : "One finger down in the centre-top",
+  "hex" : "543201110000000200000023001000000001000000e5f4c8f36801000100120001000080004000ffff000000000000",
+  "name" : "input-touch-down"
+}

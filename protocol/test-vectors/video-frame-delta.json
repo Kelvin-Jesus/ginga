@@ -1,0 +1,17 @@
+{
+  "decoded" : {
+    "fields" : {
+      "captureTimeUs" : 1234567906790,
+      "dataHex" : "000000010201d0097e",
+      "encodeDurationUs" : 5200,
+      "frameId" : 2
+    },
+    "flags" : 0,
+    "stream" : 1,
+    "type" : "VIDEO_FRAME"
+  },
+  "decodeOnly" : false,
+  "description" : "Delta frame",
+  "hex" : "54320110000000010000001b0012000000020000011f71fb45e600001450000000010201d0097e",
+  "name" : "video-frame-delta"
+}

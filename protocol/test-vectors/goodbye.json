@@ -1,0 +1,14 @@
+{
+  "decoded" : {
+    "fields" : {
+      "reason" : "user"
+    },
+    "flags" : 0,
+    "stream" : 0,
+    "type" : "GOODBYE"
+  },
+  "decodeOnly" : false,
+  "description" : "User disconnected",
+  "hex" : "5432010f00000000000000117b22726561736f6e223a2275736572227d",
+  "name" : "goodbye"
+}

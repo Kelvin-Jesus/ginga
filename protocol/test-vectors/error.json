@@ -1,0 +1,15 @@
+{
+  "decoded" : {
+    "fields" : {
+      "code" : "incompatible-version",
+      "message" : "no common protocol version"
+    },
+    "flags" : 0,
+    "stream" : 0,
+    "type" : "ERROR"
+  },
+  "decodeOnly" : false,
+  "description" : "Version mismatch",
+  "hex" : "5432010e00000000000000467b22636f6465223a22696e636f6d70617469626c652d76657273696f6e222c226d657373616765223a226e6f20636f6d6d6f6e2070726f746f636f6c2076657273696f6e227d",
+  "name" : "error"
+}

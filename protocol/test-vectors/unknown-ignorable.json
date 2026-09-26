@@ -1,0 +1,15 @@
+{
+  "decoded" : {
+    "fields" : {
+      "payloadHex" : "667574757265",
+      "rawType" : 126
+    },
+    "flags" : 1,
+    "stream" : 4,
+    "type" : "UNKNOWN"
+  },
+  "decodeOnly" : false,
+  "description" : "Unknown type 0x7E with IGNORABLE must be skipped",
+  "hex" : "5432017e0001000400000006667574757265",
+  "name" : "unknown-ignorable"
+}

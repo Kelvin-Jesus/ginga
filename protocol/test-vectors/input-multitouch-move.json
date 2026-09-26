@@ -1,0 +1,41 @@
+{
+  "decoded" : {
+    "fields" : {
+      "action" : 1,
+      "eventTimeUs" : 987654337000,
+      "kind" : 1,
+      "pointers" : [
+        {
+          "buttons" : 0,
+          "distance" : 0,
+          "pointerId" : 0,
+          "pressure" : 40000,
+          "tiltX" : 0,
+          "tiltY" : 0,
+          "toolType" : 1,
+          "x" : 30000,
+          "y" : 20000
+        },
+        {
+          "buttons" : 0,
+          "distance" : 0,
+          "pointerId" : 1,
+          "pressure" : 41000,
+          "tiltX" : 0,
+          "tiltY" : 0,
+          "toolType" : 1,
+          "x" : 36000,
+          "y" : 20100
+        }
+      ],
+      "sequence" : 2
+    },
+    "flags" : 0,
+    "stream" : 2,
+    "type" : "INPUT"
+  },
+  "decodeOnly" : false,
+  "description" : "Two-finger move (scroll)",
+  "hex" : "543201110000000200000035001000000002000000e5f4c931e801010200120001000075304e209c400000000000000012010100008ca04e84a028000000000000",
+  "name" : "input-multitouch-move"
+}

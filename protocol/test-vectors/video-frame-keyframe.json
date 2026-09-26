@@ -1,0 +1,17 @@
+{
+  "decoded" : {
+    "fields" : {
+      "captureTimeUs" : 1234567890123,
+      "dataHex" : "000000012601af06b863ef",
+      "encodeDurationUs" : 5500,
+      "frameId" : 1
+    },
+    "flags" : 2,
+    "stream" : 1,
+    "type" : "VIDEO_FRAME"
+  },
+  "decodeOnly" : false,
+  "description" : "Keyframe (KEYFRAME flag) with a tiny Annex-B access unit",
+  "hex" : "54320110000200010000001d0012000000010000011f71fb04cb0000157c000000012601af06b863ef",
+  "name" : "video-frame-keyframe"
+}

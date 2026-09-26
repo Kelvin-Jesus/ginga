@@ -1,0 +1,15 @@
+{
+  "decoded" : {
+    "fields" : {
+      "commitment" : "052c957131b84f9b12e9519024c730dbf4fa95abac4b8d2e5b1118b2cef8ec89",
+      "state" : "commit"
+    },
+    "flags" : 1,
+    "stream" : 0,
+    "type" : "PAIRING"
+  },
+  "decodeOnly" : false,
+  "description" : "The tablet commits to its nonce before seeing the Mac's",
+  "hex" : "5432010700010000000000627b22636f6d6d69746d656e74223a2230353263393537313331623834663962313265393531393032346337333064626634666139356162616334623864326535623131313862326365663865633839222c227374617465223a22636f6d6d6974227d",
+  "name" : "pairing-commit"
+}

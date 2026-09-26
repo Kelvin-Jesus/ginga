@@ -1,0 +1,19 @@
+{
+  "decoded" : {
+    "fields" : {
+      "sequence" : 3,
+      "shapeId" : 7,
+      "timeUs" : 5000789,
+      "visible" : true,
+      "x" : 32768,
+      "y" : 32768
+    },
+    "flags" : 1,
+    "stream" : 3,
+    "type" : "CURSOR"
+  },
+  "decodeOnly" : false,
+  "description" : "The pointer at the display's centre, shape 7",
+  "hex" : "54320112000100030000001800180000000300000000004c4e5580008000010000000007",
+  "name" : "cursor-position"
+}

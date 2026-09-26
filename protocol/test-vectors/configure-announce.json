@@ -1,0 +1,35 @@
+{
+  "decoded" : {
+    "fields" : {
+      "display" : {
+        "hiDPI" : true,
+        "id" : 17,
+        "looksLike" : {
+          "height" : 1280,
+          "width" : 800
+        },
+        "name" : "Galaxy Tab S11",
+        "orientation" : "portrait",
+        "refreshRate" : 60
+      },
+      "stream" : {
+        "bitrateKbps" : 40000,
+        "codec" : "hevc",
+        "fps" : 60,
+        "height" : 2560,
+        "matrix" : "bt709",
+        "primaries" : "bt709",
+        "range" : "video",
+        "transfer" : "bt709",
+        "width" : 1600
+      }
+    },
+    "flags" : 0,
+    "stream" : 0,
+    "type" : "CONFIGURE"
+  },
+  "decodeOnly" : false,
+  "description" : "Mac announces the new display and stream",
+  "hex" : "5432010300000000000001267b22646973706c6179223a7b226869445049223a747275652c226964223a31372c226c6f6f6b734c696b65223a7b22686569676874223a313238302c227769647468223a3830307d2c226e616d65223a2247616c6178792054616220533131222c226f7269656e746174696f6e223a22706f727472616974222c227265667265736852617465223a36307d2c2273747265616d223a7b22626974726174654b627073223a34303030302c22636f646563223a2268657663222c22667073223a36302c22686569676874223a323536302c226d6174726978223a226274373039222c227072696d6172696573223a226274373039222c2272616e6765223a22766964656f222c227472616e73666572223a226274373039222c227769647468223a313630307d7d",
+  "name" : "configure-announce"
+}

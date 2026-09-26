@@ -1,0 +1,15 @@
+{
+  "decoded" : {
+    "fields" : {
+      "nonce" : "4444444444444444444444444444444444444444444444444444444444444444",
+      "state" : "reveal"
+    },
+    "flags" : 1,
+    "stream" : 0,
+    "type" : "PAIRING"
+  },
+  "decodeOnly" : false,
+  "description" : "The tablet reveals its nonce; both screens show the code",
+  "hex" : "54320107000100000000005d7b226e6f6e6365223a2234343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434343434222c227374617465223a2272657665616c227d",
+  "name" : "pairing-reveal"
+}

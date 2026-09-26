@@ -1,0 +1,14 @@
+{
+  "decoded" : {
+    "fields" : {
+      "state" : "confirmed"
+    },
+    "flags" : 1,
+    "stream" : 0,
+    "type" : "PAIRING"
+  },
+  "decodeOnly" : false,
+  "description" : "The user confirmed the codes match",
+  "hex" : "5432010700010000000000157b227374617465223a22636f6e6669726d6564227d",
+  "name" : "pairing-confirmed"
+}

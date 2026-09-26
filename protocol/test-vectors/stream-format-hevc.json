@@ -1,0 +1,21 @@
+{
+  "decoded" : {
+    "fields" : {
+      "codec" : "hevc",
+      "height" : 1600,
+      "parameterSets" : [
+        "QAEMAf//",
+        "QgEBAWAA",
+        "RAHBcrRi"
+      ],
+      "width" : 2560
+    },
+    "flags" : 0,
+    "stream" : 1,
+    "type" : "STREAM_FORMAT"
+  },
+  "decodeOnly" : false,
+  "description" : "HEVC parameter sets (VPS, SPS, PPS) without start codes",
+  "hex" : "54320104000000010000005e7b22636f646563223a2268657663222c22686569676874223a313630302c22706172616d6574657253657473223a5b225141454d41662f2f222c225167454241574141222c225241484263725269225d2c227769647468223a323536307d",
+  "name" : "stream-format-hevc"
+}

@@ -1,0 +1,17 @@
+{
+  "decoded" : {
+    "fields" : {
+      "id" : 42,
+      "t1" : 1000000,
+      "t2" : 5000123,
+      "t3" : 5000456
+    },
+    "flags" : 0,
+    "stream" : 0,
+    "type" : "PONG"
+  },
+  "decodeOnly" : false,
+  "description" : "Clock-sync reply",
+  "hex" : "54320121000000000000001c0000002a00000000000f424000000000004c4bbb00000000004c4d08",
+  "name" : "pong"
+}

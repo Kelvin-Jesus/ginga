@@ -1,0 +1,15 @@
+{
+  "decoded" : {
+    "fields" : {
+      "payloadHex" : "7b7d",
+      "rawType" : 125
+    },
+    "flags" : 0,
+    "stream" : 0,
+    "type" : "UNKNOWN"
+  },
+  "decodeOnly" : false,
+  "description" : "Unknown type 0x7D without IGNORABLE: decoded as unknown; the session answers ERROR unsupported and keeps the connection",
+  "hex" : "5432017d00000000000000027b7d",
+  "name" : "unknown-required"
+}
