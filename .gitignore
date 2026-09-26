@@ -1,0 +1,33 @@
+# SwiftPM / build output
+mac/.build/
+mac/build/
+mac/.swiftpm/
+*.xcodeproj/xcuserdata/
+DerivedData/
+
+# Android (from M4)
+android/.gradle/
+android/build/
+android/**/build/
+android/local.properties
+*.apk
+*.aab
+
+# macOS
+.DS_Store
+
+# Kotlin / IDEs
+android/.kotlin/
+.idea/
+*.iml
+.vscode/
+
+# Local agent state (reports, personal settings)
+.claude/settings.local.json
+.claude/better-harness/
+
+# Secrets never belong here
+*.keystore
+*.jks
+*.p12
+*.pem

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Ginga">
+  <g transform="translate(4 -1)">
+    <rect x="26" y="16" width="60" height="54" rx="16" fill="none" stroke="#FFFFFF" stroke-width="12"/>
+    <path d="M86 44V80Q86 106 58 106Q42 106 32 96" fill="none" stroke="#6F82FF" stroke-width="12" stroke-linecap="round"/>
+    <path d="M0 -10C1.2 -2.4 2.4 -1.2 10 0C2.4 1.2 1.2 2.4 0 10C-1.2 2.4 -2.4 1.2 -10 0C-2.4 -1.2 -1.2 -2.4 0 -10Z" fill="#FFC43D" transform="translate(56 43) scale(.9)"/>
+  </g>
+</svg>
