@@ -5,6 +5,7 @@ import android.os.Build
 import android.util.Log
 import android.view.InputDevice
 import android.view.MotionEvent
+import android.view.PointerIcon
 import android.view.View
 import dev.tab2mac.protocol.InputMessage
 import dev.tab2mac.protocol.PointerButtons
@@ -19,8 +20,27 @@ class MotionEventAdapter {
     private val spare = ArrayList<PointerSample>(MAX_POINTERS)
     private val sample = MotionSample(PointerAction.OTHER, 0, 0, PointerButtons.NONE, pointers)
 
-    /** Calls [onSample] for every historical sample, then for the current one. */
+    @PublishedApi
+    internal val swipe = TouchpadSwipe()
+
+    /**
+     * Calls [onSample] for every historical sample, then for the current one. Touchpad gestures
+     * are translated: a two-finger swipe becomes a two-finger touch (scrolling), other gestures
+     * are dropped.
+     */
     inline fun forEachSample(event: MotionEvent, onSample: (MotionSample) -> Unit) {
+        when (AndroidInputMapping.touchpadGesture(event.classification)) {
+            TouchpadGesture.IGNORED -> return
+            TouchpadGesture.TWO_FINGER_SWIPE -> {
+                forEachRawSample(event) { swipe.expand(it, onSample) }
+                return
+            }
+            TouchpadGesture.NONE -> forEachRawSample(event, onSample)
+        }
+    }
+
+    @PublishedApi
+    internal inline fun forEachRawSample(event: MotionEvent, onSample: (MotionSample) -> Unit) {
         val action = AndroidInputMapping.action(event.actionMasked, event.flags)
         val buttons = AndroidInputMapping.buttons(event.buttonState)
         if (action == PointerAction.MOVE || action == PointerAction.HOVER_MOVE) {
@@ -35,10 +55,11 @@ class MotionEventAdapter {
         val count = minOf(event.pointerCount, MAX_POINTERS)
         while (pointers.size > count) spare += pointers.removeAt(pointers.size - 1)
         while (pointers.size < count) pointers += spare.removeLastOrNull() ?: PointerSample(0, PointerTool.UNKNOWN, 0f, 0f)
+        val fromMouse = event.isFromSource(InputDevice.SOURCE_MOUSE)
         for (index in 0 until count) {
             val pointer = pointers[index]
             pointer.pointerId = event.getPointerId(index)
-            pointer.tool = AndroidInputMapping.tool(event.getToolType(index))
+            pointer.tool = AndroidInputMapping.tool(event.getToolType(index), fromMouse)
             if (position == CURRENT) {
                 pointer.x = event.getX(index)
                 pointer.y = event.getY(index)
@@ -103,6 +124,9 @@ class InputCapture(
     /** Starts listening. */
     @SuppressLint("ClickableViewAccessibility")
     fun attach() {
+        // A touchpad or mouse moves the Mac's pointer, which the stream shows (in the video or as
+        // the CURSOR overlay): Android's own arrow on top would be a second, wrong pointer.
+        view.pointerIcon = PointerIcon.getSystemIcon(view.context, PointerIcon.TYPE_NULL)
         view.setOnTouchListener { v, event ->
             if (event.actionMasked == MotionEvent.ACTION_DOWN && isPen(event)) v.requestUnbufferedDispatch(event)
             dispatch(event)
@@ -120,6 +144,7 @@ class InputCapture(
 
     /** Stops listening. */
     fun detach() {
+        view.pointerIcon = null
         view.setOnTouchListener(null)
         view.setOnGenericMotionListener(null)
         mapper.reset()

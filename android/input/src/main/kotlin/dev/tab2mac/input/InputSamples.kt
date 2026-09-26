@@ -90,15 +90,30 @@ object AndroidInputMapping {
         else -> PointerAction.OTHER
     }
 
-    /** From `getToolType(pointerIndex)`. */
-    fun tool(toolType: Int): PointerTool = when (toolType) {
-        MotionEvent.TOOL_TYPE_FINGER -> PointerTool.FINGER
+    /**
+     * From `getToolType(pointerIndex)`. [fromMouse]: the event's source is a mouse, which is how
+     * Android reports a touchpad (the Book Cover Keyboard's, with tool type FINGER): it is a
+     * pointer that hovers and clicks, not a touch, so it goes to the Mac as a mouse.
+     */
+    fun tool(toolType: Int, fromMouse: Boolean = false): PointerTool = when (toolType) {
+        MotionEvent.TOOL_TYPE_FINGER -> if (fromMouse) PointerTool.MOUSE else PointerTool.FINGER
         MotionEvent.TOOL_TYPE_STYLUS -> PointerTool.STYLUS
         MotionEvent.TOOL_TYPE_ERASER -> PointerTool.ERASER
         MotionEvent.TOOL_TYPE_MOUSE -> PointerTool.MOUSE
         TOOL_TYPE_PALM -> PointerTool.PALM
-        else -> PointerTool.UNKNOWN
+        else -> if (fromMouse) PointerTool.MOUSE else PointerTool.UNKNOWN
     }
+
+    /** From `getClassification()`: what a touchpad gesture is (API 34 values; older ones never report them). */
+    fun touchpadGesture(classification: Int): TouchpadGesture = when (classification) {
+        CLASSIFICATION_TWO_FINGER_SWIPE -> TouchpadGesture.TWO_FINGER_SWIPE
+        CLASSIFICATION_MULTI_FINGER_SWIPE, CLASSIFICATION_PINCH -> TouchpadGesture.IGNORED
+        else -> TouchpadGesture.NONE
+    }
+
+    private const val CLASSIFICATION_TWO_FINGER_SWIPE = 3
+    private const val CLASSIFICATION_MULTI_FINGER_SWIPE = 4
+    private const val CLASSIFICATION_PINCH = 5
 
     /** `MotionEvent.TOOL_TYPE_PALM` is hidden from the SDK but reported by some touch panels. */
     private const val TOOL_TYPE_PALM = 5
@@ -114,5 +129,64 @@ object AndroidInputMapping {
         if (buttonState and MotionEvent.BUTTON_STYLUS_PRIMARY != 0) bits += PointerButtons.STYLUS_PRIMARY
         if (buttonState and MotionEvent.BUTTON_STYLUS_SECONDARY != 0) bits += PointerButtons.STYLUS_SECONDARY
         return bits
+    }
+}
+
+/** Touchpad gestures Android turns into a fake finger (source mouse). */
+enum class TouchpadGesture {
+    /** Not a touchpad gesture. */
+    NONE,
+
+    /** Two fingers sliding: scrolling, sent as a two-finger touch the Mac scrolls with. */
+    TWO_FINGER_SWIPE,
+
+    /** Three/four-finger swipes and pinches: Android's own, never a drag on the Mac. */
+    IGNORED,
+}
+
+/**
+ * A two-finger touchpad swipe → the two-finger touch the Mac already turns into scrolling
+ * (with momentum on release). Android reports the swipe as one fake finger moving from the
+ * pointer's position; a second finger is added beside it. Pure, with its own sample objects.
+ */
+class TouchpadSwipe {
+    private val first = PointerSample(0, PointerTool.FINGER, 0f, 0f, pressure = 1f)
+    private val second = PointerSample(1, PointerTool.FINGER, 0f, 0f, pressure = 1f)
+    private val pointers = ArrayList<PointerSample>(2)
+    private val out = MotionSample(PointerAction.OTHER, 0, 0, PointerButtons.NONE, pointers)
+
+    /** Calls [onSample] with the touch samples for one sample of the swipe. */
+    inline fun expand(sample: MotionSample, onSample: (MotionSample) -> Unit) {
+        val finger = sample.pointers.firstOrNull() ?: return
+        when (sample.action) {
+            PointerAction.DOWN -> {
+                onSample(fill(sample, finger, PointerAction.DOWN, count = 1))
+                onSample(fill(sample, finger, PointerAction.POINTER_DOWN, count = 2, actionIndex = 1))
+            }
+            PointerAction.MOVE -> onSample(fill(sample, finger, PointerAction.MOVE, count = 2))
+            PointerAction.UP, PointerAction.CANCEL -> onSample(fill(sample, finger, PointerAction.UP, count = 2))
+            else -> Unit
+        }
+    }
+
+    @PublishedApi
+    internal fun fill(sample: MotionSample, finger: PointerSample, action: PointerAction, count: Int, actionIndex: Int = 0): MotionSample {
+        first.x = finger.x
+        first.y = finger.y
+        second.x = finger.x + SPREAD_PX
+        second.y = finger.y
+        pointers.clear()
+        pointers += first
+        if (count == 2) pointers += second
+        out.action = action
+        out.actionIndex = actionIndex
+        out.eventTimeNanos = sample.eventTimeNanos
+        out.buttons = PointerButtons.NONE
+        return out
+    }
+
+    companion object {
+        /** How far apart the two fingers are; only their common movement matters. */
+        const val SPREAD_PX: Float = 48f
     }
 }
