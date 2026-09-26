@@ -85,6 +85,9 @@ class VideoDecoder(
     private val inFlight = InFlightRing(IN_FLIGHT_CAPACITY)
     private val recoveryTimes = ArrayDeque<Long>()
 
+    /** When the codec last took an input (or started): see [isStalled]. */
+    private var lastInputNanos = 0L
+
     /** Encoded frames waiting for an input buffer (RECEIVER_REPORT `decoderQueue`). */
     val pendingInputCount: Int get() = synchronized(lock) { pending.size }
 
@@ -121,6 +124,7 @@ class VideoDecoder(
         var need: KeyframeNeed? = null
         var droppedCount = 0
         var dropReason = ""
+        var stalledGeneration = -1
         synchronized(lock) {
             val current = codec
             when {
@@ -128,6 +132,16 @@ class VideoDecoder(
                     frame.consumed()
                     droppedCount = 1
                     dropReason = "no-decoder"
+                }
+                isStalled(frame.receivedAtNanos, lastInputNanos, freeInputs.size) -> {
+                    // The codec stopped taking input without reporting an error (MediaTek after
+                    // a stream error): keyframes would only pile up behind it. Recreate it.
+                    droppedCount = discardPendingLocked() + 1
+                    frame.consumed()
+                    dropReason = "codec-stalled"
+                    awaitingKeyframe = true
+                    lastInputNanos = frame.receivedAtNanos  // one recovery per stall
+                    stalledGeneration = generation
                 }
                 awaitingKeyframe && !frame.isKeyframe -> {
                     frame.consumed()
@@ -161,6 +175,10 @@ class VideoDecoder(
             }
         }
         if (droppedCount > 0) listener.onInputDropped(droppedCount, dropReason)
+        if (stalledGeneration >= 0) {
+            DecoderLog.w("codec.stalled", "thresholdMs" to STALL_NANOS / 1_000_000)
+            scheduleRecovery("codec-stalled", stalledGeneration)
+        }
         need?.let(listener::onKeyframeNeeded)
     }
 
@@ -203,6 +221,7 @@ class VideoDecoder(
             inFlight.clear()
             awaitingKeyframe = true
             lastPresentationUs = Long.MIN_VALUE
+            lastInputNanos = System.nanoTime()
             maxBacklogAgeNanos = backlogAge(plan.frameRate ?: DEFAULT_FRAME_RATE)
         }
         try {
@@ -293,6 +312,7 @@ class VideoDecoder(
                 inFlight.put(presentationUs, frame.frameId, frame.receivedAtNanos, System.nanoTime())
                 val flags = if (frame.isKeyframe) MediaCodec.BUFFER_FLAG_KEY_FRAME else 0
                 current.queueInputBuffer(index, 0, frame.length, presentationUs, flags)
+                lastInputNanos = System.nanoTime()
             } catch (e: IllegalStateException) {
                 DecoderLog.w("input.queue-failed", "error" to e.toString())
                 scheduleRecovery("queue-failed", generation)
@@ -452,6 +472,17 @@ class VideoDecoder(
         private const val DEFAULT_FRAME_RATE = 60f
         private const val MAX_INPUT_SIZE_LIMIT = 64 * 1024 * 1024
         private val RECOVERY_WINDOW_NANOS = TimeUnit.SECONDS.toNanos(10)
+
+        /** A codec holding every input buffer this long, with frames to decode, is stuck. */
+        val STALL_NANOS: Long = TimeUnit.SECONDS.toNanos(1)
+
+        /**
+         * Whether the codec is stuck: a frame arrives, the codec holds every input buffer, and it
+         * hasn't taken one for [STALL_NANOS]. A healthy codec hands buffers back within a frame;
+         * a static screen sends nothing, so it never looks stuck.
+         */
+        internal fun isStalled(nowNanos: Long, lastInputNanos: Long, freeInputs: Int): Boolean =
+            freeInputs == 0 && nowNanos - lastInputNanos > STALL_NANOS
 
         /** Two frame intervals. */
         private fun backlogAge(frameRate: Float): Long =
