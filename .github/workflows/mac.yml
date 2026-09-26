@@ -1,0 +1,22 @@
+name: mac
+on:
+  push:
+    paths: ["mac/**", "protocol/**", ".github/workflows/mac.yml"]
+  pull_request:
+    paths: ["mac/**", "protocol/**", ".github/workflows/mac.yml"]
+jobs:
+  test:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Swift tests
+        working-directory: mac
+        run: swift test   # Xcode is present on the runner, so no scripts/test.sh wrapper is needed
+      - name: Release build
+        working-directory: mac
+        run: swift build -c release
+      - name: Golden vectors are up to date
+        run: |
+          cd mac && swift build --product t2m && cd ..
+          mac/.build/debug/t2m protocol-vectors --out "$RUNNER_TEMP/vectors"
+          diff -r "$RUNNER_TEMP/vectors" protocol/test-vectors
