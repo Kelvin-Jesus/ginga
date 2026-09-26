@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>Tab2Mac</string>
+	<key>CFBundleExecutable</key>
+	<string>Tab2Mac</string>
+	<key>CFBundleIconFile</key>
+	<string>AppIcon</string>
+	<key>CFBundleIdentifier</key>
+	<string>dev.tab2mac.Tab2Mac</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>Tab2Mac</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.1.0</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.utilities</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>NSHighResolutionCapable</key>
+	<true/>
+	<key>NSHumanReadableCopyright</key>
+	<string>Independent project; not affiliated with Apple or Samsung.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Tab2Mac finds your tablet over Bluetooth to connect directly, without a router, when you ask it to.</string>
+	<key>NSLocationUsageDescription</key>
+	<string>macOS requires Location access to see and join Wi‑Fi networks. Tab2Mac uses it only to join your tablet's own network when you connect directly, and to return to your previous network.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>macOS requires Location access to see and join Wi‑Fi networks. Tab2Mac uses it only to join your tablet's own network when you connect directly, and to return to your previous network.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Tab2Mac shows its display on your paired tablets over your local Wi‑Fi network.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_tab2mac._tcp</string>
+	</array>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>
