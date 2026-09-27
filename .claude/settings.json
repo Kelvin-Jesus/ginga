@@ -9,5 +9,16 @@
   },
   "enabledPlugins": {
     "better-harness@better-harness": true
+  },
+  "permissions": {
+    "ask": [
+      "Bash(scripts/build-app.sh:*)",
+      "Bash(mac/scripts/build-app.sh:*)",
+      "Bash(./scripts/build-app.sh:*)",
+      "Bash(networksetup:*)",
+      "Bash(git push:*)",
+      "Edit(~/Library/Application Support/Tab2Mac/config.json)",
+      "Write(~/Library/Application Support/Tab2Mac/config.json)"
+    ]
   }
 }

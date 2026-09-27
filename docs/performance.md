@@ -195,3 +195,10 @@ Both do nothing while idle; the app's extra memory is AppKit/SwiftUI and the men
 - Keep the Mac on power, with Low Power Mode off, and close other capture tools (Zoom, OBS).
 - The display must be animating, or ScreenCaptureKit correctly delivers almost nothing.
 - For 120 Hz, confirm with `t2m displays` that the virtual display really runs at 120 Hz.
+
+## Power gate (opt-in)
+
+`scripts/check-power.sh` runs `t2m bench-power` and fails when a scenario's SoC power above the idle
+baseline is more than 15 % (and 50 mW) worse than `docs/power-baseline.json`. It needs the signed
+`mac/build` and real hardware, so it is not in `check-all.sh` or CI; run it for pipeline changes while
+the user is present, and record a new baseline with `--update` only from a known-good build.

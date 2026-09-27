@@ -12,14 +12,15 @@ cd mac && scripts/test.sh                 # all Swift tests (swift-testing); ~15
 cd mac && scripts/test.sh --filter Streaming
 cd mac && swift build -c release          # compile check without touching the app bundle
 cd mac && scripts/build-app.sh            # build + sign mac/build/Tab2Mac.app and mac/build/t2m (see "Signing")
-mac/build/t2m protocol-vectors --out protocol/test-vectors   # regenerate golden vectors after a protocol change
+cd mac && swift build --product t2m && .build/debug/t2m protocol-vectors --out ../protocol/test-vectors   # regenerate golden vectors (no signing needed)
 
 # Android (JDK 17 from Homebrew; there is no system Java)
 cd android && JAVA_HOME=/opt/homebrew/opt/openjdk@17 ./gradlew test assembleDebug
 scripts/docker-android.sh                 # the same in a linux/amd64 container (Rosetta on Apple Silicon; ~4 min cold)
 
 # Both, plus the protocol contract
-scripts/check-all.sh                      # Swift tests, vector freshness, Android tests
+scripts/check-all.sh                      # = CI: Swift tests, vectors, private-API grep, release build, Android tests + APK
+scripts/check-power.sh                    # opt-in, real hardware: bench-power vs docs/power-baseline.json
 
 # Environment
 scripts/bootstrap.sh                      # reports what's missing (toolchains, adb, SDK); --install uses Homebrew
