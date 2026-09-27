@@ -6,5 +6,4 @@
     <color name="launcher_star">#FFFFC43D</color>
     <color name="overlay_background">#99000000</color>
     <color name="overlay_text">#FFE8F0FF</color>
-    <color name="command_background">#1F808080</color>
 </resources>

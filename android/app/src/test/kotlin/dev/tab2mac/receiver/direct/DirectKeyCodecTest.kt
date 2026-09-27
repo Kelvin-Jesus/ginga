@@ -2,7 +2,9 @@ package dev.tab2mac.receiver.direct
 
 import dev.tab2mac.protocol.DirectLink
 import dev.tab2mac.receiver.security.DirectKeyCodec
+import dev.tab2mac.receiver.R
 import dev.tab2mac.receiver.ui.DirectText
+import dev.tab2mac.receiver.ui.UiText
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -45,15 +47,16 @@ class DirectKeyCodecTest {
     @Test
     fun directTextFollowsTheState() {
         assertFalse(DirectText.of(DirectState.Idle, null).inProgress)
-        assertTrue("one connection" in DirectText.of(DirectState.Idle, null).status)
+        assertEquals(UiText(R.string.direct_unavailable), DirectText.of(DirectState.Idle, null).status)
+        assertEquals(UiText(R.string.direct_available, "Mac"), DirectText.of(DirectState.Idle, "Mac").status)
         assertTrue(DirectText.of(DirectState.CreatingNetwork("Wi‑Fi Direct"), "Mac").inProgress)
         assertEquals(
-            "Waiting for the Mac: network DIRECT-T2-0102 is up. On the Mac, choose Direct connection.",
+            UiText(R.string.direct_waiting, "DIRECT-T2-0102"),
             DirectText.of(DirectState.WaitingForMac("DIRECT-T2-0102", "Wi‑Fi Direct"), "Mac").status,
         )
         assertTrue(DirectText.of(DirectState.Connected, "Mac").inProgress)
         val ended = DirectText.of(DirectState.Ended("cancelled"), "MacBook Air")
         assertFalse(ended.inProgress)
-        assertTrue(ended.status.startsWith("Direct connection ended: cancelled."), ended.status)
+        assertEquals(UiText(R.string.direct_ended, "cancelled", UiText(R.string.direct_available, "MacBook Air")), ended.status)
     }
 }

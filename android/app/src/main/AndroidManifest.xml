@@ -51,6 +51,10 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false" />
+
         <!--
             Opened by Android when the Mac attaches as a USB accessory (Tab2Mac on the Mac switched
             the tablet into accessory mode). Opening the app this way grants access to the

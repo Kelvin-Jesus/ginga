@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/stream_waiting"
+        android:text="@string/connecting_title"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
         android:textColor="@color/overlay_text" />
 

@@ -38,6 +38,9 @@
     <style name="TextAppearance.Ginga.Body" parent="TextAppearance.Ginga.FontSans">
         <item name="android:textSize">15sp</item>
     </style>
+    <style name="TextAppearance.Ginga.BodyStrong" parent="TextAppearance.Ginga.FontSansMedium">
+        <item name="android:textSize">15sp</item>
+    </style>
     <style name="TextAppearance.Ginga.Label" parent="TextAppearance.Ginga.FontSansMedium">
         <item name="android:textSize">13sp</item>
     </style>
@@ -71,6 +74,11 @@
     <style name="Ginga.Text.Body">
         <item name="android:textAppearance">@style/TextAppearance.Ginga.Body</item>
         <item name="android:lineHeight">22sp</item>
+    </style>
+    <!-- DeviceRow name (600 in the reference). -->
+    <style name="Ginga.Text.BodyStrong">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.BodyStrong</item>
+        <item name="android:lineHeight">20sp</item>
     </style>
     <style name="Ginga.Text.BodyMuted" parent="Ginga.Text.Body">
         <item name="android:textColor">?attr/gingaInkMuted</item>

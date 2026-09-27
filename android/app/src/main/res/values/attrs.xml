@@ -40,6 +40,11 @@
     <!-- Black espacial: glows replace shadows (pairing digits, primary button). -->
     <attr name="gingaIsSpace" format="boolean" />
 
+    <declare-styleable name="SwitchRow">
+        <attr name="label" format="string" />
+        <attr name="sub" format="string" />
+    </declare-styleable>
+
     <declare-styleable name="ColumnLayout">
         <attr name="maxColumnWidth" format="dimension" />
     </declare-styleable>

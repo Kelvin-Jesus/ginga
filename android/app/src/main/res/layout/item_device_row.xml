@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DeviceRow (components/DeviceRow.md): the brand's tilted tablet, the name, the meta in mono, one action. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Ginga.Row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:clipChildren="false">
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="30dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/g_device_art" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/ginga_space_3"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/device_name"
+            style="@style/Ginga.Text.BodyStrong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/device_meta"
+            style="@style/Ginga.Text.MonoMuted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/device_action"
+        style="@style/Widget.Ginga.Button.Primary.Small"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="@dimen/ginga_space_3" />
+</LinearLayout>

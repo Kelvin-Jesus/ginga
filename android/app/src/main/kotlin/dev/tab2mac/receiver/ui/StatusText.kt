@@ -3,6 +3,7 @@ package dev.tab2mac.receiver.ui
 import dev.tab2mac.protocol.ErrorCode
 import dev.tab2mac.protocol.PairingCode
 import dev.tab2mac.protocol.TransportKind
+import dev.tab2mac.receiver.R
 import dev.tab2mac.receiver.ReceiverState
 import dev.tab2mac.receiver.direct.DirectState
 import dev.tab2mac.receiver.session.SessionState
@@ -114,25 +115,18 @@ data class StatusText(val headline: String, val detail: String) {
 }
 
 /** The direct link's button and status line (§6b). Pure, so it's unit-tested. */
-data class DirectText(val inProgress: Boolean, val status: String) {
+data class DirectText(val inProgress: Boolean, val status: UiText) {
     companion object {
         fun of(state: DirectState, keyMac: String?): DirectText = when (state) {
             DirectState.Idle -> DirectText(false, idle(keyMac))
-            is DirectState.CreatingNetwork -> DirectText(true, "Creating this tablet's network (${state.network})…")
-            is DirectState.WaitingForMac -> DirectText(
-                true,
-                "Waiting for the Mac: network ${state.ssid} is up. On the Mac, choose Direct connection.",
-            )
-            is DirectState.Connecting -> DirectText(true, "The Mac joined the network. Connecting…")
-            DirectState.Connected -> DirectText(true, "Connected over this tablet's own network.")
-            is DirectState.Ended -> DirectText(false, "Direct connection ended: ${state.reason}.\n${idle(keyMac)}")
+            is DirectState.CreatingNetwork -> DirectText(true, UiText(R.string.direct_creating, state.network))
+            is DirectState.WaitingForMac -> DirectText(true, UiText(R.string.direct_waiting, state.ssid))
+            is DirectState.Connecting -> DirectText(true, UiText(R.string.direct_connecting))
+            DirectState.Connected -> DirectText(true, UiText(R.string.direct_connected))
+            is DirectState.Ended -> DirectText(false, UiText(R.string.direct_ended, state.reason, idle(keyMac)))
         }
 
-        private fun idle(keyMac: String?): String =
-            if (keyMac != null) {
-                "This tablet hosts a Wi‑Fi network that $keyMac joins, for places without a usable router."
-            } else {
-                "Available after one connection to the Mac over USB or Wi‑Fi."
-            }
+        private fun idle(keyMac: String?): UiText =
+            if (keyMac != null) UiText(R.string.direct_available, keyMac) else UiText(R.string.direct_unavailable)
     }
 }

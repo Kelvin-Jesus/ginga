@@ -1,55 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    English, the second language. Portuguese (Brazil), the first, is in values-pt-rBR.
+    Voice (design/ginga-design/brand-book.md): short sentences, active voice, buttons are verbs,
+    states say what is happening rather than the mechanism, numbers and specs in mono, "×" not "x".
+    "Tab2Mac" is the internal name only: no string here shows it.
+-->
 <resources>
     <string name="app_name">Ginga</string>
-    <string name="title">Ginga</string>
-    <string name="subtitle">This tablet becomes an extended display of your Mac.</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
 
-    <string name="section_connection">Connection</string>
-    <string name="usb_heading">USB cable (Connect)</string>
-    <string name="usb_instructions">Direct USB, no developer options needed: with Ginga running on the Mac, plug in the cable. Android asks to open Ginga for “Second display for your Mac”; tick “Always” and the display opens by itself next time.\n\nADB, with USB debugging on: connect the cable and start Ginga on the Mac (it runs this for you):</string>
-    <string name="usb_command">adb reverse tcp:47800 tcp:47800</string>
-    <string name="usb_instructions_after">Then tap Connect. The tablet connects to 127.0.0.1:47800, which adb forwards to the Mac.</string>
+    <!-- StatusOrbit (one pill at the top of the home screen). -->
+    <string name="status_searching">Searching</string>
+    <string name="status_found">Mac nearby</string>
+    <string name="status_off">Not connected</string>
+    <string name="status_cable">Cable connected</string>
+    <string name="status_direct">Tablet network on</string>
+    <string name="status_connecting">Connecting…</string>
+    <string name="status_waiting_mac">Waiting for the Mac</string>
+    <string name="status_waiting_code">Waiting for the code</string>
+    <string name="status_exchanging">Exchanging codes</string>
+    <string name="status_authorizing">Waiting for authorization</string>
+    <string name="status_connected">Connected · %1$s Hz · %2$s</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_error">Error on the Mac</string>
 
-    <string name="wifi_heading">Wi‑Fi</string>
-    <string name="wifi_searching">Looking for Macs on this network… Ginga on the Mac must have Wi‑Fi turned on, on the same network.</string>
-    <string name="wifi_pick">Pick a Mac. The first time, both screens show a code to compare.</string>
-    <string name="wifi_connect">Connect</string>
-    <string name="wifi_pair_again">Pair again</string>
-    <string name="wifi_status_paired">Paired · touch and hold to forget</string>
-    <string name="wifi_status_new">Not paired yet</string>
-    <string name="wifi_status_changed">Its identity changed. Pair again only if you trust this Mac.</string>
+    <string name="via_wifi">Wi‑Fi</string>
+    <string name="via_usb">USB</string>
+    <string name="via_direct">No router</string>
+    <!-- Resolution · refresh rate · connection, in mono. -->
+    <string name="specs">%1$s · %2$s Hz · %3$s</string>
+
+    <!-- Method chips. -->
+    <string name="chip_wifi">Wi‑Fi</string>
+    <string name="chip_usb">USB cable</string>
+    <string name="chip_direct">No router</string>
+
+    <!-- Searching / Mac found. -->
+    <string name="home_searching_title">Looking for your Mac</string>
+    <string name="home_searching_sub">Turn on Ginga on the Mac, on the same network. It shows up here.</string>
+    <string name="home_found_title">Mac nearby</string>
+    <string name="home_found_sub">Tap to use this tablet as a second display.</string>
+    <string name="home_found_hint">The first time, both screens show a code to compare. Touch and hold a paired Mac to forget it.</string>
+    <string name="mac_meta_new">not paired · Wi‑Fi</string>
+    <string name="mac_meta_paired">paired · Wi‑Fi</string>
+    <string name="mac_meta_changed">identity changed · pair again only if you trust it</string>
+    <string name="mac_connect">Connect</string>
+    <string name="mac_reconnect">Reconnect</string>
+    <string name="mac_pair_again">Pair again</string>
     <string name="forget_title">Forget %1$s?</string>
     <string name="forget_message">This tablet will ask to pair again next time.</string>
     <string name="forget">Forget</string>
     <string name="cancel">Cancel</string>
 
-    <string name="direct_start">Direct connection (no router)</string>
-    <string name="direct_cancel">Cancel direct connection</string>
+    <!-- USB cable. -->
+    <string name="usb_title_plug">Plug in the cable</string>
+    <string name="usb_sub_plug">With Ginga open on the Mac, connect the USB cable. Android asks once to open Ginga: tick “Always” and next time the display opens by itself.</string>
+    <string name="usb_title_attached">Cable connected</string>
+    <string name="usb_sub_attached">Your Mac is connected by USB. Connect to use this tablet as its display.</string>
+    <string name="usb_connect">Connect by cable</string>
+    <string name="usb_adb_hint">Using adb with USB debugging? See Settings › Advanced.</string>
+
+    <!-- No router (§6b). -->
+    <string name="direct_title">No router</string>
+    <string name="direct_sub">This tablet creates its own Wi‑Fi network and the Mac joins it. For places without a usable router.</string>
+    <string name="direct_start">Create network</string>
+    <string name="direct_cancel">Cancel</string>
+    <string name="direct_available">%1$s can join it.</string>
+    <string name="direct_unavailable">Available after one connection to the Mac, by cable or Wi‑Fi.</string>
+    <string name="direct_creating">Creating this tablet’s network (%1$s)…</string>
+    <string name="direct_waiting">Network %1$s is up. On the Mac, choose Connect directly.</string>
+    <string name="direct_connecting">The Mac joined the network. Connecting…</string>
+    <string name="direct_connected">Connected over this tablet’s own network.</string>
+    <string name="direct_ended">The direct connection ended: %1$s. %2$s</string>
     <string name="direct_permissions_denied">A direct connection needs the Bluetooth and nearby Wi‑Fi devices permissions.</string>
 
+    <!-- Pairing (§6). -->
     <string name="pairing_title">Pair with %1$s?</string>
-    <string name="pairing_compare">Check that your Mac shows the same code, then confirm on both devices.</string>
-    <string name="pairing_waiting">Confirmed on this tablet. Now confirm on %1$s.</string>
-    <string name="pairing_match">Codes match</string>
+    <string name="pairing_sub">Does the Mac show the same code? Pair only Macs you own.</string>
+    <string name="pairing_exchanging">Exchanging codes…</string>
+    <string name="pairing_confirm_title">Confirm on the Mac</string>
+    <string name="pairing_waiting">Code confirmed here. Now confirm it on %1$s.</string>
+    <string name="pairing_pair">Pair</string>
+    <string name="pairing_dont">Don’t pair</string>
+    <string name="pairing_code_a11y">Code %1$s</string>
 
-    <string name="connect">Connect</string>
-    <string name="disconnect">Disconnect</string>
+    <!-- Connecting. -->
+    <string name="connecting_title">Connecting…</string>
+    <string name="connecting_wifi">Connecting to %1$s</string>
+    <string name="connecting_usb">Connecting by cable…</string>
+    <string name="connecting_adb">Connecting by cable (adb)…</string>
+    <string name="handshake_title">Connected, waiting for the Mac…</string>
+    <string name="waiting_mac_title">Waiting for the Mac</string>
+    <string name="waiting_hint_wifi">Is Ginga open on the Mac, on the same network?</string>
+    <string name="waiting_hint_usb">Is Ginga open on the Mac?</string>
+    <string name="waiting_hint_adb">Is Ginga open on the Mac? It sets up adb when it starts.</string>
+    <string name="authorize_title">Waiting for the Mac to authorize</string>
+    <string name="authorize_sub">Is Ginga open on the Mac? It authorizes this tablet through adb when it starts.</string>
+    <string name="notice_mac_error">The Mac reported: %1$s</string>
+
+    <!-- Connected / Paused. -->
+    <string name="connected_title">Connected</string>
+    <string name="paused_title">Paused</string>
+    <string name="connected_sub">This tablet is a display of %1$s. Drag windows over here.</string>
+    <string name="paused_sub">Nothing from the Mac is on this screen, so it stopped sending.</string>
+    <string name="suspended_sub">Disconnected while the display isn’t shown. It reconnects when you open it.</string>
     <string name="open_stream">Show display</string>
+    <string name="disconnect">Disconnect</string>
 
-    <string name="section_settings">Settings</string>
+    <!-- Diagnostics, collapsed. -->
+    <string name="diagnostics_title">Diagnostics</string>
+    <string name="details_show">Show</string>
+    <string name="details_hide">Hide</string>
+
+    <!-- Stream. -->
+    <string name="stream_from">Streaming from %1$s</string>
+
+    <!-- Settings. -->
+    <string name="group_connection">Connection</string>
     <string name="auto_reconnect">Reconnect automatically</string>
+    <string name="auto_reconnect_sub">After the connection drops.</string>
+    <string name="group_display">Display</string>
     <string name="preferred_refresh">Preferred refresh rate</string>
     <string name="refresh_mac">Mac decides</string>
     <string name="refresh_60">60 Hz</string>
-    <string name="refresh_120">120 Hz (more battery)</string>
-    <string name="fast_decoder">Faster decoding (uses more battery)</string>
-    <string name="show_diagnostics">Show diagnostics overlay</string>
-
+    <string name="refresh_120">120 Hz</string>
+    <string name="refresh_help">120 Hz uses more battery on both devices.</string>
+    <string name="fast_decoder">Faster decoding</string>
+    <string name="fast_decoder_sub">Uses more battery.</string>
     <string name="appearance">Appearance</string>
     <string name="appearance_system">System</string>
     <string name="appearance_light">Light</string>
     <string name="appearance_dark">Dark</string>
     <string name="appearance_space">Space black</string>
-
-    <string name="stream_waiting">Waiting for video…</string>
+    <string name="appearance_help">Space black turns every area pure black: pixels off on this screen.</string>
+    <string name="group_diagnostics">Diagnostics</string>
+    <string name="show_diagnostics">Show diagnostics on the display</string>
+    <string name="show_diagnostics_sub">Frame rate, latency and power, over the stream.</string>
+    <string name="group_advanced">Advanced</string>
+    <string name="adb_title">USB with adb</string>
+    <string name="adb_instructions">With USB debugging on, connect the cable and open Ginga on the Mac. It runs this for you:</string>
+    <string name="usb_command" translatable="false">adb reverse tcp:47800 tcp:47800</string>
+    <string name="adb_instructions_after">Then tap Connect by cable. The tablet connects to 127.0.0.1:47800, which adb forwards to the Mac.</string>
 </resources>

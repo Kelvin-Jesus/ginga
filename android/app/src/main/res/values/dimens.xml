@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Layout sizes of this app (the tokens themselves are in ginga_dimens.xml). -->
+    <dimen name="home_column">720dp</dimen>
+    <dimen name="home_panel_min_height">160dp</dimen>
+</resources>

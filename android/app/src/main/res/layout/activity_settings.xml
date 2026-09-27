@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Ajustes (flows.md, "Tablet › Ajustes"): SettingsGroup cards with 56dp rows. Reconectar
+    automaticamente · Taxa preferida (Segmented) · Decodificação rápida · Aparência ·
+    Diagnóstico · Avançado (adb).
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/gingaBg"
+    android:fitsSystemWindows="true">
+
+    <dev.tab2mac.receiver.ui.widget.ColumnLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:padding="@dimen/ginga_space_8"
+        app:maxColumnWidth="@dimen/home_column">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/back"
+                style="@style/Widget.Ginga.Button.Ghost"
+                android:layout_width="wrap_content"
+                android:paddingStart="@dimen/ginga_space_4"
+                android:paddingEnd="@dimen/ginga_space_4"
+                android:text="@string/back" />
+
+            <TextView
+                style="@style/Ginga.Text.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ginga_space_2"
+                android:accessibilityHeading="true"
+                android:text="@string/settings" />
+        </LinearLayout>
+
+        <!-- Conexão -->
+        <TextView
+            style="@style/Ginga.Text.GroupTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ginga_space_8"
+            android:text="@string/group_connection" />
+
+        <LinearLayout
+            style="@style/Widget.Ginga.Group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <dev.tab2mac.receiver.ui.widget.SwitchRow
+                android:id="@+id/auto_reconnect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:label="@string/auto_reconnect"
+                app:sub="@string/auto_reconnect_sub" />
+        </LinearLayout>
+
+        <!-- Tela -->
+        <TextView
+            style="@style/Ginga.Text.GroupTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ginga_space_6"
+            android:text="@string/group_display" />
+
+        <LinearLayout
+            style="@style/Widget.Ginga.Group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                style="@style/Widget.Ginga.Row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    style="@style/Ginga.Text.Body"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:labelFor="@id/refresh"
+                    android:text="@string/preferred_refresh" />
+
+                <dev.tab2mac.receiver.ui.widget.SegmentedControl
+                    android:id="@+id/refresh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/ginga_space_3" />
+            </LinearLayout>
+
+            <dev.tab2mac.receiver.ui.widget.SwitchRow
+                android:id="@+id/fast_decoder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:label="@string/fast_decoder"
+                app:sub="@string/fast_decoder_sub" />
+        </LinearLayout>
+
+        <TextView
+            style="@style/Ginga.Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ginga_space_4"
+            android:layout_marginTop="@dimen/ginga_space_2"
+            android:layout_marginEnd="@dimen/ginga_space_4"
+            android:text="@string/refresh_help" />
+
+        <!-- Aparência -->
+        <TextView
+            style="@style/Ginga.Text.GroupTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ginga_space_6"
+            android:text="@string/appearance" />
+
+        <LinearLayout
+            style="@style/Widget.Ginga.Group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                style="@style/Widget.Ginga.Row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <dev.tab2mac.receiver.ui.widget.SegmentedControl
+                    android:id="@+id/appearance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/appearance" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            style="@style/Ginga.Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ginga_space_4"
+            android:layout_marginTop="@dimen/ginga_space_2"
+            android:layout_marginEnd="@dimen/ginga_space_4"
+            android:text="@string/appearance_help" />
+
+        <!-- Diagnóstico -->
+        <TextView
+            style="@style/Ginga.Text.GroupTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ginga_space_6"
+            android:text="@string/group_diagnostics" />
+
+        <LinearLayout
+            style="@style/Widget.Ginga.Group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <dev.tab2mac.receiver.ui.widget.SwitchRow
+                android:id="@+id/show_diagnostics"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:label="@string/show_diagnostics"
+                app:sub="@string/show_diagnostics_sub" />
+        </LinearLayout>
+
+        <!-- Avançado: USB with adb. -->
+        <TextView
+            style="@style/Ginga.Text.GroupTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ginga_space_6"
+            android:text="@string/group_advanced" />
+
+        <LinearLayout
+            style="@style/Widget.Ginga.Group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/ginga_space_4">
+
+                <TextView
+                    style="@style/Ginga.Text.Body"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/adb_title" />
+
+                <TextView
+                    style="@style/Ginga.Text.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ginga_space_1"
+                    android:text="@string/adb_instructions" />
+
+                <TextView
+                    style="@style/Ginga.Text.Mono"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ginga_space_3"
+                    android:background="@drawable/g_code_block"
+                    android:padding="@dimen/ginga_space_3"
+                    android:text="@string/usb_command"
+                    android:textIsSelectable="true" />
+
+                <TextView
+                    style="@style/Ginga.Text.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ginga_space_3"
+                    android:text="@string/adb_instructions_after" />
+            </LinearLayout>
+        </LinearLayout>
+    </dev.tab2mac.receiver.ui.widget.ColumnLayout>
+</ScrollView>
