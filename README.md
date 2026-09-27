@@ -53,7 +53,7 @@ Android:                    Render ← Hardware Decode ← Transport ←┘ → 
 
 ## Download
 
-[Releases](https://github.com/Kelvin-Jesus/ginga/releases) has the tablet APK and a universal `Ginga.app` (Apple Silicon and Intel, macOS 14+), built by [release.yml](.github/workflows/release.yml) from the tagged commit. The Mac app is not notarized: allow it once in System Settings › Privacy & Security › Open Anyway, then grant Screen Recording and Accessibility. Intel Macs need a hardware HEVC encoder (2017 or newer) and are untested on hardware so far. Each release lists the steps and SHA256SUMS.
+[Releases](https://github.com/Kelvin-Jesus/ginga/releases) has the tablet APK and the Mac app as a `.dmg` (one app for Apple Silicon and Intel, macOS 14+), built by [release.yml](.github/workflows/release.yml) from the tagged commit. The Mac app is not notarized: allow it once in System Settings › Privacy & Security › Open Anyway, then grant Screen Recording and Accessibility. Intel Macs need a hardware HEVC encoder (2017 or newer) and are untested on hardware so far. Each release lists the steps and SHA256SUMS.
 
 ## Quick start
 
