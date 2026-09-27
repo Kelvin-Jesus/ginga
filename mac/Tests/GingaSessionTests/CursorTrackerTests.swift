@@ -57,15 +57,15 @@ struct CursorTrackerSettlingTests {
 
     /// Lazy apps: the image changes only after the first look; the later look catches it.
     @Test func aLaterLookCatchesLazyApps() async throws {
-        var system = Self.shape(3)
+        // The app sets its image only after the move and the first look have read the old one, so
+        // only the later look can see it. Counting reads (not timing a change) keeps a slow CI
+        // runner from changing the image after the later look already happened.
         var reads = 0
         var samples: [CursorTracker.Sample] = []
-        let tracker = CursorTracker(scale: 2, readShape: { _ in reads += 1; return system }) { samples.append($0) }
-        tracker.lateSettleDelay = .seconds(1)  // room to change the image between the two looks, even on a busy machine
+        let tracker = CursorTracker(scale: 2, readShape: { _ in reads += 1; return Self.shape(reads <= 2 ? 3 : 7) }) { samples.append($0) }
         tracker.report(CGPoint(x: 1, y: 1))
-        #expect(await eventually(timeout: .seconds(5)) { reads >= 2 })  // the move, then the first look: still 3
-        system = Self.shape(7)
         #expect(await eventually(timeout: .seconds(5)) { samples.map(\.shape?.id) == [3, 7] })
+        #expect(reads == 3)  // the move, the first look (still 3), the later look (7)
         withExtendedLifetime(tracker) {}
     }
 }
