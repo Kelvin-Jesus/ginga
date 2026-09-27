@@ -1,6 +1,6 @@
-# Ginga (internal name: Ginga)
+# Ginga
 
-Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. The apps show only "Ginga"; Ginga stays the name of the code (modules, `ginga`, logs, bundle id). Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md).
+Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md).
 
 macOS gets a genuine extended display:
 
@@ -39,9 +39,13 @@ Android:                    Render ← Hardware Decode ← Transport ←┘ → 
 - Resolution and orientation changes apply live on the same display.
 - It is removed cleanly.
 
+## Download
+
+[Releases](../../releases) has the tablet APK and a universal `Ginga.app` (Apple Silicon and Intel, macOS 14+), built by [release.yml](.github/workflows/release.yml) from the tagged commit. The Mac app is not notarized: allow it once in System Settings › Privacy & Security › Open Anyway, then grant Screen Recording and Accessibility. Intel Macs need a hardware HEVC encoder (2017 or newer) and are untested on hardware so far. Each release lists the steps and SHA256SUMS.
+
 ## Quick start
 
-Requirements: Apple Silicon Mac with macOS 14+ (tested on 26.6.2), and Swift 6 (Xcode or just the Command Line Tools).
+Requirements: Mac with macOS 14+ (developed on Apple Silicon, tested on 26.6.2), and Swift 6 (Xcode or just the Command Line Tools).
 
 ```sh
 cd mac

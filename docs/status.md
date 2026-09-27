@@ -32,13 +32,21 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 
 | Area | State | Evidence |
 |---|---|---|
-| Name on screen: Ginga (Ginga stays internal) | ✅ Mac, ✅ Android | app name, menus, permission texts (en + pt-BR), messages; USB accessory strings, Bonjour type, bundle id unchanged |
+| Name: Ginga everywhere (formerly Tab2Mac) | ✅ Mac, ✅ Android | app, modules, bundle id `dev.ginga.Ginga`, package `dev.ginga.receiver`, frame magic "GN", Bonjour/BLE/AOA identities; the Mac copies its settings from the former folder once |
 | Themes Claro / Escuro / Black espacial / Sistema + Idioma (Português / English / Sistema) | ✅ Mac, ✅ Android | Mac `--render-ui`; Android emulator screenshots (the tablet's screen was off) |
 | Android home by state, Ajustes, stream sky + toast | ✅ Android (🧪 Pareando/Conectado/stream screens on the device) | HomeModelTest, StarfieldMathTest; 322 Android tests |
 | Main window, Ajustes, pairing sheet, Sem roteador sheet, menu bar by state | ✅ Mac (🧪 pairing sheet on the device) | renders; 380 Mac tests |
 | Microinteractions: switch spark, press scale, orbit/pulse, pairing digits, row rise, comet | ✅ Mac | only while visible, off with reduced motion |
 | Black espacial scenery: dithered galaxy (Mac main window, tablet home) and black hole (Mac pairing / Sem roteador, tablet stream waiting) | ✅ Mac, ✅ Android | ~0.4 ms/frame at 10 fps only while visible; still with reduced motion |
-| Brand fonts (Unbounded, Figtree, IBM Plex Mono) | 📝 | not bundled yet (needs a download the user approves); SF Pro / SF Mono meanwhile |
+| Brand fonts (Unbounded, Figtree, IBM Plex Mono) | ✅ Mac, ✅ Android (🧪 on the device) | bundled under SIL OFL (`brand/fonts/`) |
+
+## Distribution, 2026‑09‑27
+
+| Item | State | Evidence |
+|---|---|---|
+| Tag → GitHub release (signed APK, universal Ginga.app, SHA256SUMS) | 📝 not run yet (no GitHub remote) | `.github/workflows/release.yml`; development.md › Releases |
+| Android release signing from env / secrets, version from the tag | ✅ | local `assembleRelease` with a throwaway key: v2 signature, versionCode 200 for 0.2.0-beta.1 |
+| Universal Mac app (arm64 + x86_64) | ✅ build, 🧪 Intel hardware | `lipo` shows both; 386 tests pass as x86_64 under Rosetta; x86_64 `ginga protocol-vectors` identical |
 
 ## Not done
 

@@ -167,6 +167,25 @@ Default report locations: `~/Library/Application Support/Ginga/reports/`.
 - If a stale entry blocks you: `tccutil reset ScreenCapture dev.ginga.Ginga`.
 - **Distribution:** Developer ID signing + notarization (the private API rules out the App Store).
 
+## Releases
+
+Pushing a tag `vX.Y.Z` runs [release.yml](../.github/workflows/release.yml): Android tests and a signed `assembleRelease`; Swift tests and a universal `Ginga.app` (`GINGA_ARCHS="arm64 x86_64"`, one `swift build --triple` per architecture joined with `lipo`); then a GitHub release with both, `SHA256SUMS`, and [.github/release-notes.md](../.github/release-notes.md) above the generated changelog. A suffix (`v0.2.0-beta.1`) makes a pre-release.
+
+```sh
+git tag v0.2.0 && git push origin v0.2.0
+```
+
+Versions come from the tag: `versionName`/`CFBundleShortVersionString` = `X.Y.Z[-suffix]`, `versionCode`/`CFBundleVersion` = `X*10000 + Y*100 + Z` (`-Pginga.version`, `GINGA_VERSION`).
+
+Signing keys are made once with `scripts/setup-release-signing.sh` (run it yourself; it asks for a password and sets the repo secrets through `gh`):
+
+- **Android**: `ginga-release.jks`, secrets `ANDROID_KEYSTORE_BASE64` and `ANDROID_KEYSTORE_PASSWORD`. Every release must use this key, or installed copies cannot update. The workflow fails without it. Locally: `GINGA_KEYSTORE=… GINGA_KEYSTORE_PASSWORD=… ./gradlew assembleRelease`.
+- **Mac**: a self-signed "Ginga Release" identity, secrets `MAC_SIGNING_P12_BASE64` and `MAC_SIGNING_P12_PASSWORD`. Gatekeeper still asks once (no Apple Developer ID, no notarization), but the stable certificate keeps users' privacy grants across updates. Without it the workflow signs ad-hoc and warns.
+
+Back up `~/Ginga-release-keys` and its password; neither can be recovered.
+
+Intel: the x86_64 slice builds with the Command Line Tools (`swift build --triple x86_64-apple-macosx14.0`), passes the whole suite under Rosetta and writes identical protocol vectors. Under Rosetta, VideoToolbox offers no hardware HEVC encoder, so encoder suites skip there. Real Intel Macs need one (2017 or newer). It has not been tried on Intel hardware.
+
 ## Logging and diagnostics
 
 Logs use unified logging, subsystem `dev.ginga`. Categories: `virtual-display`, `capture`, `session`, `encoder`, `streaming`, `transport`, `usb`, `security`, `input`, `app` and `benchmark`. Messages are `event.name key=value …`:

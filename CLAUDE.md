@@ -20,6 +20,8 @@ scripts/docker-android.sh                 # the same in a linux/amd64 container 
 
 # Both, plus the protocol contract
 scripts/check-all.sh                      # = CI: Swift tests, vectors, private-API grep, release build, Android tests + APK
+scripts/setup-release-signing.sh          # once, by the user (asks a password): release keys + GitHub secrets
+                                          # releases: push a tag vX.Y.Z → .github/workflows/release.yml (docs/development.md › Releases)
 scripts/check-power.sh                    # opt-in, real hardware: bench-power vs docs/power-baseline.json
 
 # Environment
