@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="space">
+<head>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="bundle.css">
+<script src="bundle.js"></script><meta charset="utf-8"><title>DitherSpace</title>
+<style>
+  html, body { margin: 0; } body { background: var(--bg); padding: 24px; font-family: var(--font-sans); }
+  .row { display: flex; gap: 24px; }
+  .tab { width: 464px; height: 300px; padding: 10px; border-radius: 26px; background: #1B1D2A; box-shadow: inset 0 0 0 2px #30344A, var(--shadow-float); flex: none; }
+  .scr { position: relative; height: 100%; border-radius: 17px; overflow: hidden; background: var(--cosmos); color: var(--stardust); }
+  [data-theme="space"] .scr { background: #000; }
+  canvas { display: block; image-rendering: pixelated; image-rendering: crisp-edges; position: absolute; }
+  .bh { left: 50%; top: 44%; width: 456px; height: 292px; transform: translate(-50%, -50%); }
+  .gal { right: -40px; top: -30px; width: 300px; height: 300px; }
+  .cap { position: absolute; left: 20px; right: 20px; bottom: 16px; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .t { font: 600 16px/22px var(--font-display); }
+  .s { font-size: 12px; line-height: 16px; color: #A4A9C8; margin-top: 2px; }
+  .ssid { font: 500 12px/16px var(--font-mono); color: #FFC43D; }
+  .g-status { background: rgba(10,12,28,.7); color: #F2F3F8; height: 26px; font-size: 12px; }
+  .blast { position: absolute; left: 50%; top: 44%; width: 110px; height: 110px; margin: -55px 0 0 -55px; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+  .blast:focus-visible { outline: 2px solid #FFC43D; outline-offset: 4px; }
+  .lbl { margin: 10px 4px 0; font: 500 11px/14px var(--font-mono); color: var(--ink-muted); letter-spacing: .06em; text-transform: uppercase; }
+  .top { position: absolute; left: 20px; top: 16px; }
+</style></head>
+<body class="g-root">
+<div class="row">
+  <div>
+    <div class="tab"><div class="scr" id="s1">
+      <canvas class="bh" id="bh" width="114" height="73"></canvas>
+      <button class="blast" id="blast" aria-label="Disparar o buraco negro"></button>
+      <div class="cap"><div><div class="t">Transmitindo de MacBook Pro</div><div class="s">O primeiro quadro está a caminho.</div></div><span class="g-status g-status--searching"><span class="g-status__orb"></span>Conectando…</span></div>
+    </div></div>
+    <div class="lbl">Tablet · espera do stream · passe o mouse, clique no horizonte</div>
+  </div>
+  <div>
+    <div class="tab"><div class="scr">
+      <canvas class="gal" id="gal" width="75" height="75"></canvas>
+      <div class="top"><div class="ssid">DIRECT‑Ginga‑4F2A</div></div>
+      <div class="cap"><div><div class="t">Sem roteador</div><div class="s">O Mac está entrando na órbita deste tablet.</div></div><button class="g-btn g-btn--pill" style="height:36px;font-size:13px">Encerrar</button></div>
+    </div></div>
+    <div class="lbl">Tablet · conexão direta (sem roteador)</div>
+  </div>
+</div>
+<script>
+  var L = Ginga.ditherLoop(document.getElementById('bh'), Ginga.blackHole());
+  Ginga.ditherLoop(document.getElementById('gal'), Ginga.galaxy({ spin: 0.5 }));
+  var s1 = document.getElementById('s1'), bh = document.getElementById('bh');
+  s1.addEventListener('pointermove', function (e) { var b = bh.getBoundingClientRect(), dx = e.clientX - (b.left + b.width / 2), dy = e.clientY - (b.top + b.height * 0.52); L.shade.pullT = Math.max(0, Math.min(1, 1.25 - Math.sqrt(dx * dx + dy * dy) / (b.width * 0.5))); });
+  s1.addEventListener('pointerleave', function () { L.shade.pullT = 0; });
+  document.getElementById('blast').addEventListener('click', function (e) { L.shade.tb = L.now(); Ginga.spark(e.currentTarget, 11); });
+</script>
+</body>
+</html>

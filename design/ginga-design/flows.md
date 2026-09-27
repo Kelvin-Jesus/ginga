@@ -43,7 +43,8 @@ Sheet presa à janela (não NSAlert solto): ícone A, “Parear com Galaxy Tab S
 - **Conectado/Pausado**: `display` “Conectado” ou “Pausado”, explicação curta (“Nada do Mac está nesta tela, então ele parou de enviar.”), **Mostrar tela** (primário) e **Desconectar**.
 
 ### Stream
-- Antes do primeiro quadro: céu `cosmos` + Starfield + “Transmitindo de MacBook Pro do Kelvin” em `stardust`. Warp ao conectar.
+- Antes do primeiro quadro: céu `cosmos` com o **buraco negro em dithering** (DitherSpace) centralizado, “Transmitindo de MacBook Pro do Kelvin” em `stardust` e status Conectando…. Tocar no horizonte explode as partículas (microinteração). Quando chega o primeiro quadro: warp e o stream.
+- Conexão direta (sem roteador): tela própria com a **galáxia em dithering** girando, o nome da rede em `mono`/`star` (“DIRECT‑Ginga‑4F2A”), “O Mac está entrando na órbita deste tablet.” e **Encerrar**.
 - Primeiro quadro: toast StatusOrbit “Conectado · 60 Hz · Wi‑Fi” por 3 s e some. Overlay de diagnóstico só se ligado em Ajustes.
 - No Black espacial (tema só dos apps), a espera do stream e toda moldura são `#000` em vez de `cosmos`.
 
@@ -58,5 +59,6 @@ Reconectar automaticamente (toggle) · Taxa preferida (Segmented: Mac decide / 6
 | 2 Encontrar | “Anunciando na rede” | DeviceRow entra subindo | `g-rise` 420ms |
 | 3 Parear (1ª vez) | Sheet com código | Mesmo código | Dígitos surgem como estrelas |
 | 4 Estender | Status Conectado, tablet na lista, primário vira Desconectar | Warp → área de trabalho estendida | Cometa (Wi‑Fi) ou pulso no cabo (USB), anel no tablet, tablet encaixa |
+| Sem roteador | Sheet explica que o Mac sai do Wi‑Fi | Galáxia em dithering + nome da rede | Galáxia girando devagar |
 | Pausado | Status Pausado | “Pausado” + Mostrar tela | Órbita para |
 | Erro | Ponto `danger` + causa + ação | Mesmo texto | Sem animação |

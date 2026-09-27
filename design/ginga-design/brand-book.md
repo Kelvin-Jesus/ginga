@@ -38,7 +38,8 @@ O movimento é o “espacial” da marca, e é barato: só `transform` e `opacit
 - **Órbita**: status “Procurando” e o radar do tablet giram em `dur-orbit`, `ease-orbit`.
 - **Cometa**: ao conectar por Wi‑Fi, uma cauda `star` atravessa de Mac para tablet em `dur-warp`, termina num anel que se expande e o tablet entra em *warp* (estrelas esticando) até o primeiro quadro.
 - **Cabo**: por USB, um pulso `cobalt` corre pelo cabo no lugar do cometa.
-- **Céu**: `Ginga.starfield` em telas de marca apenas (onboarding, espera do stream, conexão direta, site).
+- **Céu**: `Ginga.starfield` (suave) ou `Ginga.pixelSky` (em pixels) em telas de marca apenas.
+- **Dithering espacial**: buraco negro e galáxia em pixels de 4 px, Bayer 4×4, só nas 6 cores da paleta (componente DitherSpace). Buraco negro na espera do stream e no topo do site (colapsa com o ponteiro, explode no clique); galáxia na conexão sem roteador e na faixa de download. Nunca atrás de texto corrido.
 - **Movimento reduzido**: sem órbitas, cometa, warp ou faíscas; estados trocam por fade de 1ms. Toda animação precisa ter um equivalente estático que diga a mesma coisa em texto.
 
 ## Iconografia
