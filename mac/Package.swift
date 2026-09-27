@@ -118,6 +118,7 @@ let package = Package(
         .testTarget(name: "EnergyMeterTests", dependencies: ["EnergyMeter", "Tab2MacCore"]),
         .testTarget(name: "Tab2MacSecurityTests", dependencies: ["Tab2MacSecurity"]),
         .testTarget(name: "USBAccessoryTests", dependencies: ["USBAccessory", "USBAccessoryShim", "Transport", "Tab2MacProtocol"]),
+        .testTarget(name: "Tab2MacAppTests", dependencies: ["Tab2MacApp"]),
         .testTarget(
             name: "Tab2MacStreamingTests",
             dependencies: [

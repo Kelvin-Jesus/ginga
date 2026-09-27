@@ -94,9 +94,31 @@ final class AppModel {
     var hasPendingChanges: Bool { draft != applied }
     var savesSettings: Bool { store != nil }
 
-    /// Shows a problem found outside an action (e.g. an unreadable settings file at launch).
-    func report(_ message: String) {
+    /// Shows a problem found outside an action (e.g. an unreadable settings file at launch); nil dismisses it.
+    func report(_ message: String?) {
         lastError = message
+    }
+
+    /// The pairing question on screen (a sheet on the main window), until answered or moot.
+    var pairingRequest: PairingRequest?
+
+    /// Diagnostics are sampled only while their section is open in a visible window.
+    var diagnosticsExpanded = false {
+        didSet { if diagnosticsExpanded != oldValue { updateObservedDiagnostics() } }
+    }
+    /// The main window is on screen and not covered: its orbits and pulses may move.
+    private(set) var mainWindowVisible = false
+    @ObservationIgnored private weak var mainWindow: NSWindow?
+
+    func mainWindowVisibilityChanged(_ window: NSWindow, visible: Bool) {
+        mainWindow = window
+        mainWindowVisible = visible
+        updateObservedDiagnostics()
+    }
+
+    private func updateObservedDiagnostics() {
+        guard let mainWindow else { return }
+        setObserving(mainWindow, visible: mainWindowVisible && diagnosticsExpanded)
     }
     var profile: DeviceProfile? { draft.display.profileID.flatMap(DeviceProfile.named) }
 
@@ -267,7 +289,7 @@ final class AppModel {
         }
         let onTabletDisplay = testPattern.screen.map { screenID($0) == active.displayID } ?? false
         if !onTabletDisplay {
-            testPattern.start(on: screen, title: "Tab2Mac test pattern")
+            testPattern.start(on: screen, title: "Ginga test pattern")
             let placed = testPattern.screen.map { screenID($0) } ?? 0
             Log.app.info("app.test-pattern display=\(active.displayID) screen=\(NSStringFromRect(screen.frame), privacy: .public) placed_on=\(placed) attempt=\(attempt)")
         }
@@ -378,14 +400,14 @@ final class AppModel {
 
     var directStatus: String {
         switch directState {
-        case .idle: "Off"
-        case .authorizing: "Asking for permission…"
-        case .searching: "Looking for the tablet over Bluetooth… (start “Direct connection” on the tablet)"
-        case .joining(let ssid): "Joining the tablet's network \(ssid)…"
-        case .waitingForTablet: "On the tablet's network; waiting for the tablet"
-        case .connected: "Connected directly"
-        case .restoring: "Returning to your previous network…"
-        case .failed(let reason): "Failed — \(reason)"
+        case .idle: tr("Desligado", "Off")
+        case .authorizing: tr("Pedindo permissão…", "Asking for permission…")
+        case .searching: tr("Procurando o tablet por Bluetooth… (toque em “Sem roteador” no tablet)", "Looking for the tablet over Bluetooth… (tap “No router” on the tablet)")
+        case .joining(let ssid): tr("Entrando na rede do tablet \(ssid)…", "Joining the tablet's network \(ssid)…")
+        case .waitingForTablet: tr("Na rede do tablet, esperando o tablet", "On the tablet's network, waiting for the tablet")
+        case .connected: tr("Conectado direto", "Connected directly")
+        case .restoring: tr("Voltando para a sua rede…", "Returning to your network…")
+        case .failed(let reason): tr("Falhou: \(reason)", "Failed: \(reason)")
         }
     }
 
@@ -504,7 +526,7 @@ final class AppModel {
         } else {
             devices = ready.map { ($0.model ?? $0.serial).replacingOccurrences(of: "_", with: "-") }.joined(separator: ", ")
         }
-        guard let connection = streaming.connection else { return "Listening on 127.0.0.1:\(port) · \(devices) · open Tab2Mac on the tablet" }
+        guard let connection = streaming.connection else { return "Listening on 127.0.0.1:\(port) · \(devices) · open Ginga on the tablet" }
         return "\(connection.clientModel ?? connection.endpoint) — \(connection.phase.rawValue)"
     }
 

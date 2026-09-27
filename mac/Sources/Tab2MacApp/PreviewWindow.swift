@@ -111,7 +111,7 @@ final class PreviewWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "Tab2Mac — Debug Preview (frames captured from the virtual display)"
+        window.title = tr("Ginga — prévia de debug (quadros capturados do display virtual)", "Ginga — debug preview (frames captured from the virtual display)")
         window.contentAspectRatio = NSSize(width: 16, height: 10)
         window.isReleasedWhenClosed = false
         super.init(window: window)
