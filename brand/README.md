@@ -12,6 +12,7 @@ Every mark shares one idea: the tablet sits tilted, off-axis, next to the Mac sc
 | **A · Órbita**: screen outline, tilted tablet, star | `ginga-app-icon.svg` (tile), `ginga-orbit.svg`, `ginga-orbit-dark.svg` | **App icon** on both apps (`mac/Resources/AppIcon.icns`, Android adaptive icon), site favicon, store listings |
 | **B · Monograma “g”**: screen-shaped bowl, S Pen tail | `ginga-monogram.svg`, `ginga-monogram-dark.svg` | **Site details**: section markers, bullets, loading state, social avatars, stickers. Not an app icon |
 | **C · Logotipo**: “ginga” in Unbounded ExtraBold, tablet as the dot of the i | `ginga-wordmark.svg`, `ginga-wordmark-dark.svg` | **The brand on the site**: header, footer, hero, press kit |
+| **A + C · Assinatura**: the app icon followed by the wordmark, the icon as tall as the wordmark (tablet dot to the tail of the g), gap of 300 units | `ginga-lockup.svg`, `ginga-lockup-dark.svg` (composed from the two, not redrawn) | **The repository**: README header, GitHub social preview, docs |
 
 Use the `-dark` files on backgrounds darker than `#6F82FF`. PNG exports are in `png/`.
 

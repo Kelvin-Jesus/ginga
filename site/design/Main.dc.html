@@ -784,7 +784,7 @@ a { color: var(--cobalt); } a:hover { color: var(--ink); }
     <sc-if value="{{isLight}}" hint-placeholder-val="{{false}}"><img src="/_blob/203870db4f317396b97b0e07dc97bcd4" alt="ginga"></sc-if>
     <sc-if value="{{isDark}}" hint-placeholder-val="{{true}}"><img src="/_blob/44ecdf02e81f5d55cd285dada8aa8766" alt="ginga"></sc-if>
     <p class="legal" style="margin: 0;">{{t.legal}}</p>
-    <div class="fl"><a href="{{githubRepo}}">GitHub</a><a href="#faq">FAQ</a><a href="#seguranca">{{t.navSec}}</a><a href="#baixar">{{t.navDl}}</a></div>
+    <div class="fl"><a href="{{githubRepo}}">GitHub</a><a href="{{designHref}}">Design system</a><a href="#faq">FAQ</a><a href="#seguranca">{{t.navSec}}</a><a href="#baixar">{{t.navDl}}</a></div>
   </div>
 </footer>
 
@@ -1527,6 +1527,7 @@ class Component extends DCLogic {
       thLight: s.theme === "light" ? "on" : "", thDark: s.theme === "dark" ? "on" : "",
       setPt: function () { self.setState({ lang: "pt" }); }, setEn: function () { self.setState({ lang: "en" }); },
       githubRepo: this.props.repoUrl || "https://github.com/[OWNER]/[REPO]",
+      designHref: (this.props.base || "/") + "design-system/",
       githubIssues: (this.props.repoUrl || "https://github.com/[OWNER]/[REPO]") + "/issues",
       faq: t.faq.map(function (x) { return { q: x[0], a: x[1] }; }),
       astroCls: s.astroOn ? "astro-on" : "",
