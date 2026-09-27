@@ -203,12 +203,14 @@ struct StreamingTests {
         let receiver = TestReceiver(port: port)
         receiver.sendHello()
         #expect(await eventually { receiver.videoFrames.count >= 5 })
+        // Counted before the change: the new encoder's keyframe can arrive with the CONFIGURE,
+        // and the old encoder sends no keyframe after the first frame.
+        let before = receiver.videoFrames.count
         await host.changeRate(to: 30)
         let announced = await eventually {
             receiver.received.contains { if case .configure(let configure) = $0 { configure.stream?.fps == 30 } else { false } }
         }
         #expect(announced)
-        let before = receiver.videoFrames.count
         #expect(await eventually { receiver.videoFrames.count >= before + 5 })
         #expect(receiver.videoFrames.dropFirst(before).contains { $0.isKeyframe })  // new encoder
     }

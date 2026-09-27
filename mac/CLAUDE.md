@@ -22,7 +22,7 @@ Swift 6.3, SwiftPM, macOS 14+ (developed on 26.6.2, M4). Start with the root `CL
 - Receivers: `StreamServer` (pending set, one current receiver, leases, liveness), `StreamConnection` (one receiver).
 - Protocol: `Sources/GingaProtocol` (messages, codec, `TestVectors.swift` generates `protocol/test-vectors`).
 - Input: `Sources/InputInjection` (`InputInterpreter` pure; `CGEventInjector`; `KeyboardMapper` pure).
-- UI (Ginga design system): `Sources/GingaApp/Design/` (`GingaTheme.swift` is generated from `design/ginga-design/tokens.json`: don't edit it by hand; components and the palette environment live next to it). Screens: `MainWindowView`, `SettingsView`, `Sheets`, `StatusItemController`; state in words in `AppModel+Presentation`. Every user-facing string goes through `tr("português", "English")`; nothing on screen says "Ginga".
+- UI (Ginga design system): `Sources/GingaApp/Design/` (`GingaTheme.swift` is generated from `design/ginga-design/tokens.json`: don't edit it by hand; components and the palette environment live next to it). Screens: `MainWindowView`, `SettingsView`, `Sheets`, `StatusItemController`; state in words in `AppModel+Presentation`. Every user-facing string goes through `tr("português", "English")`.
 - Review the UI without touching the screen: `.build/debug/GingaApp --config <scratch.json> --render-ui <dir>` writes the main window and Ajustes in Claro, Escuro and Black espacial as PNGs and quits (starts nothing).
 - The Command Line Tools have no SwiftUI macro plugins: no `@Entry`, `#Preview` or `@Previewable`; use `EnvironmentKey`.
 
