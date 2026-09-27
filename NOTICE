@@ -1,0 +1,20 @@
+Ginga — a second display for the Mac on a Galaxy tablet
+Copyright (C) 2026 Kelvin Jesus
+
+This program is free software: you can redistribute it and/or modify it under the terms of the
+GNU Affero General Public License as published by the Free Software Foundation, version 3.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+Affero General Public License for more details. You should have received a copy of it in the
+LICENSE file; if not, see <https://www.gnu.org/licenses/>.
+
+Third-party components
+- Unbounded, Figtree, IBM Plex Mono (brand/fonts, bundled in both apps): SIL Open Font License 1.1,
+  license texts in brand/fonts/OFL-*.txt, mac/Resources/Fonts and android/app/src/main/assets/licenses.
+- The Gradle wrapper (android/gradle/wrapper): Apache License 2.0.
+
+Trademarks
+The Ginga name, the logotype and the marks in brand/ identify this project and are not licensed
+under the AGPL: a fork must use its own name and marks. "Galaxy", "Samsung", "Mac", "macOS" and
+"Sidecar" are trademarks of their owners and are used only to describe compatibility.

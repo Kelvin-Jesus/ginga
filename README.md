@@ -102,3 +102,9 @@ android/     Kotlin receiver app (Gradle modules: protocol, transport, decoder, 
 - The private API can change with any macOS update. `t2m probe` and the canary test detect it, and the app refuses to proceed rather than crash. Tested on macOS 26.6.2 only so far.
 - macOS 15+ asks for monthly re-confirmation of screen capture, unless Apple grants the persistent-content-capture entitlement.
 - DRM-protected content captures black, and nothing is captured at the lock screen.
+
+## License
+
+Ginga is free software: you can redistribute it and/or modify it under the terms of the **GNU Affero General Public License, version 3** ([LICENSE](LICENSE), SPDX `AGPL-3.0-only`). Any fork or modified version you distribute, or let people use over a network, must be released under the same license with its complete source code. The author can also offer the software under other terms.
+
+Not covered by the AGPL: the brand fonts in `brand/fonts/` (SIL Open Font License 1.1, their licenses alongside) and the Ginga name and marks, which identify this project: forks must use another name and logo. See [NOTICE](NOTICE).
