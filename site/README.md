@@ -63,8 +63,17 @@ Na 404, a página “caída” é sugada pelo buraco negro. “Voltar para a ór
 
 ## Som da 404
 
-Enquanto a página é engolida toca o mesmo som do vídeo: uma espiral grave (`public/assets/ginga-404-swallow.mp3`, 8 s) que é cortada seco quando o último pedaço some no horizonte, seguida do “gole” (`ginga-404-gulp.mp3`). Juntos têm cerca de 110 KB.
+O som do buraco negro é sintetizado na hora pela Web Audio e guiado pela própria animação, sem nenhum arquivo:
 
-- Só toca quando o navegador libera o áudio: ao clicar em “Ver de novo”, ou na primeira vez se a pessoa já interagiu com o site (por exemplo, chegou à 404 por um link dele). Sem essa liberação, a animação segue muda, sem aviso nem botão.
-- Não toca com movimento reduzido nem com a aba em segundo plano.
-- Os arquivos são mixados por `tools/sfx.sh` a partir dos efeitos do vídeo (`video/public/sfx`: sons sintetizados por `video/scripts/sfx.ts` e o pacote Sci-fi Sounds do Kenney, CC0). O script usa o ffmpeg do sistema ou o que o Remotion instala em `video/node_modules`; depois de mudar os sons, rode `npm run regen` (os nomes dos arquivos entram em `tools/blobs.json` pelo hash).
+- um ronco grave cresce enquanto a página treme e racha;
+- cada ladrilho que se solta dá um estalo curto, no lado da tela onde está;
+- um vento em espiral sobe de tom com a velocidade da órbita dos pedaços e gira entre os canais junto com eles;
+- um tom grave desce conforme a página some, e cada pedaço que cruza o horizonte dá uma batidinha;
+- quando o último pedaço cai, as camadas são cortadas seco e vem o “gole”.
+
+Como tudo sai do mesmo estado da animação, o som fica em sincronia em qualquer tamanho de tela e entra no ponto certo mesmo se o áudio for liberado no meio.
+
+- Só toca quando o navegador libera o áudio: ao clicar em “Ver de novo”, ou já na primeira vez se a pessoa interagiu com o site antes. Firefox e Zen bloqueiam para sempre um contexto de áudio criado sem gesto, por isso ele é recriado dentro do clique.
+- Não toca com movimento reduzido nem com a aba em segundo plano. Sem notícias da animação por 250 ms (por exemplo, ao clicar em “Voltar para a órbita” no meio), o som para.
+- Ao terminar, o contexto de áudio é suspenso, para não manter o áudio do sistema acordado.
+- O código fica em `design/404.dc.html` (`sfx*`).

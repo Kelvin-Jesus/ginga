@@ -16,7 +16,7 @@ export default class NotFound extends React.Component {
     if (ok) { try { this.swallow(); } catch (e) { this.setState({ anim: false, done: true }); } return; }
     if (tries < 40) this._wait = setTimeout(function () { self.startSwallow(tries + 1); }, 100);
   }
-  componentWillUnmount() { if (this._sfx) this._sfx.ctx.close().catch(function () {}); if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
+  componentWillUnmount() { clearTimeout(this._sfxSleep); clearTimeout(this._sfxIdle); if (this._sfx) this._sfx.ctx.close().catch(function () {}); if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
 
   /* desenha uma "página do Ginga" num canvas fora da tela, para ser engolida */
   drawPage(W, H) {
@@ -54,32 +54,105 @@ export default class NotFound extends React.Component {
   }
   rr(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
 
-  /* Som do engolir, o mesmo do vídeo: uma espiral grave enquanto os ladrilhos giram, cortada seco quando o último
-     some, e o "gole". Só toca com o áudio liberado pelo navegador (clique em "Ver de novo", ou já ter interagido
-     com o site); sem liberação, a animação segue muda. Arquivos: tools/sfx.sh. */
+  /* Som do engolir, sintetizado na hora e guiado pela própria animação (nenhum arquivo): um ronco grave que
+     cresce enquanto a página racha; um estalo por ladrilho que se solta, no lado da tela onde ele está; um vento
+     que sobe de tom com a velocidade da órbita e gira entre os canais junto com os pedaços; um tom grave que
+     desce conforme a página some; batidinhas no horizonte e, quando o último pedaço cai, corte seco e o "gole".
+     Só toca com o áudio liberado pelo navegador (clique em "Ver de novo", ou já ter interagido com o site).
+     Um AudioContext criado sem gesto fica bloqueado de vez em alguns navegadores (Firefox, Zen), então um
+     contexto que não está tocando é trocado por um novo, criado dentro do clique. Ao terminar ele é suspenso,
+     para não manter o áudio do sistema acordado. */
   sfx() {
-    if (this._sfx !== undefined) return this._sfx;
-    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return (this._sfx = null);
-    var ctx = new AC(), s = this._sfx = { ctx: ctx, buf: {} };
-    var load = function (name, url) {
-      fetch(url).then(function (r) { return r.arrayBuffer(); })
-        .then(function (a) { return new Promise(function (ok, no) { ctx.decodeAudioData(a, ok, no); }); })
-        .then(function (b) { s.buf[name] = b; }).catch(function () {});
-    };
-    load("bed", (this.props.base + "assets/ginga-404-swallow.mp3")); load("gulp", (this.props.base + "assets/ginga-404-gulp.mp3"));
+    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+    var s = this._sfx;
+    clearTimeout(this._sfxSleep);
+    if (s && s.ctx.state === "running") return s;
+    if (s) s.ctx.close().catch(function () {});
+    var ctx = new AC(), n = ctx.sampleRate, noise = ctx.createBuffer(1, n, n), d = noise.getChannelData(0);
+    for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    var master = ctx.createGain(), comp = ctx.createDynamicsCompressor();
+    master.gain.value = 0.8; master.connect(comp); comp.connect(ctx.destination);
+    s = this._sfx = { ctx: ctx, noise: noise, master: master, run: null, lastTick: 0, lastThud: 0 };
+    if (ctx.state === "suspended") ctx.resume().catch(function () {});
     return s;
   }
-  sfxPlay(name, offset, gain) {
-    var s = this._sfx, b = s && s.buf[name];
-    if (!b || s.ctx.state !== "running" || document.visibilityState !== "visible" || offset >= b.duration) return null;
-    var src = s.ctx.createBufferSource(), g = s.ctx.createGain();
-    src.buffer = b; g.gain.value = gain; src.connect(g); g.connect(s.ctx.destination); src.start(0, offset);
-    return { src: src, g: g };
+  sfxOk() { var s = this._sfx; return s && s.ctx.state === "running" && document.visibilityState === "visible" ? s : null; }
+  sfxSrc(s, rate) { var n = s.ctx.createBufferSource(); n.buffer = s.noise; n.loop = true; n.playbackRate.value = rate; return n; }
+  sfxPan(c, x) { if (!c.createStereoPanner) return c.createGain(); var p = c.createStereoPanner(); p.pan.value = x || 0; return p; }
+  /* as camadas contínuas; criadas na primeira vez que o som está liberado durante a animação */
+  sfxBed(s) {
+    if (s.run) return s.run;
+    var c = s.ctx, now = c.currentTime;
+    var rum = this.sfxSrc(s, 0.5), rlp = c.createBiquadFilter(), rg = c.createGain();
+    rlp.type = "lowpass"; rlp.frequency.value = 170; rg.gain.value = 0;
+    rum.connect(rlp); rlp.connect(rg); rg.connect(s.master);
+    var wind = this.sfxSrc(s, 1), wbp = c.createBiquadFilter(), wg = c.createGain(), wp = this.sfxPan(c, 0);
+    wbp.type = "bandpass"; wbp.Q.value = 2.2; wbp.frequency.value = 300; wg.gain.value = 0;
+    wind.connect(wbp); wbp.connect(wg); wg.connect(wp); wp.connect(s.master);
+    var o1 = c.createOscillator(), o2 = c.createOscillator(), og = c.createGain(), tg = c.createGain();
+    o1.type = "sine"; o2.type = "triangle"; o1.frequency.value = 110; o2.frequency.value = 220.5; og.gain.value = 0.3; tg.gain.value = 0;
+    o1.connect(tg); o2.connect(og); og.connect(tg); tg.connect(s.master);
+    [rum, wind, o1, o2].forEach(function (x) { x.start(now); });
+    return (s.run = { nodes: [rum, wind, o1, o2], gains: [rg, wg, tg], rg: rg, wg: wg, wbp: wbp, wp: wp, o1: o1, o2: o2, tg: tg });
   }
-  sfxCut(h) {
-    if (!h) return;
-    var t = this._sfx.ctx.currentTime;
-    try { h.g.gain.setValueAtTime(h.g.gain.value, t); h.g.gain.linearRampToValueAtTime(0, t + 0.03); h.src.stop(t + 0.04); } catch (e) {}
+  /* v: crack (0..1, tremor antes de soltar), active (fração em órbita), speed (0..1, velocidade angular média),
+     pan (-1..1, lado dos pedaços em órbita), left (fração da página que ainda não caiu) */
+  sfxUpdate(v) {
+    var s = this.sfxOk(); if (!s) return;
+    var self = this, r = this.sfxBed(s), t = s.ctx.currentTime, k = 0.04;
+    /* sem atualização da animação (cancelada, aba em segundo plano), o som para sozinho */
+    clearTimeout(this._sfxIdle); this._sfxIdle = setTimeout(function () { self.sfxEnd(false); }, 250);
+    r.rg.gain.setTargetAtTime(0.5 * v.crack + 0.55 * v.active, t, k);
+    r.wg.gain.setTargetAtTime(0.9 * Math.min(1, v.active * 2.5) * (0.35 + 0.65 * v.speed), t, k);
+    r.wbp.frequency.setTargetAtTime(260 + 2400 * v.speed * v.speed, t, k);
+    if (r.wp.pan) r.wp.pan.setTargetAtTime(Math.max(-0.8, Math.min(0.8, v.pan)), t, 0.06);
+    var f = 42 + 78 * v.left;
+    r.o1.frequency.setTargetAtTime(f, t, 0.12); r.o2.frequency.setTargetAtTime(f * 2.004, t, 0.12);
+    r.tg.gain.setTargetAtTime(0.22 * Math.min(1, v.active * 3), t, k);
+  }
+  /* estalo de um ladrilho que se solta (x: 0..1 na tela) */
+  sfxTick(x) {
+    var s = this.sfxOk(); if (!s) return;
+    var c = s.ctx, t = c.currentTime; if (t - s.lastTick < 0.02) return; s.lastTick = t;
+    var src = this.sfxSrc(s, 0.7 + Math.random()), bp = c.createBiquadFilter(), g = c.createGain(), p = this.sfxPan(c, (x * 2 - 1) * 0.9);
+    bp.type = "bandpass"; bp.frequency.value = 1600 + Math.random() * 2800; bp.Q.value = 1.4;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.5, t + 0.002); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.025 + Math.random() * 0.035);
+    src.connect(bp); bp.connect(g); g.connect(p); p.connect(s.master);
+    src.start(t, Math.random() * 0.9); src.stop(t + 0.08);
+  }
+  /* um pedaço cruzando o horizonte */
+  sfxThud(x) {
+    var s = this.sfxOk(); if (!s) return;
+    var c = s.ctx, t = c.currentTime; if (t - s.lastThud < 0.03) return; s.lastThud = t;
+    var o = c.createOscillator(), g = c.createGain(), p = this.sfxPan(c, (x * 2 - 1) * 0.5);
+    o.type = "triangle"; o.frequency.setValueAtTime(260, t); o.frequency.exponentialRampToValueAtTime(70, t + 0.08);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.1);
+    o.connect(g); g.connect(p); p.connect(s.master); o.start(t); o.stop(t + 0.12);
+  }
+  /* corte seco das camadas; com gulp, o "gole" do buraco negro. Depois suspende o contexto. */
+  sfxEnd(gulp) {
+    var self = this, s = this._sfx; if (!s) return;
+    clearTimeout(this._sfxIdle);
+    var c = s.ctx, t = c.currentTime, r = s.run; s.run = null;
+    if (r) {
+      r.gains.forEach(function (g) { g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + 0.025); });
+      r.nodes.forEach(function (x) { try { x.stop(t + 0.03); } catch (e) {} });
+    }
+    if (gulp && r && this.sfxOk()) {
+      var o = c.createOscillator(), o2 = c.createOscillator(), g = c.createGain(), g2 = c.createGain();
+      o.type = "sine"; o.frequency.setValueAtTime(240, t); o.frequency.exponentialRampToValueAtTime(34, t + 0.5);
+      o2.type = "triangle"; o2.frequency.setValueAtTime(480, t); o2.frequency.exponentialRampToValueAtTime(68, t + 0.4);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.9, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.85);
+      g2.gain.setValueAtTime(0.0001, t); g2.gain.exponentialRampToValueAtTime(0.25, t + 0.01); g2.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+      o.connect(g); o2.connect(g2); g.connect(s.master); g2.connect(s.master);
+      o.start(t); o2.start(t); o.stop(t + 0.9); o2.stop(t + 0.4);
+      var n = this.sfxSrc(s, 0.6), lp = c.createBiquadFilter(), ng = c.createGain();
+      lp.type = "lowpass"; lp.frequency.setValueAtTime(900, t); lp.frequency.exponentialRampToValueAtTime(120, t + 0.25);
+      ng.gain.setValueAtTime(0.0001, t); ng.gain.exponentialRampToValueAtTime(0.5, t + 0.005); ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+      n.connect(lp); lp.connect(ng); ng.connect(s.master); n.start(t); n.stop(t + 0.32);
+    }
+    clearTimeout(this._sfxSleep);
+    this._sfxSleep = setTimeout(function () { if (self._sfx === s && !s.run && s.ctx.state === "running") s.ctx.suspend().catch(function () {}); }, 1500);
   }
   /* a página racha em ladrilhos que orbitam (Kepler), são esticados (espaguetificação) e somem no horizonte */
   swallow() {
@@ -90,9 +163,9 @@ export default class NotFound extends React.Component {
     this.setState({ done: false, anim: true });
     clearTimeout(this._safety); this._safety = setTimeout(function () { self.setState({ done: true }); }, 6000);
     var W = cv.width = window.innerWidth, H = cv.height = window.innerHeight, ctx = cv.getContext("2d");
-    this.sfxCut(this._bed); this._bed = null;
+    this.sfxEnd(false);
     if (rm) { ctx.clearRect(0, 0, W, H); this.setState({ done: true }); return; }
-    var snd = this.sfx(); if (snd && snd.ctx.state === "suspended") snd.ctx.resume().catch(function () {});
+    this.sfx();
     var page = this.drawPage(W, H);
     var bhr = this.r.bh.getBoundingClientRect(), hx = bhr.left + bhr.width / 2, hy = bhr.top + bhr.height * 0.52, R = Math.max(30, 0.28 * bhr.height / 2);
     var cols = W < 700 ? 8 : 14, rows = W < 700 ? 12 : 9, tw = W / cols, th = H / rows, T = [], maxD = 0;
@@ -102,23 +175,23 @@ export default class NotFound extends React.Component {
     }
     T.forEach(function (p) { p.delay = 0.55 + (p.d / maxD) * 1.7 + p.seed * 0.35; });
     if (this.loop) this.loop.shade.pullT = 1;
-    var t0 = performance.now(), prev = t0, F = 0.42, heard = false;
+    var t0 = performance.now(), prev = t0, F = 0.42, N = T.length;
     var step = function (now) {
       var t = (now - t0) / 1000, dt = Math.min(0.05, (now - prev) / 1000); prev = now;
       ctx.clearRect(0, 0, W, H);
-      /* a espiral entra assim que o som estiver liberado e carregado, no ponto certo da animação (até 0,6 s) */
-      if (!self._bed && !heard && t < 0.6) { self._bed = self.sfxPlay("bed", t, 0.5); heard = !!self._bed; }
-      var alive = 0, shake = t < 0.55 ? Math.sin(t * 60) * t * 3 : 0;
+      var active = 0, waiting = 0, spd = 0, side = 0, alive = 0, shake = t < 0.55 ? Math.sin(t * 60) * t * 3 : 0;
       for (var i = 0; i < T.length; i++) {
         var p = T[i]; if (p.gone) continue; alive++;
-        if (!p.on && t > p.delay) { p.on = true; p.r = Math.hypot(p.x - hx, (p.y - hy) / F); p.th = Math.atan2((p.y - hy) / F, p.x - hx); p.x0 = p.x; p.y0 = p.y; p.b = 0; }
+        if (!p.on && t > p.delay) { p.on = true; p.r = Math.hypot(p.x - hx, (p.y - hy) / F); p.th = Math.atan2((p.y - hy) / F, p.x - hx); p.x0 = p.x; p.y0 = p.y; p.b = 0; self.sfxTick(p.x / W); }
         if (!p.on) {
+          waiting++;
           /* rachando: treme cada vez mais conforme a sua vez chega */
           var near = Math.max(0, 1 - (p.delay - t) / 0.6), jx = (Math.random() - 0.5) * near * 3 + shake, jy = (Math.random() - 0.5) * near * 3;
           ctx.drawImage(page, p.sx, p.sy, tw, th, p.sx + jx, p.sy + jy, tw + 0.6, th + 0.6);
           continue;
         }
-        p.th += Math.min(9, 1.6 * Math.pow(240 / Math.max(p.r, 1), 1.5)) * dt;
+        var w = Math.min(9, 1.6 * Math.pow(240 / Math.max(p.r, 1), 1.5));
+        p.th += w * dt;
         p.r *= Math.exp(-(0.9 + 260 / Math.max(p.r, 30)) * dt * 0.55);
         p.b = Math.min(1, p.b + dt * 1.6);
         var e = p.b * p.b * (3 - 2 * p.b), ox = hx + p.r * Math.cos(p.th), oy = hy + p.r * Math.sin(p.th) * F;
@@ -126,17 +199,19 @@ export default class NotFound extends React.Component {
         var st = 1 + Math.min(4, Math.pow(R * 2.2 / Math.max(p.r, R), 3) * 1.6), sc = Math.max(0.12, Math.min(1, p.r / (R * 4.5)) * (1 - e * 0.35));
         var ang = Math.atan2(hy - Y, hx - X);
         var behind = Math.sin(p.th) < 0 && Math.hypot(X - hx, Y - hy) < R;
-        if (p.r < R * 1.02) { p.gone = true; continue; }
+        if (p.r < R * 1.02) { p.gone = true; self.sfxThud(X / W); continue; }
+        active++; spd += w; side += (X - hx) / (W / 2);
         if (behind) continue;
         ctx.save(); ctx.translate(X, Y); ctx.rotate(ang); ctx.scale(st, 1 / Math.sqrt(st)); ctx.rotate(-ang + p.spin * e);
         ctx.globalAlpha = Math.min(1, 0.35 + p.r / (R * 3));
         ctx.drawImage(page, p.sx, p.sy, tw, th, -tw * sc / 2, -th * sc / 2, tw * sc, th * sc);
         ctx.restore();
       }
+      self.sfxUpdate({ crack: Math.min(1, t / 0.55) * waiting / N, active: active / N, speed: active ? spd / active / 9 : 0, pan: active ? side / active : 0, left: alive / N });
       if (alive < T.length * 0.35 && !self.state.done) self.setState({ done: true });
       if (alive === 0) {
         ctx.clearRect(0, 0, W, H);
-        if (heard) { self.sfxCut(self._bed); self._bed = null; self.sfxPlay("gulp", 0, 0.6); }
+        self.sfxEnd(true);
         if (self.loop) { self.loop.shade.pullT = 0.85; self.loop.shade.tb = self.loop.now(); }
         self.setState({ done: true }); self.swRaf = 0; return;
       }
