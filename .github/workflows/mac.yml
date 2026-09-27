@@ -4,6 +4,7 @@ on:
     paths: ["mac/**", "protocol/**", ".github/workflows/mac.yml"]
   pull_request:
     paths: ["mac/**", "protocol/**", ".github/workflows/mac.yml"]
+  workflow_dispatch:
 jobs:
   test:
     runs-on: macos-26

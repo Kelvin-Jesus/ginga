@@ -4,6 +4,7 @@ on:
     paths: ["android/**", "protocol/**", ".github/workflows/android.yml"]
   pull_request:
     paths: ["android/**", "protocol/**", ".github/workflows/android.yml"]
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-24.04
