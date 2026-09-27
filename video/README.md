@@ -32,6 +32,11 @@ WebGL no render usa `Config.setChromiumOpenGlRenderer("angle")` (em `remotion.co
 
 A URL do repositório no fechamento é a prop `repoUrl` (padrão em `src/Root.tsx`). Para trocar sem editar o código: `npx remotion render GingaHero-pt out/x.mp4 --props='{"lang":"pt","repoUrl":"github.com/…"}'`, e `node scripts/srt.ts github.com/…` para as legendas.
 
+## Para quem vai colaborar (e para agentes)
+
+- `.claude/skills/ginga-video/SKILL.md`: a skill do projeto, com regras da marca, arquitetura, comandos e as armadilhas que já custaram tempo (pós-produção sem interface, timeouts do motion blur, texturas de canvas, som). Claude Code a carrega sozinho ao trabalhar em `video/`.
+- `npm run skills`: instala as skills oficiais do Remotion ([remotion-dev/skills](https://github.com/remotion-dev/skills)) nas versões de `skills-lock.json`, em `.agents/skills/` com links em `.claude/skills/`. Elas não vão no repositório porque o repositório de origem não tem licença.
+
 ## Como está organizado
 
 - `src/timeline.ts`: roteiro em segundos (eventos, câmera, cursor, legendas) e o layout de cada formato. É aqui que se ajusta o tempo.

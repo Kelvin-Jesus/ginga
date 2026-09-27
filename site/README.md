@@ -77,3 +77,14 @@ Como tudo sai do mesmo estado da animação, o som fica em sincronia em qualquer
 - Não toca com movimento reduzido nem com a aba em segundo plano. Sem notícias da animação por 250 ms (por exemplo, ao clicar em “Voltar para a órbita” no meio), o som para.
 - Ao terminar, o contexto de áudio é suspenso, para não manter o áudio do sistema acordado.
 - O código fica em `design/404.dc.html` (`sfx*`).
+
+## Teaser no buraco negro do topo
+
+O buraco negro do topo abre o teaser do Ginga (o `GingaKeynote` de `video/`, 10 s com som).
+
+- **Dica:** um anel fino respira sobre o horizonte, com um triângulo de play quase apagado. No hover o play fica dourado e aparece “Assistir ao teaser · 10 s” (“Watch the teaser · 10 s”). No celular a legenda fica sempre visível, um pouco apagada. É só CSS (`src/styles/teaser.css`) sobre o botão `.blast` que o `GingaSite` já tem. O idioma sai do `aria-label` desse botão, que o React troca junto com PT/EN, então a legenda e o vídeo acompanham a troca de idioma sem recarregar.
+- **Clique:** a explosão de partículas continua. Depois o horizonte cresce até engolir a página, com um anel de fótons cobalto na borda, e o vídeo começa com som. Se o navegador bloquear o áudio, o vídeo toca mudo e aparece “Ativar som”. Esc, o botão fechar ou o fim do vídeo encolhem o horizonte de volta. Com movimento reduzido, tudo vira um fade.
+- **Código:** `src/components/KeynoteTeaser.jsx` é uma ilha à parte (`client:idle`, montada em `src/pages/{pt,en}/index.astro`). Ela não altera o `GingaSite` gerado: espera ele hidratar e só adiciona um listener de clique no `.blast`.
+- **Vídeo:** `public/assets/ginga-keynote-{pt,en}.mp4` (1080p, ~7 MB cada) e `ginga-keynote-poster.jpg`, baixados só no clique. Gere em `video/`, com `npm run render:keynote` (masters) e depois a versão web (`README` de `video/`). **A cada vídeo novo, troque `VIDEO_VERSION` em `KeynoteTeaser.jsx`**, senão o navegador reaproveita o arquivo antigo do cache.
+- **Celular:** o bloco de texto do topo (`.herotext`) cobre o horizonte em telas estreitas. Por isso o `.blast` fica acima dele (`z-index: 4` em `teaser.css`), senão o toque não chegava ao botão.
+- **Explosão sem bordas:** o canvas do buraco negro tem o dobro da área em volta do mesmo horizonte, as partículas esmaecem antes da borda e uma máscara radial suaviza o encontro com o céu. Vem de um patch em `tools/prod_patch.py` (bloco “black hole without visible limits”), então sobrevive ao `npm run regen`.

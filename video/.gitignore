@@ -1,4 +1,4 @@
 node_modules/
 out/
 .agents/
-.claude/
+.claude/skills/remotion-*
