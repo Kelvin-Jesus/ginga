@@ -11,13 +11,32 @@ android {
         applicationId = "dev.ginga.receiver"
         minSdk = 31
         targetSdk = 36
-        versionCode = 1
-        versionName = "0.1.0"
+        // Release builds pass -Pginga.version=X.Y.Z (the git tag); the code follows from it.
+        val version = providers.gradleProperty("ginga.version").orNull
+        versionName = version ?: "0.1.0"
+        versionCode = version?.substringBefore('-')?.split('.')
+            ?.let { (major, minor, patch) -> major.toInt() * 10_000 + minor.toInt() * 100 + patch.toInt() }
+            ?: 1
+    }
+
+    // The release key lives outside the repo (scripts/setup-release-signing.sh); CI decodes it
+    // from secrets. Without GINGA_KEYSTORE the release APK is left unsigned.
+    val keystore = providers.environmentVariable("GINGA_KEYSTORE").orNull
+    signingConfigs {
+        if (keystore != null) {
+            create("release") {
+                storeFile = file(keystore)
+                storePassword = providers.environmentVariable("GINGA_KEYSTORE_PASSWORD").get()
+                keyAlias = providers.environmentVariable("GINGA_KEY_ALIAS").orNull ?: "ginga"
+                keyPassword = providers.environmentVariable("GINGA_KEY_PASSWORD").orNull ?: storePassword
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            if (keystore != null) signingConfig = signingConfigs.getByName("release")
         }
     }
 
