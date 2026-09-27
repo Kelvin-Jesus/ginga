@@ -47,6 +47,17 @@
         <attr name="sub" format="string" />
     </declare-styleable>
 
+    <!-- Black espacial's dithered pixel scenes (DitherField). -->
+    <declare-styleable name="DitherView">
+        <attr name="ditherScene" format="enum">
+            <enum name="galaxy" value="0" />
+            <enum name="blackHole" value="1" />
+        </attr>
+        <attr name="ditherColumns" format="integer" />
+        <attr name="ditherRows" format="integer" />
+        <attr name="ditherCell" format="dimension" />
+    </declare-styleable>
+
     <declare-styleable name="ColumnLayout">
         <attr name="maxColumnWidth" format="dimension" />
     </declare-styleable>

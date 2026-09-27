@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black">
@@ -29,16 +30,33 @@
             android:layout_height="match_parent"
             android:importantForAccessibility="no" />
 
-        <TextView
-            android:id="@+id/stream_status"
-            style="@style/Ginga.Text.Title"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/ginga_space_8"
-            android:accessibilityLiveRegion="polite"
-            android:gravity="center"
-            android:textColor="?attr/gingaStardust" />
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <!-- Black espacial only: a dithered black hole (GONE in the other themes). -->
+            <dev.tab2mac.receiver.ui.widget.DitherView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/ginga_space_6"
+                app:ditherColumns="120"
+                app:ditherRows="60"
+                app:ditherScene="blackHole" />
+
+            <TextView
+                android:id="@+id/stream_status"
+                style="@style/Ginga.Text.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/ginga_space_8"
+                android:layout_marginEnd="@dimen/ginga_space_8"
+                android:accessibilityLiveRegion="polite"
+                android:gravity="center"
+                android:textColor="?attr/gingaStardust" />
+        </LinearLayout>
     </FrameLayout>
 
     <!-- The pointer, drawn by the tablet when the Mac sends it as CURSOR (CursorLayer). Takes no input. -->
