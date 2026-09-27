@@ -130,8 +130,18 @@
     <!-- Sistema: follows the system's dark mode (values-night/themes.xml). -->
     <style name="Theme.Ginga.System" parent="Theme.Ginga.Light" />
 
-    <!-- The extended display: black behind the letterboxed video. -->
-    <style name="Theme.Ginga.Stream" parent="android:Theme.DeviceDefault.NoActionBar.Fullscreen">
+    <!--
+        The extended display: black behind the letterboxed video. Ginga's dark tokens for what is
+        drawn over it (the waiting sky, the first-frame toast); Space for Black espacial.
+    -->
+    <style name="Theme.Ginga.Stream" parent="Theme.Ginga.Dark">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+    </style>
+
+    <style name="Theme.Ginga.Stream.Space" parent="Theme.Ginga.Space">
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:windowLayoutInDisplayCutoutMode">always</item>
     </style>

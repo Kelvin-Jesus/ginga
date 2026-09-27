@@ -25,6 +25,8 @@ import dev.tab2mac.receiver.session.SessionState
 import dev.tab2mac.receiver.stats.DiagnosticsFormatter
 import dev.tab2mac.receiver.stats.DiagnosticsSnapshot
 import dev.tab2mac.receiver.stats.PowerMonitor
+import dev.tab2mac.receiver.ui.widget.StarfieldView
+import dev.tab2mac.receiver.ui.widget.StatusOrbitView
 import dev.tab2mac.renderer.SurfaceFrameRate
 import dev.tab2mac.renderer.VideoRect
 import dev.tab2mac.renderer.VideoSurfaceLayout
@@ -46,7 +48,10 @@ import kotlinx.coroutines.launch
  *   panel drop to 60 Hz;
  * - when the Surface goes away (Home, Back, screen off) the stream is paused on the Mac;
  * - the screen is kept on only while a stream is live and decoding;
- * - the diagnostics overlay (off by default) refreshes once a second, only while visible.
+ * - the diagnostics overlay (off by default) refreshes once a second, only while visible;
+ * - before the first frame, the Ginga sky (one Canvas view, warp then twinkle) is shown; it is
+ *   GONE as soon as video shows, so nothing is drawn over the video but the cursor and the
+ *   3 s first-frame toast.
  */
 class StreamActivity : Activity(), SurfaceHolder.Callback {
     private lateinit var controller: ReceiverController
@@ -54,6 +59,15 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
     private lateinit var overlay: TextView
     private lateinit var streamStatus: TextView
     private lateinit var cursorView: ImageView
+    private lateinit var sky: View
+    private lateinit var starfield: StarfieldView
+    private lateinit var toast: StatusOrbitView
+
+    /** Video is on screen (the sky is gone). */
+    private var videoShowing = false
+
+    /** The session whose first frame already had its toast. */
+    private var toastedConnection: Long? = null
 
     /** The stream's width in stream pixels (the scale of the pointer images). */
     private var streamWidth = 0
@@ -67,14 +81,20 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
     private var keepingScreenOn = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         controller = (application as Tab2MacApplication).controller
+        // Black espacial: the waiting sky is #000 instead of cosmos (gingaSky).
+        setTheme(if (controller.settings.appearance.pureBlack) R.style.Theme_Ginga_Stream_Space else R.style.Theme_Ginga_Stream)
+        super.onCreate(savedInstanceState)
         power = PowerMonitor(this)
         setContentView(R.layout.activity_stream)
         video = findViewById(R.id.video)
         overlay = findViewById(R.id.overlay)
         streamStatus = findViewById(R.id.stream_status)
         cursorView = findViewById(R.id.cursor)
+        sky = findViewById(R.id.sky)
+        starfield = findViewById(R.id.starfield)
+        toast = findViewById(R.id.toast)
+        toast.onSky = true
 
         window.attributes = window.attributes.apply {
             layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
@@ -96,6 +116,8 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
         controller.cursor.attach(cursorView)
         controller.cursor.setVideoGeometry(video.videoRect, streamWidth)
         controller.requestOrientation(orientationOf(resources.configuration))
+        // Just connected and still waiting for video: the stars stretch (warp) for dur-warp.
+        if (!videoShowing) starfield.warp()
         scope.launch {
             controller.pipeline.videoSize.collect { size ->
                 if (size != null) {
@@ -114,6 +136,7 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
         keyboard.releaseAll(System.nanoTime())
         controller.cursor.detach()
         overlayJob = null
+        hideToast(animate = false)
         controller.setDiagnosticsVisible(false)
         setKeepScreenOn(false)
         super.onStop()
@@ -163,11 +186,55 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
         val streaming = state.session as? SessionState.Streaming
         val error = controller.pipeline.error.value
         val live = streaming != null && !streaming.paused && error == null
-        streamStatus.visibility = if (live && streaming.format != null) View.GONE else View.VISIBLE
-        streamStatus.text = error ?: StatusText.of(state).headline
+        showVideo(live && streaming.format != null, state)
+        streamStatus.text = error ?: StreamWaitingText.of(state).resolve(this)
         setKeepScreenOn(live)
         video.surfaceView.holder.takeIf { it.surface?.isValid == true }?.let(::voteFrameRate)
         updateOverlayVisibility()
+    }
+
+    /**
+     * The sky until video shows; then it is GONE (its Canvas stops) and, once per session, the
+     * StatusOrbit toast "Conectado · 60 Hz · Wi‑Fi" appears for 3 s.
+     */
+    private fun showVideo(show: Boolean, state: ReceiverState) {
+        if (show == videoShowing) return
+        videoShowing = show
+        sky.visibility = if (show) View.GONE else View.VISIBLE
+        val streaming = state.session as? SessionState.Streaming ?: return
+        if (!show || toastedConnection == streaming.connectionId) return
+        toastedConnection = streaming.connectionId
+        toast.setState(Orbit.CONNECTED, HomeModel.connectedText(streaming, state).resolve(this))
+        toast.visibility = View.VISIBLE
+        toast.animate().cancel()
+        if (Motion.reduced(this)) {
+            toast.alpha = 1f
+            toast.translationY = 0f
+        } else {
+            toast.alpha = 0f
+            toast.translationY = -12f * resources.displayMetrics.density
+            toast.animate().alpha(1f).translationY(0f).setDuration(TOAST_FADE_MS).setInterpolator(Motion.easeGinga).start()
+        }
+        toast.removeCallbacks(hideToastLater)
+        toast.postDelayed(hideToastLater, Motion.TOAST_MS)
+    }
+
+    private val hideToastLater = Runnable { hideToast(animate = true) }
+
+    private fun hideToast(animate: Boolean) {
+        toast.removeCallbacks(hideToastLater)
+        toast.animate().cancel()
+        if (!animate || Motion.reduced(this) || toast.visibility != View.VISIBLE) {
+            toast.visibility = View.GONE
+            return
+        }
+        toast.animate()
+            .alpha(0f)
+            .translationY(-12f * resources.displayMetrics.density)
+            .setDuration(TOAST_FADE_MS)
+            .setInterpolator(Motion.easeOut)
+            .withEndAction { toast.visibility = View.GONE }
+            .start()
     }
 
     private fun setKeepScreenOn(on: Boolean) {
@@ -246,5 +313,8 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
     private companion object {
         /** 1 Hz. */
         const val OVERLAY_REFRESH_MS = 1_000L
+
+        /** The toast's entrance and exit (reference: 500 ms). */
+        const val TOAST_FADE_MS = 500L
     }
 }

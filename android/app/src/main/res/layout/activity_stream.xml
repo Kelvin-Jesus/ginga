@@ -10,6 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!--
+        Before the first frame: the sky (cosmos, #000 in Black espacial), the stars and
+        "Transmitindo de <Mac>" in stardust. Gone as soon as video shows, so nothing redraws it.
+        Takes no input: touches go to the video below.
+    -->
+    <FrameLayout
+        android:id="@+id/sky"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/gingaSky"
+        android:clickable="false"
+        android:focusable="false">
+
+        <dev.tab2mac.receiver.ui.widget.StarfieldView
+            android:id="@+id/starfield"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no" />
+
+        <TextView
+            android:id="@+id/stream_status"
+            style="@style/Ginga.Text.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/ginga_space_8"
+            android:accessibilityLiveRegion="polite"
+            android:gravity="center"
+            android:textColor="?attr/gingaStardust" />
+    </FrameLayout>
+
     <!-- The pointer, drawn by the tablet when the Mac sends it as CURSOR (CursorLayer). Takes no input. -->
     <ImageView
         android:id="@+id/cursor"
@@ -23,15 +54,6 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/stream_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/connecting_title"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:textColor="@color/overlay_text" />
-
-    <TextView
         android:id="@+id/overlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,5 +64,16 @@
         android:padding="8dp"
         android:textColor="@color/overlay_text"
         android:textSize="12sp"
+        android:visibility="gone" />
+
+    <!-- First frame: "Conectado · 60 Hz · Wi‑Fi" for 3 s, then gone. -->
+    <dev.tab2mac.receiver.ui.widget.StatusOrbitView
+        android:id="@+id/toast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="@dimen/ginga_space_3"
+        android:clickable="false"
+        android:focusable="false"
         android:visibility="gone" />
 </FrameLayout>
