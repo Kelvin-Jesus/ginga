@@ -12,7 +12,7 @@ Every mark shares one idea: the tablet sits tilted, off-axis, next to the Mac sc
 | **A · Órbita**: screen outline, tilted tablet, star | `ginga-app-icon.svg` (tile), `ginga-orbit.svg`, `ginga-orbit-dark.svg` | **App icon** on both apps (`mac/Resources/AppIcon.icns`, Android adaptive icon), site favicon, store listings |
 | **B · Monograma “g”**: screen-shaped bowl, S Pen tail | `ginga-monogram.svg`, `ginga-monogram-dark.svg` | **Site details**: section markers, bullets, loading state, social avatars, stickers. Not an app icon |
 | **C · Logotipo**: “ginga” in Unbounded ExtraBold, tablet as the dot of the i | `ginga-wordmark.svg`, `ginga-wordmark-dark.svg` | **The brand on the site**: header, footer, hero, press kit |
-| **A + C · Assinatura**: the app icon followed by the wordmark, aligned by eye, not by bounding box: the icon is centred on the lowercase letters and a little taller than them, so the i's tablet dot and the g's tail stick out as in type; the frame is trimmed to the drawing | `ginga-lockup.svg`, `ginga-lockup-dark.svg` (composed from the two, not redrawn) | **The repository**: README header, GitHub social preview, docs |
+| **A + C · Assinatura**: the app icon followed by the wordmark, aligned by eye, not by bounding box: the icon is centred on the lowercase letters and a little taller than them, so the i's tablet dot and the g's tail stick out as in type; the frame keeps a small empty margin on the left (256 units) so the heavy blue tile doesn't pull the centred lockup to the left | `ginga-lockup.svg`, `ginga-lockup-dark.svg` (composed from the two, not redrawn) | **The repository**: README header, GitHub social preview, docs |
 
 Use the `-dark` files on backgrounds darker than `#6F82FF`. PNG exports are in `png/`.
 

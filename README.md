@@ -1,7 +1,7 @@
 <h1 align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="brand/ginga-lockup-dark.svg">
-    <img alt="Ginga" src="brand/ginga-lockup.svg" width="320">
+    <img alt="Ginga" src="brand/ginga-lockup.svg" width="336">
   </picture>
 </h1>
 
