@@ -38,6 +38,9 @@ class SegmentedControl @JvmOverloads constructor(context: Context, attrs: Attrib
         addView(thumb, LayoutParams(0, LayoutParams.MATCH_PARENT))
         row.orientation = LinearLayout.HORIZONTAL
         row.isMeasureWithLargestChildEnabled = true
+        // Same Z as the thumb's shadow elevation, so the labels draw above it (child order decides).
+        row.elevation = thumb.elevation
+        row.outlineProvider = null
         addView(row, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
     }
 

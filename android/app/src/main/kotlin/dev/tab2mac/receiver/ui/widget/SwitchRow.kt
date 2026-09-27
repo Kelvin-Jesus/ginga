@@ -2,6 +2,7 @@ package dev.tab2mac.receiver.ui.widget
 
 import android.animation.AnimatorInflater
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
@@ -91,7 +92,7 @@ class SwitchRow @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         checked = value
         place(animate = fromUser && isAttachedToWindow && !Motion.reduced(context))
         if (fromUser) {
-            if (value) Spark.burst(thumb)
+            if (value) Spark.burst(control)
             onCheckedChange?.invoke(value)
         }
     }
@@ -124,13 +125,13 @@ class SwitchRow @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     override fun onInitializeAccessibilityNodeInfo(info: AccessibilityNodeInfo) {
         super.onInitializeAccessibilityNodeInfo(info)
         info.isCheckable = true
-        info.isChecked = checked
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            info.setChecked(if (checked) AccessibilityNodeInfo.CHECKED_STATE_TRUE else AccessibilityNodeInfo.CHECKED_STATE_FALSE)
+        } else {
+            @Suppress("DEPRECATION")
+            info.isChecked = checked
+        }
         info.text = listOfNotNull(label.text, sub.text.takeIf { sub.visibility == VISIBLE }).joinToString(". ")
-    }
-
-    override fun onInitializeAccessibilityEvent(event: AccessibilityEvent) {
-        super.onInitializeAccessibilityEvent(event)
-        event.isChecked = checked
     }
 
     private fun dp(value: Int): Int = (value * density).toInt()

@@ -37,10 +37,10 @@ android {
 
 tasks.withType<Test>().configureEach {
     // AccessoryFilterTest checks the manifest and res/xml/accessory_filter.xml against the
-    // accessory identity the Mac sends.
+    // accessory identity the Mac sends; StringsTest checks the translations.
     val main = layout.projectDirectory.dir("src/main").asFile
     systemProperty("t2m.appMainDir", main.absolutePath)
-    inputs.files(fileTree(main) { include("AndroidManifest.xml", "res/xml/**") })
+    inputs.files(fileTree(main) { include("AndroidManifest.xml", "res/xml/**", "res/values*/strings.xml") })
         .withPropertyName("manifestAndXmlResources")
         .withPathSensitivity(PathSensitivity.RELATIVE)
 }
