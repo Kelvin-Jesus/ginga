@@ -1,8 +1,10 @@
+import React from "react";
 import { Img, staticFile } from "remotion";
 import { C, glowStar } from "../theme";
 import { F } from "../fonts";
 import type { Strings } from "../i18n";
 import { StatusPill, type StatusKind } from "./StatusPill";
+import { PairingCode } from "./PairingCode";
 
 /** Toggle do design system; `on` 0–1 já com a curva aplicada (o thumb desliza com ease-ginga). */
 export const Switch: React.FC<{ on: number; s?: number }> = ({ on, s = 1 }) => (
@@ -29,11 +31,16 @@ export type GingaWindowProps = {
   s: Strings; status: StatusKind; statusLabel: string;
   /** 0–1 com curva */ wifiOn: number;
   /** 0–1: linha do tablet pareado subindo (g-rise) */ tabletRow?: number;
+  /** folha de pareamento: 0–1 de abertura (ease-ginga), t do código, `press` do botão Parear */
+  sheet?: number; codeT?: number; pairPress?: number;
   style?: React.CSSProperties;
 };
 
+/** Posição do botão Parear dentro da janela (para o cursor). */
+export const PAIR_BTN = { x: 286, y: 290 };
+
 /** Janela do Ginga no Mac (tema escuro), compacta como na demo. 420 px de largura. */
-export const GingaWindow: React.FC<GingaWindowProps> = ({ s, status, statusLabel, wifiOn, tabletRow = 0, style }) => (
+export const GingaWindow: React.FC<GingaWindowProps> = ({ s, status, statusLabel, wifiOn, tabletRow = 0, sheet = 0, codeT = 0, pairPress = 0, style }) => (
   <div style={{ position: "absolute", width: 420, borderRadius: 18, background: C.noite, color: C.nevoa, boxShadow: "0 24px 64px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.05)", overflow: "hidden", ...style }}>
     <div style={{ height: 40, display: "flex", alignItems: "center", gap: 8, padding: "0 16px" }}>
       {["#FF5F57", "#FEBC2E", "#28C840"].map((c) => <i key={c} style={{ width: 12, height: 12, borderRadius: "50%", background: c, display: "block" }} />)}
@@ -59,6 +66,20 @@ export const GingaWindow: React.FC<GingaWindowProps> = ({ s, status, statusLabel
         </div>
       </div>
     </div>
+    {sheet > 0 && (
+      <div style={{ position: "absolute", inset: "40px 0 0", background: "rgba(10,12,28,.45)", opacity: Math.min(1, sheet * 1.6) }}>
+        <div style={{ position: "absolute", left: 40, top: 24, width: 340, height: 268, boxSizing: "border-box", padding: 22, borderRadius: 22, background: C.surfaceDark, boxShadow: "0 24px 64px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.05)", textAlign: "center", transform: `translateY(${(1 - sheet) * -12}px) scale(${0.96 + 0.04 * sheet})`, opacity: Math.min(1, sheet * 1.6) }}>
+          <Img src={staticFile("logos/ginga-app-icon.png")} style={{ width: 40, height: 40, borderRadius: 10 }} />
+          <div style={{ font: `600 17px/22px ${F.sans}`, marginTop: 6 }}>{s.pairTitle}</div>
+          <div style={{ font: `400 13px/17px ${F.sans}`, color: C.inkMuted, margin: "4px 8px 10px" }}>{s.pairBody}</div>
+          <PairingCode t={codeT} size={32} />
+          <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
+            <span style={{ flex: 1, height: 38, borderRadius: 12, display: "grid", placeItems: "center", background: C.surface2Dark, font: `500 14px/1 ${F.sans}` }}>{s.dontPair}</span>
+            <span style={{ flex: 1, height: 38, borderRadius: 12, display: "grid", placeItems: "center", background: C.cobaltNight, color: C.noite, font: `600 14px/1 ${F.sans}`, transform: `scale(${1 - 0.03 * pairPress})` }}>{s.pair}</span>
+          </div>
+        </div>
+      </div>
+    )}
   </div>
 );
 

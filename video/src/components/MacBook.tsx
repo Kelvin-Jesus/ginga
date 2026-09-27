@@ -1,3 +1,4 @@
+import React from "react";
 import { C } from "../theme";
 
 /** MacBook genérico em CSS (como em demo-conexao.html). Sem logos. */

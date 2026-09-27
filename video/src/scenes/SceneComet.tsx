@@ -1,3 +1,4 @@
+import React from "react";
 import { AbsoluteFill, interpolate, useCurrentFrame, useVideoConfig } from "remotion";
 import { C, dur, ease, ms } from "../theme";
 import { t as tr, type Lang } from "../i18n";

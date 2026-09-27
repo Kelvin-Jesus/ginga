@@ -1,0 +1,20 @@
+1
+00:00:03,600 --> 00:00:07,000
+Seu Galaxy Tab vira tela do Mac.
+
+2
+00:00:23,300 --> 00:00:25,000
+S Pen.
+
+3
+00:00:25,000 --> 00:00:26,100
+Toque.
+
+4
+00:00:26,100 --> 00:00:27,000
+Sem modo desenvolvedor.
+
+5
+00:00:28,600 --> 00:00:30,000
+Código aberto no GitHub
+github.com/Kelvin-Jesus/ginga

@@ -1,3 +1,4 @@
+import React from "react";
 import { interpolate } from "remotion";
 import { C, ease } from "../theme";
 

@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useMemo, useRef } from "react";
 import { rng } from "../lib/rng";
 

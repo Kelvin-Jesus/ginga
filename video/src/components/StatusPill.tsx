@@ -1,3 +1,4 @@
+import React from "react";
 import { useCurrentFrame, useVideoConfig } from "remotion";
 import { C } from "../theme";
 import { F } from "../fonts";
