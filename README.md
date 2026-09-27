@@ -90,6 +90,7 @@ open build/Ginga.app               # control panel + menu bar: Create Display, S
 ## Repository
 
 ```text
+wiki/        what every contributor and agent should know (habits, traps, releases)
 docs/        setup · configuration · research · architecture · milestones · virtual-display-backend · development · troubleshooting · performance
 protocol/    wire protocol v1 + golden test vectors shared by the Swift and Kotlin suites
 config/      example configuration files
