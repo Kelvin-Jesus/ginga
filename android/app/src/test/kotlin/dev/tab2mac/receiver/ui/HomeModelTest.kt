@@ -70,7 +70,16 @@ class HomeModelTest {
         assertEquals(HomePanel.Direct(false, true, UiText(R.string.direct_available, "MacBook")), available)
 
         val running = HomeModel.of(ReceiverState(direct = DirectState.WaitingForMac("DIRECT-T2", "Wi‑Fi Direct")), emptyList(), ConnectMethod.WIFI)
-        assertEquals(HomePanel.Direct(true, true, UiText(R.string.direct_waiting, "DIRECT-T2")), running.panel)
+        assertEquals(
+            HomePanel.Direct(true, true, UiText(R.string.direct_waiting, "DIRECT-T2"), "DIRECT-T2", UiText(R.string.direct_orbit)),
+            running.panel,
+        )
+        // While the network is being created there is no name yet, and the line says so.
+        val creating = HomeModel.of(ReceiverState(direct = DirectState.CreatingNetwork("Wi‑Fi Direct")), emptyList(), null).panel
+        assertEquals(
+            HomePanel.Direct(true, true, UiText(R.string.direct_creating, "Wi‑Fi Direct"), null, UiText(R.string.direct_creating, "Wi‑Fi Direct")),
+            creating,
+        )
         assertNull(running.method)
         assertEquals(Orbit.SEARCHING, running.pill.orbit)
     }

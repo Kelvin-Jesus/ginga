@@ -8,27 +8,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/gingaBg"
-    android:fitsSystemWindows="true">
+    android:background="?attr/gingaBg">
 
     <!--
-        Black espacial only: a dithered spiral galaxy behind the header, faint so the text stays
-        readable (DitherView is GONE in the other themes).
+        Black espacial only: the dithered galaxy (DitherSpace) behind the header, faint so the text
+        stays readable; GONE in the other themes.
     -->
-    <dev.tab2mac.receiver.ui.widget.DitherView
+    <dev.tab2mac.receiver.ui.widget.DitherSpaceView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="@dimen/ginga_space_4"
         android:alpha="0.4"
-        app:ditherColumns="120"
-        app:ditherRows="60"
-        app:ditherScene="galaxy" />
+        app:ditherColumns="100"
+        app:ditherRows="50"
+        app:ditherScene="galaxy"
+        app:spaceOnly="true" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
-        android:fillViewport="true">
+        android:fillViewport="true"
+        android:fitsSystemWindows="true">
 
         <dev.tab2mac.receiver.ui.widget.ColumnLayout
             android:layout_width="match_parent"
@@ -471,4 +473,88 @@
                 android:visibility="gone" />
         </dev.tab2mac.receiver.ui.widget.ColumnLayout>
     </ScrollView>
+
+    <!--
+        Sem roteador, in progress (flows.md): its own screen over cosmos (#000 in Black espacial)
+        with the dithered galaxy turning, the network's name in mono and star, and Encerrar.
+    -->
+    <FrameLayout
+        android:id="@+id/direct_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/gingaSky"
+        android:clickable="true"
+        android:focusable="false"
+        android:visibility="gone">
+
+        <dev.tab2mac.receiver.ui.widget.DitherSpaceView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|end"
+            android:layout_marginTop="-40dp"
+            android:layout_marginEnd="-48dp"
+            app:ditherColumns="140"
+            app:ditherRows="140"
+            app:ditherScene="galaxy" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/ginga_space_8">
+
+                <TextView
+                    android:id="@+id/direct_ssid"
+                    style="@style/Ginga.Text.Mono"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:textColor="@color/ginga_star_dark"
+                    android:textIsSelectable="true" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="bottom"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/Ginga.Text.Title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:accessibilityHeading="true"
+                            android:text="@string/direct_title"
+                            android:textColor="@color/ginga_stardust_dark" />
+
+                        <TextView
+                            android:id="@+id/direct_screen_line"
+                            style="@style/Ginga.Text.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/ginga_space_1"
+                            android:accessibilityLiveRegion="polite"
+                            android:textColor="@color/ginga_ink_muted_dark" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/direct_end"
+                        style="@style/Widget.Ginga.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="@dimen/ginga_space_4"
+                        android:text="@string/direct_end" />
+                </LinearLayout>
+            </FrameLayout>
+        </FrameLayout>
+    </FrameLayout>
 </FrameLayout>

@@ -100,16 +100,31 @@ The UI follows `design/ginga-design/` (flows.md, "Tablet (Android)"): Views XML,
   fps, bitrate, decode and end-to-end p50/p95, drops, input count, panel refresh rate and
   frame-rate vote, battery current, RTT, clock offset), Avançado (adb instructions).
 - **Stream** (`StreamActivity`): before the first frame, the sky (`cosmos`, `#000` in Black
-  espacial) with `StarfieldView` (warp for 1.4 s, then twinkle at ~30 fps) and "Transmitindo de
-  <Mac>"; the sky is GONE as soon as video shows, then a StatusOrbit toast "Conectado · 60 Hz ·
-  Wi‑Fi" for 3 s. The video SurfaceView, the cursor view and input capture are unchanged.
+  espacial) with a pixel sky and the dithered black hole (DitherSpace, below), "Transmitindo de
+  <Mac>" in stardust and a StatusOrbit "Conectando…". The finger near the hole collapses its
+  orbits (`pullT`, `BlackHoleTouch`) and a tap on the horizon bursts the particles; while waiting
+  the sky keeps every touch, hover and pen event, so none reaches the Mac. At the first frame the
+  hole stops at once, a warp (`StarfieldView`, streaks only) plays while the sky fades for
+  800 ms, then the sky is GONE and a StatusOrbit toast "Conectado · 60 Hz · Wi‑Fi" shows for 3 s.
+  The video SurfaceView, the cursor view and input capture are unchanged.
+- **Sem roteador** in progress: its own screen over home (`direct_screen`, `cosmos`/`#000`) with
+  the dithered galaxy turning, the network's name (as the direct-link flow made it) in mono and
+  `star`, "O Mac está entrando na órbita deste tablet." and **Encerrar** (`cancelDirect`).
+- **DitherSpace** (`ui/widget/DitherSpace.kt`, pure; `DitherSpaceView`): the port, as is, of
+  `design/ginga-design/reference/bundle.js` (`ditherLoop`, `blackHole`, `galaxy`, `pixelSky`): a
+  value 0–1 per buffer pixel (190×122 for the black hole, one pixel = 4dp), Bayer 4×4
+  (`(B + 0.5) / 16`), six colours with cosmos transparent. The only change: `Math.random()` is a
+  seeded `Random`, and the time-independent terms of each pixel are computed once in `init`
+  (about 1.4 ms per black-hole frame on a desktop JVM instead of 6.4). One small Bitmap,
+  `setPixels`, `drawBitmap` without filtering, frames from the Choreographer every 42 ms (the
+  sky 90 ms) only while the view is attached, shown and the screen is on; one still frame with
+  reduced motion. `DitherSpaceTest` checks shader values against the reference run in node.
 - **Themes**: `Theme.Ginga.Light|Dark|Space` (framework Material parents) and
   `Theme.Ginga.System` (Light, Dark in `values-night`), colour attributes `?attr/ginga*` pointing
   at `values/ginga_colors.xml` (copied from the design). Stored as `ReceiverSettings.appearance`;
   changing it recreates the screen. Black espacial: every area `#000000`, cards only by a 1px
-  `line` outline, a static star dust in each group's corner, a dithered pixel galaxy behind the
-  home header and a black hole on the stream's waiting sky (`DitherField`, pure; `DitherView`,
-  ~10 fps, only while shown).
+  `line` outline, a static star dust in each group's corner, and the dithered galaxy (DitherSpace)
+  faintly behind the home header.
 - **Motion** (`Motion`): press 0.97 in 120 ms (`res/animator/g_press.xml`), `ease-ginga`
   (`res/interpolator/ease_ginga.xml`), orbit/pulse only while visible, rows rising 120 ms apart,
   pairing digits 60 ms apart, a 7-star spark when a switch turns on or a primary action is

@@ -12,50 +12,77 @@
         android:layout_height="match_parent" />
 
     <!--
-        Before the first frame: the sky (cosmos, #000 in Black espacial), the stars and
-        "Transmitindo de <Mac>" in stardust. Gone as soon as video shows, so nothing redraws it.
-        Takes no input: touches go to the video below.
+        Before the first frame (flows.md, "Stream"): the dithered black hole over cosmos (#000 in
+        Black espacial) and a pixel sky, "Transmitindo de <Mac>" in stardust and Conectando….
+        Touches here play with the hole (StreamActivity.onSkyTouch) and never reach the Mac. At the
+        first frame: a warp while the sky fades, then it is GONE, so nothing draws over the video.
     -->
     <FrameLayout
         android:id="@+id/sky"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/gingaSky"
-        android:clickable="false"
-        android:focusable="false">
+        android:background="?attr/gingaSky">
 
-        <dev.tab2mac.receiver.ui.widget.StarfieldView
-            android:id="@+id/starfield"
+        <dev.tab2mac.receiver.ui.widget.DitherSpaceView
+            android:id="@+id/pixel_sky"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:importantForAccessibility="no" />
+            app:ditherScene="pixelSky" />
 
-        <LinearLayout
+        <dev.tab2mac.receiver.ui.widget.DitherSpaceView
+            android:id="@+id/black_hole"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
+            android:layout_marginBottom="@dimen/ginga_space_12"
+            app:ditherColumns="190"
+            app:ditherRows="122"
+            app:ditherScene="blackHole" />
 
-            <!-- Black espacial only: a dithered black hole (GONE in the other themes). -->
-            <dev.tab2mac.receiver.ui.widget.DitherView
+        <!-- The warp at the first frame (streaks only). -->
+        <dev.tab2mac.receiver.ui.widget.StarfieldView
+            android:id="@+id/warp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:importantForAccessibility="no"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/ginga_space_8"
+            android:gravity="bottom"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/stream_status"
+                    style="@style/Ginga.Text.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:accessibilityLiveRegion="polite"
+                    android:textColor="@color/ginga_stardust_dark" />
+
+                <TextView
+                    style="@style/Ginga.Text.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/ginga_space_1"
+                    android:text="@string/stream_sub"
+                    android:textColor="@color/ginga_ink_muted_dark" />
+            </LinearLayout>
+
+            <dev.tab2mac.receiver.ui.widget.StatusOrbitView
+                android:id="@+id/stream_orbit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/ginga_space_6"
-                app:ditherColumns="120"
-                app:ditherRows="60"
-                app:ditherScene="blackHole" />
-
-            <TextView
-                android:id="@+id/stream_status"
-                style="@style/Ginga.Text.Title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/ginga_space_8"
-                android:layout_marginEnd="@dimen/ginga_space_8"
-                android:accessibilityLiveRegion="polite"
-                android:gravity="center"
-                android:textColor="?attr/gingaStardust" />
+                android:layout_marginStart="@dimen/ginga_space_4" />
         </LinearLayout>
     </FrameLayout>
 

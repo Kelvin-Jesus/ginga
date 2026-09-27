@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowInsetsController
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -67,6 +68,15 @@ class MainActivity : Activity() {
     private lateinit var chipViews: Map<ConnectMethod, TextView>
     private lateinit var diagnosticsAction: TextView
     private lateinit var diagnosticsText: TextView
+    private lateinit var directScreen: View
+    private lateinit var directSsid: TextView
+    private lateinit var directScreenLine: TextView
+
+    /** The no-router network's name, kept while the Mac joins (the state no longer carries it then). */
+    private var directNetwork: String? = null
+
+    /** The status and navigation bars' appearance of this theme, restored when the direct screen closes. */
+    private var barsAppearance = 0
     private val scope = MainScope()
 
     /** The appearance this activity was themed with; a different setting recreates it. */
@@ -131,6 +141,16 @@ class MainActivity : Activity() {
         diagnosticsAction = findViewById(R.id.diagnostics_action)
         diagnosticsText = findViewById(R.id.diagnostics_text)
         glowPrimary(findViewById(R.id.usb_connect), directStart, pairingAccept, openStream)
+        directScreen = findViewById(R.id.direct_screen)
+        directSsid = findViewById(R.id.direct_ssid)
+        directScreenLine = findViewById(R.id.direct_screen_line)
+        findViewById<Button>(R.id.direct_end).setOnClickListener { controller.cancelDirect() }
+        // The theme's bars (dark icons in Claro); read from the theme, the window may not have them yet.
+        barsAppearance = if (themeBoolean(android.R.attr.windowLightStatusBar)) {
+            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+        } else {
+            0
+        }
 
         findViewById<Button>(R.id.settings).setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         chipViews.forEach { (method, chip) ->
@@ -311,6 +331,7 @@ class MainActivity : Activity() {
                 openStream.setGingaEnabled(panel.canShowDisplay)
             }
         }
+        renderDirectScreen(model.panel as? HomePanel.Direct)
         chips.visibility = if (model.method == null) View.GONE else View.VISIBLE
         chipViews.forEach { (method, chip) ->
             val selected = method == model.method
@@ -324,6 +345,37 @@ class MainActivity : Activity() {
         if (diagnosticsExpanded) {
             val text = StatusText.of(lastState)
             diagnosticsText.text = if (text.detail.isEmpty()) text.headline else "${text.headline}\n${text.detail}"
+        }
+    }
+
+    /**
+     * Sem roteador, in progress: its own screen over the home, with the dithered galaxy (it runs
+     * only while this screen is shown), the network's name as the flow made it, and Encerrar.
+     */
+    private fun renderDirectScreen(panel: HomePanel.Direct?) {
+        val show = panel?.inProgress == true
+        if (show) {
+            panel.ssid?.let { directNetwork = it }
+            directSsid.text = directNetwork.orEmpty()
+            directScreenLine.text = panel.screenLine?.resolve(this)
+        } else {
+            directNetwork = null
+        }
+        if (show == (directScreen.visibility == View.VISIBLE)) return
+        val bars = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS or WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS
+        // Light icons over the sky, whatever the theme; the theme's again when it closes.
+        window.insetsController?.setSystemBarsAppearance(if (show) 0 else barsAppearance, bars)
+        directScreen.animate().cancel()
+        if (show) {
+            directScreen.visibility = View.VISIBLE
+            if (Motion.reduced(this)) {
+                directScreen.alpha = 1f
+            } else {
+                directScreen.alpha = 0f
+                directScreen.animate().alpha(1f).setDuration(Motion.DUR_SHEET).setInterpolator(Motion.easeOut).start()
+            }
+        } else {
+            directScreen.visibility = View.GONE
         }
     }
 

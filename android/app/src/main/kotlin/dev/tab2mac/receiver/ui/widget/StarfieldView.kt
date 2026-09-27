@@ -45,6 +45,9 @@ class StarfieldView @JvmOverloads constructor(context: Context, attrs: Attribute
     private var warpStart = 0L
     private var warping = false
 
+    /** False: only the warp's streaks are drawn (the stream's first frame), nothing between warps. */
+    var showStars = true
+
     private var startTime = SystemClock.uptimeMillis()
     private var lastFrame = 0L
 
@@ -97,7 +100,7 @@ class StarfieldView @JvmOverloads constructor(context: Context, attrs: Attribute
         val now = SystemClock.uptimeMillis()
         val time = (now - startTime).toFloat()
         val width = width.toFloat()
-        for (i in 0 until count) {
+        for (i in 0 until if (showStars) count else 0) {
             val z = zs[i]
             val alpha = StarfieldMath.alpha(phases[i], speeds[i], z, time, reduced)
             val x = if (reduced) xs[i] else StarfieldMath.driftX(xs[i], z, time, density, width)
@@ -106,7 +109,7 @@ class StarfieldView @JvmOverloads constructor(context: Context, attrs: Attribute
         }
         if (warping) drawWarp(canvas, now)
         lastFrame = now
-        if (reduced || !isShown) return
+        if (reduced || !isShown || (!showStars && !warping)) return
         if (warping) postInvalidateOnAnimation() else postInvalidateDelayed(StarfieldMath.TWINKLE_FRAME_MS)
     }
 

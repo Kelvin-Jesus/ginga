@@ -73,6 +73,8 @@
     <string name="direct_connecting">The Mac joined the network. Connecting…</string>
     <string name="direct_connected">Connected over this tablet’s own network.</string>
     <string name="direct_ended">The direct connection ended: %1$s. %2$s</string>
+    <string name="direct_orbit">The Mac is entering this tablet’s orbit.</string>
+    <string name="direct_end">End</string>
     <string name="direct_permissions_denied">A direct connection needs the Bluetooth and nearby Wi‑Fi devices permissions.</string>
 
     <!-- Pairing (§6). -->
@@ -115,6 +117,7 @@
 
     <!-- Stream. -->
     <string name="stream_from">Streaming from %1$s</string>
+    <string name="stream_sub">The first frame is on its way.</string>
 
     <!-- Settings. -->
     <string name="group_connection">Connection</string>

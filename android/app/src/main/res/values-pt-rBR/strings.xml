@@ -66,6 +66,8 @@
     <string name="direct_connecting">O Mac entrou na rede. Conectando…</string>
     <string name="direct_connected">Conectado pela rede do próprio tablet.</string>
     <string name="direct_ended">A conexão direta terminou: %1$s. %2$s</string>
+    <string name="direct_orbit">O Mac está entrando na órbita deste tablet.</string>
+    <string name="direct_end">Encerrar</string>
     <string name="direct_permissions_denied">A conexão direta precisa das permissões de Bluetooth e de dispositivos Wi‑Fi por perto.</string>
 
     <string name="pairing_title">Parear com %1$s?</string>
@@ -103,6 +105,7 @@
     <string name="details_hide">Ocultar</string>
 
     <string name="stream_from">Transmitindo de %1$s</string>
+    <string name="stream_sub">O primeiro quadro está a caminho.</string>
 
     <string name="group_connection">Conexão</string>
     <string name="auto_reconnect">Reconectar automaticamente</string>

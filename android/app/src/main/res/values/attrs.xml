@@ -47,15 +47,18 @@
         <attr name="sub" format="string" />
     </declare-styleable>
 
-    <!-- Black espacial's dithered pixel scenes (DitherField). -->
-    <declare-styleable name="DitherView">
+    <!-- DitherSpace scenes (DitherSpaceView): buffer size in cells, cell size (4dp). -->
+    <declare-styleable name="DitherSpaceView">
         <attr name="ditherScene" format="enum">
-            <enum name="galaxy" value="0" />
-            <enum name="blackHole" value="1" />
+            <enum name="blackHole" value="0" />
+            <enum name="galaxy" value="1" />
+            <enum name="pixelSky" value="2" />
         </attr>
         <attr name="ditherColumns" format="integer" />
         <attr name="ditherRows" format="integer" />
         <attr name="ditherCell" format="dimension" />
+        <!-- GONE unless the theme is Black espacial. -->
+        <attr name="spaceOnly" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="ColumnLayout">

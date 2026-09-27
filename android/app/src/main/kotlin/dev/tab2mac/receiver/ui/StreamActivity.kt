@@ -4,8 +4,10 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.view.WindowManager
@@ -25,6 +27,8 @@ import dev.tab2mac.receiver.session.SessionState
 import dev.tab2mac.receiver.stats.DiagnosticsFormatter
 import dev.tab2mac.receiver.stats.DiagnosticsSnapshot
 import dev.tab2mac.receiver.stats.PowerMonitor
+import dev.tab2mac.receiver.ui.widget.BlackHoleTouch
+import dev.tab2mac.receiver.ui.widget.DitherSpaceView
 import dev.tab2mac.receiver.ui.widget.StarfieldView
 import dev.tab2mac.receiver.ui.widget.StatusOrbitView
 import dev.tab2mac.renderer.SurfaceFrameRate
@@ -37,6 +41,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 /**
  * The extended display: fullscreen and immersive, both orientations. Rotation is handled in place
@@ -49,9 +54,10 @@ import kotlinx.coroutines.launch
  * - when the Surface goes away (Home, Back, screen off) the stream is paused on the Mac;
  * - the screen is kept on only while a stream is live and decoding;
  * - the diagnostics overlay (off by default) refreshes once a second, only while visible;
- * - before the first frame, the Ginga sky (one Canvas view, warp then twinkle) is shown; it is
- *   GONE as soon as video shows, so nothing is drawn over the video but the cursor and the
- *   3 s first-frame toast.
+ * - before the first frame, the Ginga sky: a pixel sky and the dithered black hole (DitherSpace,
+ *   ~24 fps). Touches on it play with the hole and never reach the Mac. At the first frame the
+ *   hole stops at once, a short warp plays while the sky fades, and the sky is GONE: nothing is
+ *   drawn over the video but the cursor and the 3 s first-frame toast.
  */
 class StreamActivity : Activity(), SurfaceHolder.Callback {
     private lateinit var controller: ReceiverController
@@ -60,7 +66,12 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
     private lateinit var streamStatus: TextView
     private lateinit var cursorView: ImageView
     private lateinit var sky: View
-    private lateinit var starfield: StarfieldView
+    private lateinit var pixelSky: View
+    private lateinit var blackHole: DitherSpaceView
+    private lateinit var warp: StarfieldView
+    private lateinit var streamOrbit: StatusOrbitView
+    private var touchDownX = 0f
+    private var touchDownY = 0f
     private lateinit var toast: StatusOrbitView
 
     /** Video is on screen (the sky is gone). */
@@ -92,9 +103,18 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
         streamStatus = findViewById(R.id.stream_status)
         cursorView = findViewById(R.id.cursor)
         sky = findViewById(R.id.sky)
-        starfield = findViewById(R.id.starfield)
+        pixelSky = findViewById(R.id.pixel_sky)
+        blackHole = findViewById(R.id.black_hole)
+        warp = findViewById(R.id.warp)
+        warp.showStars = false
+        streamOrbit = findViewById(R.id.stream_orbit)
+        streamOrbit.onSky = true
         toast = findViewById(R.id.toast)
         toast.onSky = true
+        // While waiting, the sky keeps every touch, hover and pen event: none reaches the Mac.
+        sky.setOnTouchListener { _, event -> onSkyTouch(event) }
+        sky.setOnGenericMotionListener { _, _ -> !videoShowing }
+        sky.setOnHoverListener { _, _ -> !videoShowing }
 
         window.attributes = window.attributes.apply {
             layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
@@ -116,8 +136,6 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
         controller.cursor.attach(cursorView)
         controller.cursor.setVideoGeometry(video.videoRect, streamWidth)
         controller.requestOrientation(orientationOf(resources.configuration))
-        // Just connected and still waiting for video: the stars stretch (warp) for dur-warp.
-        if (!videoShowing) starfield.warp()
         scope.launch {
             controller.pipeline.videoSize.collect { size ->
                 if (size != null) {
@@ -188,6 +206,13 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
         val live = streaming != null && !streaming.paused && error == null
         showVideo(live && streaming.format != null, state)
         streamStatus.text = error ?: StreamWaitingText.of(state).resolve(this)
+        if (streaming?.paused == true || state.session is SessionState.Suspended) {
+            streamOrbit.setState(Orbit.PAUSED, getString(R.string.status_paused))
+        } else if (error != null) {
+            streamOrbit.setState(Orbit.ERROR, getString(R.string.status_error))
+        } else {
+            streamOrbit.setState(Orbit.SEARCHING, getString(R.string.status_connecting))
+        }
         setKeepScreenOn(live)
         video.surfaceView.holder.takeIf { it.surface?.isValid == true }?.let(::voteFrameRate)
         updateOverlayVisibility()
@@ -200,7 +225,27 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
     private fun showVideo(show: Boolean, state: ReceiverState) {
         if (show == videoShowing) return
         videoShowing = show
-        sky.visibility = if (show) View.GONE else View.VISIBLE
+        blackHole.blackHole?.pullT = 0.0
+        // The dithered scenes stop the moment video shows (GONE stops their frames).
+        blackHole.visibility = if (show) View.GONE else View.VISIBLE
+        pixelSky.visibility = if (show) View.GONE else View.VISIBLE
+        sky.animate().cancel()
+        if (!show) {
+            warp.visibility = View.GONE
+            sky.alpha = 1f
+            sky.visibility = View.VISIBLE
+        } else if (Motion.reduced(this)) {
+            sky.visibility = View.GONE
+        } else {
+            // Warp: the stars stretch while the sky fades over the first frames, then it is gone.
+            warp.visibility = View.VISIBLE
+            warp.warp()
+            sky.animate().alpha(0f).setDuration(WARP_FADE_MS).setInterpolator(Motion.easeOut).withEndAction {
+                sky.visibility = View.GONE
+                sky.alpha = 1f
+                warp.visibility = View.GONE
+            }.start()
+        }
         val streaming = state.session as? SessionState.Streaming ?: return
         if (!show || toastedConnection == streaming.connectionId) return
         toastedConnection = streaming.connectionId
@@ -217,6 +262,34 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
         }
         toast.removeCallbacks(hideToastLater)
         toast.postDelayed(hideToastLater, Motion.TOAST_MS)
+    }
+
+    /**
+     * The black hole under the finger (reference: dither-espaco.html): the closer, the more its
+     * orbits collapse; a tap on the horizon bursts the particles. Consumed while waiting, so
+     * nothing is sent to the Mac; once video shows, touches pass to the video.
+     */
+    private fun onSkyTouch(event: MotionEvent): Boolean {
+        if (videoShowing) return false
+        val shader = blackHole.blackHole ?: return true
+        val dx = event.x - (blackHole.left + blackHole.width * 0.5f)
+        val dy = event.y - (blackHole.top + blackHole.height * BlackHoleTouch.CENTER_Y)
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                touchDownX = event.x
+                touchDownY = event.y
+                shader.pullT = BlackHoleTouch.pull(dx, dy, blackHole.width.toFloat())
+            }
+            MotionEvent.ACTION_MOVE -> shader.pullT = BlackHoleTouch.pull(dx, dy, blackHole.width.toFloat())
+            MotionEvent.ACTION_UP -> {
+                val slop = ViewConfiguration.get(this).scaledTouchSlop
+                val tap = abs(event.x - touchDownX) < slop && abs(event.y - touchDownY) < slop
+                if (tap && BlackHoleTouch.onHorizon(dx, dy, blackHole.height.toFloat())) blackHole.burst()
+                shader.pullT = 0.0
+            }
+            MotionEvent.ACTION_CANCEL -> shader.pullT = 0.0
+        }
+        return true
     }
 
     private val hideToastLater = Runnable { hideToast(animate = true) }
@@ -313,6 +386,9 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
     private companion object {
         /** 1 Hz. */
         const val OVERLAY_REFRESH_MS = 1_000L
+
+        /** The sky's fade over the first frames, with the warp. */
+        const val WARP_FADE_MS = 800L
 
         /** The toast's entrance and exit (reference: 500 ms). */
         const val TOAST_FADE_MS = 500L

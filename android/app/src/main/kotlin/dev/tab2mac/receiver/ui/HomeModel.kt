@@ -45,8 +45,18 @@ sealed interface HomePanel {
     /** The USB cable: plug it in (or connect, when the Mac's accessory is attached). */
     data class Usb(val attached: Boolean) : HomePanel
 
-    /** No router (§6b): this tablet's own network. */
-    data class Direct(val inProgress: Boolean, val canStart: Boolean, val status: UiText) : HomePanel
+    /**
+     * No router (§6b): this tablet's own network. While it is [inProgress], its own screen shows
+     * the galaxy, the network's [ssid] (as the direct-link flow made it; null until it is up) and
+     * [screenLine].
+     */
+    data class Direct(
+        val inProgress: Boolean,
+        val canStart: Boolean,
+        val status: UiText,
+        val ssid: String? = null,
+        val screenLine: UiText? = null,
+    ) : HomePanel
 
     /** Wi‑Fi pairing (§6): the same six digits on both screens. [code] is null while exchanging. */
     data class Pairing(val macName: String, val code: String?, val confirmed: Boolean) : HomePanel
@@ -86,7 +96,10 @@ data class HomeModel(
             val direct = DirectText.of(state.direct, state.directKeyMac)
             if (direct.inProgress) {
                 val pill = StatusPill(Orbit.SEARCHING, UiText(R.string.status_direct))
-                return HomeModel(pill, HomePanel.Direct(true, true, direct.status), null, notice)
+                val ssid = (state.direct as? DirectState.WaitingForMac)?.ssid
+                // Creating the network says so; once it is up, the Mac is entering its orbit.
+                val line = if (state.direct is DirectState.CreatingNetwork) direct.status else UiText(R.string.direct_orbit)
+                return HomeModel(pill, HomePanel.Direct(true, true, direct.status, ssid, line), null, notice)
             }
             val method = chosen ?: if (state.accessoryAttached) ConnectMethod.USB else ConnectMethod.WIFI
             val (pill, panel) = when (method) {
