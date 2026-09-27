@@ -11,6 +11,7 @@ struct MainWindowView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showsDirectSheet = false
     @State private var primarySparks = 0
+    @State private var comets = 0
 
     var body: some View {
         ScrollView {
@@ -41,6 +42,10 @@ struct MainWindowView: View {
                 .accessibilityAddTraits(.isHeader)
             Spacer(minLength: GingaSpace.s3)
             StatusOrbit(state: status.state, text: status.text)
+        }
+        .overlay { GingaComet(trigger: comets).padding(.horizontal, 34) }
+        .onChange(of: status.state) { old, new in
+            if new == .connected, old != .paused { comets += 1 }
         }
     }
 

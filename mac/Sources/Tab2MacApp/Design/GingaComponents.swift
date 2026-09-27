@@ -523,3 +523,55 @@ struct GingaPairingCode: View {
         .onAppear { shown = true }
     }
 }
+
+// MARK: Comet
+
+/// On connecting: a `star` comet with a tail crosses from left to right in `dur-warp` and ends
+/// in a ring (flows.md step 4). One shot, only when the window is visible and motion allowed.
+struct GingaComet: View {
+    @Environment(\.ginga) private var palette
+    @Environment(\.gingaAnimates) private var animates
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    let trigger: Int
+    @State private var progress: CGFloat = 1
+    @State private var ring: CGFloat = 1
+
+    var body: some View {
+        GeometryReader { geometry in
+            let width = geometry.size.width
+            let x = width * progress
+            let y = geometry.size.height / 2
+            ZStack {
+                Capsule()
+                    .fill(LinearGradient(colors: [palette.star.opacity(0), palette.star.opacity(0.9)], startPoint: .leading, endPoint: .trailing))
+                    .frame(width: 90, height: 3)
+                    .position(x: x - 45, y: y)
+                GingaStarShape().fill(palette.star).frame(width: 12, height: 12).position(x: x, y: y)
+                    .shadow(color: palette.star.opacity(0.7), radius: 6)
+                Circle().stroke(palette.star, lineWidth: 1.5)
+                    .frame(width: 14, height: 14)
+                    .scaleEffect(1 + 2 * ring)
+                    .opacity(ring < 1 ? 1 - ring : 0)
+                    .position(x: width, y: y)
+            }
+            .opacity(progress < 1 || ring < 1 ? 1 : 0)
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+        .onChange(of: trigger) {
+            guard animates, !reduceMotion else { return }
+            progress = 0
+            ring = 1
+            withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: GingaMotion.warp)) { progress = 1 } completion: {
+                ring = 0
+                withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.42)) { ring = 1 }
+            }
+        }
+    }
+}
+
+struct GingaStarShape: Shape {
+    func path(in rect: CGRect) -> Path {
+        GingaStar.path(center: CGPoint(x: rect.midX, y: rect.midY), radius: min(rect.width, rect.height) / 2)
+    }
+}
