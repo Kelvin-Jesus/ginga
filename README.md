@@ -1,6 +1,6 @@
-# Tab2Mac
+# Ginga (internal name: Tab2Mac)
 
-Tab2Mac turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet.
+Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. The apps show only "Ginga"; Tab2Mac stays the name of the code (modules, `t2m`, logs, bundle id). Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md).
 
 macOS gets a genuine extended display:
 

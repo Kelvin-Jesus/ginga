@@ -28,6 +28,18 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 | Headless `t2m run` | ✅ | idle: 28.7 MB vs 61.7 MB for the app, 0 % CPU |
 | Energy (60 Hz default, pause, battery-aware encoder) | ✅ | performance.md |
 
+## Ginga UI (design/ginga-design), 2026‑09‑26
+
+| Area | State | Evidence |
+|---|---|---|
+| Name on screen: Ginga (Tab2Mac stays internal) | ✅ Mac, ✅ Android | app name, menus, permission texts (en + pt-BR), messages; USB accessory strings, Bonjour type, bundle id unchanged |
+| Themes Claro / Escuro / Black espacial / Sistema + Idioma (Português / English / Sistema) | ✅ Mac, ✅ Android | Mac `--render-ui`; Android emulator screenshots (the tablet's screen was off) |
+| Android home by state, Ajustes, stream sky + toast | ✅ Android (🧪 Pareando/Conectado/stream screens on the device) | HomeModelTest, StarfieldMathTest; 322 Android tests |
+| Main window, Ajustes, pairing sheet, Sem roteador sheet, menu bar by state | ✅ Mac (🧪 pairing sheet on the device) | renders; 380 Mac tests |
+| Microinteractions: switch spark, press scale, orbit/pulse, pairing digits, row rise, comet | ✅ Mac | only while visible, off with reduced motion |
+| Black espacial scenery: dithered galaxy (Mac main window, tablet home) and black hole (Mac pairing / Sem roteador, tablet stream waiting) | ✅ Mac, ✅ Android | ~0.4 ms/frame at 10 fps only while visible; still with reduced motion |
+| Brand fonts (Unbounded, Figtree, IBM Plex Mono) | 📝 | not bundled yet (needs a download the user approves); SF Pro / SF Mono meanwhile |
+
 ## Not done
 
 See [roadmap.md](roadmap.md): Wi‑Fi Aware (blocked: not on macOS 26), M8 UDP/FEC, idle refinement, Developer ID packaging, multiple tablets, Linux hosts, pinch-to-zoom (no public macOS API).
