@@ -45,7 +45,7 @@ body { margin: 0; }
   <canvas class="sky" ref="{{refSky}}" aria-hidden="true"></canvas>
   <canvas class="bh" ref="{{refBh}}" width="285" height="182" aria-hidden="true"></canvas>
   <canvas class="pieces" ref="{{refPieces}}" aria-hidden="true"></canvas>
-  <img class="astro404 {{showCls}}" src="/_blob/b9c20f802cc19b60c5609469490e4f54" alt="">
+  <img class="astro404 {{showCls}}" src="/_blob/41866969bb412142d903f77df0c93400" alt="">
   <div class="txt {{showCls}}">
     <div class="code">404</div>
     <h1 class="msg">Essa página caiu num buraco negro.</h1>
@@ -71,7 +71,7 @@ class Component extends DCLogic {
     if (ok) { try { this.swallow(); } catch (e) { this.setState({ anim: false, done: true }); } return; }
     if (tries < 40) this._wait = setTimeout(function () { self.startSwallow(tries + 1); }, 100);
   }
-  componentWillUnmount() { clearTimeout(this._sfxSleep); clearTimeout(this._sfxIdle); if (this._sfx) this._sfx.ctx.close().catch(function () {}); if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
+  componentWillUnmount() { this.sfxUnlock(false); clearTimeout(this._sfxSleep); clearTimeout(this._sfxIdle); if (this._sfx) this._sfx.ctx.close().catch(function () {}); if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
 
   /* desenha uma "página do Ginga" num canvas fora da tela, para ser engolida */
   drawPage(W, H) {
@@ -130,6 +130,11 @@ class Component extends DCLogic {
     s = this._sfx = { ctx: ctx, noise: noise, master: master, run: null, lastTick: 0, lastThud: 0 };
     if (ctx.state === "suspended") ctx.resume().catch(function () {});
     return s;
+  }
+  sfxUnlock(on) {
+    var self = this;
+    if (!this._unlock) this._unlock = function () { self.sfxUnlock(false); self.sfx(); };
+    ["pointerdown", "keydown"].forEach(function (e) { (on ? window.addEventListener : window.removeEventListener).call(window, e, self._unlock, true); });
   }
   sfxOk() { var s = this._sfx; return s && s.ctx.state === "running" && document.visibilityState === "visible" ? s : null; }
   sfxSrc(s, rate) { var n = s.ctx.createBufferSource(); n.buffer = s.noise; n.loop = true; n.playbackRate.value = rate; return n; }
@@ -220,7 +225,11 @@ class Component extends DCLogic {
     var W = cv.width = window.innerWidth, H = cv.height = window.innerHeight, ctx = cv.getContext("2d");
     this.sfxEnd(false);
     if (rm) { ctx.clearRect(0, 0, W, H); this.setState({ done: true }); return; }
-    this.sfx();
+    var snd = this.sfx();
+    /* sem áudio liberado, o primeiro clique ou tecla durante a animação libera e o som entra na hora, no ponto
+       em que a animação está (mover o mouse não conta como gesto para o navegador) */
+    this.sfxUnlock(false);
+    if (snd && snd.ctx.state !== "running") this.sfxUnlock(true);
     var page = this.drawPage(W, H);
     var bhr = this.r.bh.getBoundingClientRect(), hx = bhr.left + bhr.width / 2, hy = bhr.top + bhr.height * 0.52, R = Math.max(30, 0.28 * bhr.height / 2);
     var cols = W < 700 ? 8 : 14, rows = W < 700 ? 12 : 9, tw = W / cols, th = H / rows, T = [], maxD = 0;
@@ -266,7 +275,7 @@ class Component extends DCLogic {
       if (alive < T.length * 0.35 && !self.state.done) self.setState({ done: true });
       if (alive === 0) {
         ctx.clearRect(0, 0, W, H);
-        self.sfxEnd(true);
+        self.sfxEnd(true); self.sfxUnlock(false);
         if (self.loop) { self.loop.shade.pullT = 0.85; self.loop.shade.tb = self.loop.now(); }
         self.setState({ done: true }); self.swRaf = 0; return;
       }

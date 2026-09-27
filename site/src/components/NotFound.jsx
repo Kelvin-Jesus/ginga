@@ -16,7 +16,7 @@ export default class NotFound extends React.Component {
     if (ok) { try { this.swallow(); } catch (e) { this.setState({ anim: false, done: true }); } return; }
     if (tries < 40) this._wait = setTimeout(function () { self.startSwallow(tries + 1); }, 100);
   }
-  componentWillUnmount() { clearTimeout(this._sfxSleep); clearTimeout(this._sfxIdle); if (this._sfx) this._sfx.ctx.close().catch(function () {}); if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
+  componentWillUnmount() { this.sfxUnlock(false); clearTimeout(this._sfxSleep); clearTimeout(this._sfxIdle); if (this._sfx) this._sfx.ctx.close().catch(function () {}); if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
 
   /* desenha uma "página do Ginga" num canvas fora da tela, para ser engolida */
   drawPage(W, H) {
@@ -75,6 +75,11 @@ export default class NotFound extends React.Component {
     s = this._sfx = { ctx: ctx, noise: noise, master: master, run: null, lastTick: 0, lastThud: 0 };
     if (ctx.state === "suspended") ctx.resume().catch(function () {});
     return s;
+  }
+  sfxUnlock(on) {
+    var self = this;
+    if (!this._unlock) this._unlock = function () { self.sfxUnlock(false); self.sfx(); };
+    ["pointerdown", "keydown"].forEach(function (e) { (on ? window.addEventListener : window.removeEventListener).call(window, e, self._unlock, true); });
   }
   sfxOk() { var s = this._sfx; return s && s.ctx.state === "running" && document.visibilityState === "visible" ? s : null; }
   sfxSrc(s, rate) { var n = s.ctx.createBufferSource(); n.buffer = s.noise; n.loop = true; n.playbackRate.value = rate; return n; }
@@ -165,7 +170,11 @@ export default class NotFound extends React.Component {
     var W = cv.width = window.innerWidth, H = cv.height = window.innerHeight, ctx = cv.getContext("2d");
     this.sfxEnd(false);
     if (rm) { ctx.clearRect(0, 0, W, H); this.setState({ done: true }); return; }
-    this.sfx();
+    var snd = this.sfx();
+    /* sem áudio liberado, o primeiro clique ou tecla durante a animação libera e o som entra na hora, no ponto
+       em que a animação está (mover o mouse não conta como gesto para o navegador) */
+    this.sfxUnlock(false);
+    if (snd && snd.ctx.state !== "running") this.sfxUnlock(true);
     var page = this.drawPage(W, H);
     var bhr = this.r.bh.getBoundingClientRect(), hx = bhr.left + bhr.width / 2, hy = bhr.top + bhr.height * 0.52, R = Math.max(30, 0.28 * bhr.height / 2);
     var cols = W < 700 ? 8 : 14, rows = W < 700 ? 12 : 9, tw = W / cols, th = H / rows, T = [], maxD = 0;
@@ -211,7 +220,7 @@ export default class NotFound extends React.Component {
       if (alive < T.length * 0.35 && !self.state.done) self.setState({ done: true });
       if (alive === 0) {
         ctx.clearRect(0, 0, W, H);
-        self.sfxEnd(true);
+        self.sfxEnd(true); self.sfxUnlock(false);
         if (self.loop) { self.loop.shade.pullT = 0.85; self.loop.shade.tb = self.loop.now(); }
         self.setState({ done: true }); self.swRaf = 0; return;
       }
@@ -442,6 +451,6 @@ export default class NotFound extends React.Component {
   render() {
     const v = this.renderVals();
     const A = this.props.base + "assets/";
-    return (<>{" "}<main className={"p404"}>{" "}<canvas className={"sky"} ref={v.refSky} aria-hidden={"true"}></canvas>{" "}<canvas className={"bh"} ref={v.refBh} width={"285"} height={"182"} aria-hidden={"true"}></canvas>{" "}<canvas className={"pieces"} ref={v.refPieces} aria-hidden={"true"}></canvas>{" "}<img className={`astro404 ${v.showCls}`} src={A + "ginga-astronaut.svg"} alt={""} />{" "}<div className={`txt ${v.showCls} ${v.leaveCls}`}>{" "}<div className={"code"}>{"404"}</div>{" "}<h1 className={"msg"}>{"Essa p\u00e1gina caiu num buraco negro."}</h1>{" "}<p className={"msg2"}>{"Nem a luz voltou de l\u00e1."}</p>{" "}<p className={"msg2"} lang={"en"} style={{"fontStyle": "italic"}}>{"This page fell into a black hole. Not even light made it back."}</p>{" "}<a className={"back"} href={v.homeHref} onClick={v.goHome}>{"Voltar para a \u00f3rbita"}</a><button className={"replay"} onClick={v.replay}>{"Ver de novo"}</button>{" "}<div className={"small"}><a href={v.homeHrefEn} onClick={v.goHomeEn} style={{"color": "#A4A9C8"}}>{"Back to orbit"}</a>{" \u00b7 ginga \u00b7 404"}</div>{" "}</div>{" "}</main>{" "}</>);
+    return (<>{" "}<main className={"p404"}>{" "}<canvas className={"sky"} ref={v.refSky} aria-hidden={"true"}></canvas>{" "}<canvas className={"bh"} ref={v.refBh} width={"285"} height={"182"} aria-hidden={"true"}></canvas>{" "}<canvas className={"pieces"} ref={v.refPieces} aria-hidden={"true"}></canvas>{" "}<img className={`astro404 ${v.showCls}`} src={A + "ginga-astronaut-cursor.svg"} alt={""} />{" "}<div className={`txt ${v.showCls} ${v.leaveCls}`}>{" "}<div className={"code"}>{"404"}</div>{" "}<h1 className={"msg"}>{"Essa p\u00e1gina caiu num buraco negro."}</h1>{" "}<p className={"msg2"}>{"Nem a luz voltou de l\u00e1."}</p>{" "}<p className={"msg2"} lang={"en"} style={{"fontStyle": "italic"}}>{"This page fell into a black hole. Not even light made it back."}</p>{" "}<a className={"back"} href={v.homeHref} onClick={v.goHome}>{"Voltar para a \u00f3rbita"}</a><button className={"replay"} onClick={v.replay}>{"Ver de novo"}</button>{" "}<div className={"small"}><a href={v.homeHrefEn} onClick={v.goHomeEn} style={{"color": "#A4A9C8"}}>{"Back to orbit"}</a>{" \u00b7 ginga \u00b7 404"}</div>{" "}</div>{" "}</main>{" "}</>);
   }
 }
