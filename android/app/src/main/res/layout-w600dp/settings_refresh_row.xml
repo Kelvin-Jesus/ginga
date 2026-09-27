@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ajustes › Taxa preferida, 600dp wide and up: the label, and the Segmented at the end of the line. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Ginga.Row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        style="@style/Ginga.Text.Body"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:labelFor="@id/refresh"
+        android:text="@string/preferred_refresh" />
+
+    <dev.ginga.receiver.ui.widget.SegmentedControl
+        android:id="@+id/refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/ginga_space_3" />
+</LinearLayout>

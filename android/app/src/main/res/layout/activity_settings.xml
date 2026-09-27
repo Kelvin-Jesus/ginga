@@ -17,7 +17,7 @@
         android:layout_gravity="center_horizontal"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:padding="@dimen/ginga_space_8"
+        android:padding="@dimen/screen_padding"
         app:maxColumnWidth="@dimen/home_column">
 
         <LinearLayout
@@ -77,25 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <LinearLayout
-                style="@style/Widget.Ginga.Row"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    style="@style/Ginga.Text.Body"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:labelFor="@id/refresh"
-                    android:text="@string/preferred_refresh" />
-
-                <dev.ginga.receiver.ui.widget.SegmentedControl
-                    android:id="@+id/refresh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/ginga_space_3" />
-            </LinearLayout>
+            <!-- Taxa preferida: label and Segmented on one line from 600dp wide, stacked on a phone. -->
+            <include layout="@layout/settings_refresh_row" />
 
             <dev.ginga.receiver.ui.widget.SwitchRow
                 android:id="@+id/fast_decoder"

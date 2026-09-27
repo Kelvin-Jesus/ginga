@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Ajustes › Taxa preferida on a narrow screen (a phone in portrait): the label, then the
+    Segmented across the row, so neither is squeezed. layout-w600dp/ has the one-line row.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.Ginga.Row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/Ginga.Text.Body"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:labelFor="@id/refresh"
+        android:text="@string/preferred_refresh" />
+
+    <dev.ginga.receiver.ui.widget.SegmentedControl
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ginga_space_3" />
+</LinearLayout>

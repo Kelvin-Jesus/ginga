@@ -38,52 +38,20 @@
             android:layout_gravity="center_horizontal"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:padding="@dimen/ginga_space_8"
+            android:padding="@dimen/screen_padding"
             app:maxColumnWidth="@dimen/home_column">
 
-            <!-- Header: monogram B + Ginga, the status, Settings. -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipChildren="false"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
-                    android:importantForAccessibility="no"
-                    android:src="?attr/gingaMonogram" />
-
-                <TextView
-                    style="@style/Ginga.Text.Title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/ginga_space_3"
-                    android:layout_weight="1"
-                    android:accessibilityHeading="true"
-                    android:text="@string/app_name" />
-
-                <dev.ginga.receiver.ui.widget.StatusOrbitView
-                    android:id="@+id/status_orbit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <Button
-                    android:id="@+id/settings"
-                    style="@style/Widget.Ginga.Button.Ghost"
-                    android:layout_width="wrap_content"
-                    android:layout_marginStart="@dimen/ginga_space_2"
-                    android:paddingStart="@dimen/ginga_space_4"
-                    android:paddingEnd="@dimen/ginga_space_4"
-                    android:text="@string/settings" />
-            </LinearLayout>
+            <!--
+                Header: monogram B + Ginga, the status, Settings. One line from 600dp wide
+                (layout-w600dp/home_header.xml); on a phone in portrait the status goes below.
+            -->
+            <include layout="@layout/home_header" />
 
             <FrameLayout
                 android:id="@+id/panels"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/ginga_space_12"
+                android:layout_marginTop="@dimen/home_panel_margin_top"
                 android:clipChildren="false"
                 android:minHeight="@dimen/home_panel_min_height">
 
@@ -121,8 +89,8 @@
                     <dev.ginga.receiver.ui.widget.RadarView
                         android:layout_width="120dp"
                         android:layout_height="120dp"
-                        android:layout_marginStart="@dimen/ginga_space_6"
-                        android:layout_marginEnd="@dimen/ginga_space_6" />
+                        android:layout_marginStart="@dimen/home_radar_margin_start"
+                        android:layout_marginEnd="@dimen/home_radar_margin_end" />
                 </LinearLayout>
 
                 <!-- Mac encontrado: the Macs on the network, one DeviceRow each. -->
@@ -279,11 +247,13 @@
                         android:accessibilityLiveRegion="polite"
                         android:gravity="center" />
 
-                    <LinearLayout
+                    <!-- One line, or two when they don't fit (FlowLayout). -->
+                    <dev.ginga.receiver.ui.widget.FlowLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/ginga_space_6"
-                        android:orientation="horizontal">
+                        app:flowCenter="true"
+                        app:flowGap="@dimen/ginga_space_2">
 
                         <Button
                             android:id="@+id/pairing_reject"
@@ -295,9 +265,8 @@
                             android:id="@+id/pairing_accept"
                             style="@style/Widget.Ginga.Button.Primary"
                             android:layout_width="wrap_content"
-                            android:layout_marginStart="@dimen/ginga_space_2"
                             android:text="@string/pairing_pair" />
-                    </LinearLayout>
+                    </dev.ginga.receiver.ui.widget.FlowLayout>
                 </LinearLayout>
 
                 <!-- Conectando. -->
@@ -359,11 +328,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/ginga_space_2" />
 
-                    <LinearLayout
+                    <dev.ginga.receiver.ui.widget.FlowLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/ginga_space_6"
-                        android:orientation="horizontal">
+                        app:flowGap="@dimen/ginga_space_2">
 
                         <Button
                             android:id="@+id/open_stream"
@@ -375,9 +344,8 @@
                             android:id="@+id/disconnect"
                             style="@style/Widget.Ginga.Button.Danger"
                             android:layout_width="wrap_content"
-                            android:layout_marginStart="@dimen/ginga_space_2"
                             android:text="@string/disconnect" />
-                    </LinearLayout>
+                    </dev.ginga.receiver.ui.widget.FlowLayout>
                 </LinearLayout>
             </FrameLayout>
 
@@ -391,13 +359,13 @@
                 android:drawablePadding="@dimen/ginga_space_2"
                 android:visibility="gone" />
 
-            <!-- Method chips: Wi‑Fi · Cabo USB · Sem roteador. -->
-            <LinearLayout
+            <!-- Method chips: Wi‑Fi · Cabo USB · Sem roteador (wrapping when they don't fit). -->
+            <dev.ginga.receiver.ui.widget.FlowLayout
                 android:id="@+id/chips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/ginga_space_8"
-                android:orientation="horizontal">
+                app:flowGap="@dimen/ginga_space_2">
 
                 <TextView
                     android:id="@+id/chip_wifi"
@@ -411,7 +379,6 @@
                     style="@style/Widget.Ginga.Chip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/ginga_space_2"
                     android:text="@string/chip_usb" />
 
                 <TextView
@@ -419,9 +386,8 @@
                     style="@style/Widget.Ginga.Chip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/ginga_space_2"
                     android:text="@string/chip_direct" />
-            </LinearLayout>
+            </dev.ginga.receiver.ui.widget.FlowLayout>
 
             <Space
                 android:layout_width="match_parent"
@@ -493,6 +459,7 @@
             android:layout_gravity="top|end"
             android:layout_marginTop="-40dp"
             android:layout_marginEnd="-48dp"
+            android:layout_marginBottom="@dimen/direct_galaxy_margin_bottom"
             app:ditherColumns="140"
             app:ditherRows="140"
             app:ditherScene="galaxy" />
@@ -505,7 +472,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="@dimen/ginga_space_8">
+                android:padding="@dimen/screen_padding">
 
                 <TextView
                     android:id="@+id/direct_ssid"

@@ -64,4 +64,12 @@
     <declare-styleable name="ColumnLayout">
         <attr name="maxColumnWidth" format="dimension" />
     </declare-styleable>
+
+    <!-- A row that wraps onto new lines when its children don't fit (FlowLayout). -->
+    <declare-styleable name="FlowLayout">
+        <!-- Space between children, and between lines. -->
+        <attr name="flowGap" format="dimension" />
+        <!-- Centre each line instead of starting it at the start edge. -->
+        <attr name="flowCenter" format="boolean" />
+    </declare-styleable>
 </resources>

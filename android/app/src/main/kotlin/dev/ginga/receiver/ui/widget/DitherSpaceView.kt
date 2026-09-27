@@ -18,6 +18,10 @@ import kotlin.math.ceil
  * scene fills a small ARGB buffer (one buffer pixel per `ditherCell`, 4dp), copied into a Bitmap
  * with setPixels and drawn scaled up with filtering off, so the pixels stay coarse.
  *
+ * The black hole and the galaxy are `ditherColumns` × `ditherRows` cells; where that doesn't fit
+ * (a phone, or a phone in landscape) the whole scene is scaled down to fit, keeping its shape, so
+ * it stays whole and centred instead of being cut at the right. The pixel sky fills the view.
+ *
  * Power: frames come from the Choreographer every [PixelScene.frameMs] (42 ms, ~24 fps; the sky
  * 90 ms) and only while the view is attached, shown, its window visible and the screen on.
  * Reduced motion draws one still frame. `spaceOnly` views are GONE outside Black espacial.
@@ -72,11 +76,15 @@ class DitherSpaceView @JvmOverloads constructor(context: Context, attrs: Attribu
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
             return
         }
-        setMeasuredDimension(
-            resolveSize((columns * cellPx).toInt(), widthMeasureSpec),
-            resolveSize((rows * cellPx).toInt(), heightMeasureSpec),
-        )
+        val width = columns * cellPx
+        val height = rows * cellPx
+        val scale = minOf(1f, room(widthMeasureSpec) / width, room(heightMeasureSpec) / height)
+        setMeasuredDimension((width * scale).toInt(), (height * scale).toInt())
     }
+
+    /** The most this view may take along one axis (unlimited when the parent doesn't say). */
+    private fun room(spec: Int): Float =
+        if (MeasureSpec.getMode(spec) == MeasureSpec.UNSPECIFIED) Float.MAX_VALUE else MeasureSpec.getSize(spec).toFloat()
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
@@ -147,7 +155,13 @@ class DitherSpaceView @JvmOverloads constructor(context: Context, attrs: Attribu
     override fun onDraw(canvas: Canvas) {
         val scene = scene ?: return
         val bitmap = bitmap ?: return
-        destination.set(0, 0, (scene.width * cellPx).toInt(), (scene.height * cellPx).toInt())
+        if (kind == SCENE_SKY) {
+            // Whole cells: the last row and column may run past the edge.
+            destination.set(0, 0, (scene.width * cellPx).toInt(), (scene.height * cellPx).toInt())
+        } else {
+            // The view is the scene at its natural size, or scaled down to fit (onMeasure).
+            destination.set(0, 0, width, height)
+        }
         canvas.drawBitmap(bitmap, null, destination, paint)
     }
 

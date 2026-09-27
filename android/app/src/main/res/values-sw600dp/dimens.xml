@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tablets (the reference layout, Galaxy Tab S11); values/dimens.xml has the phone's. -->
+    <dimen name="screen_padding">@dimen/ginga_space_8</dimen>
+    <dimen name="home_panel_margin_top">@dimen/ginga_space_12</dimen>
+    <dimen name="stream_hole_margin_bottom">@dimen/ginga_space_12</dimen>
+    <dimen name="direct_galaxy_margin_bottom">0dp</dimen>
+    <dimen name="home_radar_margin_start">@dimen/ginga_space_6</dimen>
+    <dimen name="home_radar_margin_end">@dimen/ginga_space_6</dimen>
+</resources>

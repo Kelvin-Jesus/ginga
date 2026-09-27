@@ -41,6 +41,7 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 | Microinteractions: switch spark, press scale, orbit/pulse, pairing digits, row rise, comet | ✅ Mac | only while visible, off with reduced motion |
 | Black espacial scenery: dithered galaxy (Mac main window, tablet home) and black hole (Mac pairing / Sem roteador, tablet stream waiting) | ✅ Mac, ✅ Android | ~0.4 ms/frame at 10 fps only while visible; still with reduced motion |
 | Brand fonts (Unbounded, Figtree, IBM Plex Mono) | ✅ Mac, ✅ Android (🧪 on the device) | bundled under SIL OFL (`design/brand/fonts/`) |
+| Android on phones (portrait and landscape), tablet layout unchanged | ✅ emulator (🧪 on the S25 Ultra) | Pixel 6 profile (411×914dp), every home state, Ajustes, stream sky, Sem roteador, Claro + Black espacial, font 130–200 %; tablet size (1280×800dp) pixel-identical before/after |
 
 ## Distribution, 2026‑09‑27
 

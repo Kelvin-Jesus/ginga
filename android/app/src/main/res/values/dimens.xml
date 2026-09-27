@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Layout sizes of this app (the tokens themselves are in ginga_dimens.xml). -->
+    <!--
+        Layout sizes of this app (the tokens themselves are in ginga_dimens.xml). These are the
+        phone's (smallest width under 600dp, portrait and landscape); values-sw600dp/ has the
+        tablet's, the reference (Galaxy Tab S11).
+    -->
     <dimen name="home_column">720dp</dimen>
     <dimen name="home_panel_min_height">160dp</dimen>
+    <!-- Edge padding of the home, Ajustes, the Sem roteador screen and the stream's waiting line. -->
+    <dimen name="screen_padding">@dimen/ginga_space_6</dimen>
+    <!-- Between the home's header and its panel. -->
+    <dimen name="home_panel_margin_top">@dimen/ginga_space_8</dimen>
+    <!-- Kept free under the stream's black hole for the waiting line (the hole scales to fit). -->
+    <dimen name="stream_hole_margin_bottom">96dp</dimen>
+    <!-- Kept free under the Sem roteador galaxy for its title and Encerrar (the galaxy scales to fit). -->
+    <dimen name="direct_galaxy_margin_bottom">96dp</dimen>
+    <!-- Around the Procurando radar: less on a phone, so the title beside it keeps its words whole. -->
+    <dimen name="home_radar_margin_start">@dimen/ginga_space_4</dimen>
+    <dimen name="home_radar_margin_end">0dp</dimen>
 </resources>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Home header on a narrow screen (a phone in portrait): monogram + Ginga and Settings on the
+    first line, the status on its own line below, so none of them is squeezed.
+    layout-w600dp/home_header.xml has the one-line header of tablets.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:importantForAccessibility="no"
+            android:src="?attr/gingaMonogram" />
+
+        <TextView
+            style="@style/Ginga.Text.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/ginga_space_3"
+            android:layout_weight="1"
+            android:accessibilityHeading="true"
+            android:text="@string/app_name" />
+
+        <Button
+            android:id="@+id/settings"
+            style="@style/Widget.Ginga.Button.Ghost"
+            android:layout_width="wrap_content"
+            android:layout_marginStart="@dimen/ginga_space_2"
+            android:paddingStart="@dimen/ginga_space_4"
+            android:paddingEnd="@dimen/ginga_space_4"
+            android:text="@string/settings" />
+    </LinearLayout>
+
+    <dev.ginga.receiver.ui.widget.StatusOrbitView
+        android:id="@+id/status_orbit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ginga_space_3" />
+</LinearLayout>

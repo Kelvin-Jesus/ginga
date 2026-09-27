@@ -79,6 +79,10 @@ full screen once the Mac answers. Debug builds also take scripted commands:
 adb shell am start -n dev.ginga.receiver/.ui.MainActivity --ez connect true
 adb shell am start --activity-clear-top -n dev.ginga.receiver/.ui.MainActivity --ez disconnect true
 adb shell am start -n dev.ginga.receiver/.ui.MainActivity --es appearance space   # system|light|dark|space
+# A made-up home state, for screenshots without a Mac (HomePreview); `off` returns to the real one:
+# searching found usb usb-plug direct direct-screen exchanging pairing pairing-confirmed connecting waiting connected paused error
+adb shell am start -n dev.ginga.receiver/.ui.MainActivity --es preview pairing
+adb shell am start -n dev.ginga.receiver/.ui.MainActivity --ez connect true --ez stream true   # the display's waiting sky
 ```
 
 ## UI (Ginga design system)
@@ -134,6 +138,15 @@ The UI follows `design/ginga-design/` (flows.md, "Tablet (Android)"): Views XML,
   `TextAppearance.Ginga.FontDisplay|FontSans|FontSansMedium|FontMono` (platform sans-serif,
   sans-serif-medium, monospace today); drop Unbounded, Figtree and IBM Plex Mono into `res/font/`
   and change only those.
+- **Phones** (portrait and landscape) as well as tablets. The tablet (smallest width 600dp and
+  up) is the reference and keeps its layout; phones get resource qualifiers, not code branches:
+  `values/dimens.xml` (phone: 24dp edges, tighter gaps) vs `values-sw600dp/dimens.xml` (tablet),
+  and `layout/` vs `layout-w600dp/` for the two pieces that need another arrangement below 600dp
+  wide (`home_header`: the status pill on its own line; `settings_refresh_row`: the label above
+  the Segmented). `FlowLayout` wraps button pairs and the method chips instead of clipping them;
+  `SegmentedControl` shares the width it has (labels may take two lines) when its options don't
+  fit; `DitherSpaceView` scales the black hole and the galaxy down to fit, whole and centred. The
+  stream's waiting line, diagnostics and first-frame toast keep clear of a camera cutout.
 - **Languages**: `values-pt-rBR` (Portuguese, first) and `values` (English); `StringsTest` keeps
   them in step. `res/xml/locales_config.xml` enables Android's per-app language setting.
 

@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/ginga_space_12"
+            android:layout_marginBottom="@dimen/stream_hole_margin_bottom"
             app:ditherColumns="190"
             app:ditherRows="122"
             app:ditherScene="blackHole" />
@@ -47,11 +47,13 @@
             android:importantForAccessibility="no"
             android:visibility="gone" />
 
+        <!-- Kept clear of display cutouts by StreamActivity.onApplyWindowInsets. -->
         <LinearLayout
+            android:id="@+id/stream_footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="@dimen/ginga_space_8"
+            android:layout_margin="@dimen/screen_padding"
             android:gravity="bottom"
             android:orientation="horizontal">
 

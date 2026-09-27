@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewConfiguration
 import android.view.WindowInsets
 import android.view.WindowInsetsController
@@ -120,6 +121,7 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
             layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS
         }
         hideSystemBars()
+        keepClearOfCutouts(findViewById(R.id.stream_footer), overlay, toast)
 
         video.surfaceView.holder.addCallback(this)
         video.onVideoRectChanged = ::onVideoRect
@@ -371,6 +373,33 @@ class StreamActivity : Activity(), SurfaceHolder.Callback {
     private fun onVideoRect(rect: VideoRect) {
         if (::cursorView.isInitialized) controller.cursor.setVideoGeometry(rect, streamWidth)
         mapper.videoRect = if (rect.isEmpty) null else NormalizationRect(rect.left.toFloat(), rect.top.toFloat(), rect.width.toFloat(), rect.height.toFloat())
+    }
+
+    /**
+     * The window reaches into the display cutout (a phone's camera hole, top in portrait, at a
+     * side in landscape): the waiting line, the diagnostics and the first-frame toast keep their
+     * margins from the layout plus the cutout's inset on that side. No cutout (the tablet): no change.
+     */
+    private fun keepClearOfCutouts(vararg views: View) {
+        val margins = views.associateWith { view ->
+            val lp = view.layoutParams as ViewGroup.MarginLayoutParams
+            intArrayOf(lp.leftMargin, lp.topMargin, lp.rightMargin, lp.bottomMargin)
+        }
+        (sky.parent as View).setOnApplyWindowInsetsListener { _, insets ->
+            val cutout = insets.getInsets(WindowInsets.Type.displayCutout())
+            margins.forEach { (view, base) ->
+                val lp = view.layoutParams as ViewGroup.MarginLayoutParams
+                val left = base[0] + cutout.left
+                val top = base[1] + cutout.top
+                val right = base[2] + cutout.right
+                val bottom = base[3] + cutout.bottom
+                if (lp.leftMargin != left || lp.topMargin != top || lp.rightMargin != right || lp.bottomMargin != bottom) {
+                    lp.setMargins(left, top, right, bottom)
+                    view.layoutParams = lp
+                }
+            }
+            insets
+        }
     }
 
     private fun hideSystemBars() {

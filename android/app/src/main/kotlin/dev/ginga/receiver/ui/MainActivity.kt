@@ -98,6 +98,10 @@ class MainActivity : Activity() {
     /** Open the display as soon as a session is active (not only once it streams). */
     private var openStreamWhenActive = false
 
+    /** Debug builds: the made-up state drawn instead of the real one (`--es preview`), and its name. */
+    private var preview: HomePreview? = null
+    private var previewName: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         controller = (application as GingaApplication).controller
         appearance = controller.settings.appearance
@@ -188,6 +192,7 @@ class MainActivity : Activity() {
             openStreamWhenActive = savedInstanceState.getBoolean(STATE_OPEN_STREAM_WHEN_ACTIVE)
             chosenMethod = savedInstanceState.getString(STATE_METHOD)?.let { name -> ConnectMethod.entries.firstOrNull { it.name == name } }
             diagnosticsExpanded = savedInstanceState.getBoolean(STATE_DIAGNOSTICS)
+            if (BuildConfig.DEBUG) savedInstanceState.getString(STATE_PREVIEW)?.let(::setPreview)
         }
     }
 
@@ -202,6 +207,7 @@ class MainActivity : Activity() {
         outState.putBoolean(STATE_OPEN_STREAM_WHEN_ACTIVE, openStreamWhenActive)
         outState.putString(STATE_METHOD, chosenMethod?.name)
         outState.putBoolean(STATE_DIAGNOSTICS, diagnosticsExpanded)
+        outState.putString(STATE_PREVIEW, previewName)
     }
 
     override fun onRestart() {
@@ -273,7 +279,8 @@ class MainActivity : Activity() {
      * Debug builds only, for scripted smoke tests:
      * `adb shell am start -n dev.ginga.receiver/.ui.MainActivity --ez connect true`, and
      * `adb shell am start --activity-clear-top -n dev.ginga.receiver/.ui.MainActivity --ez disconnect true`,
-     * `--es appearance space` (system, light, dark, space).
+     * `--es appearance space` (system, light, dark, space), `--es preview pairing` (a made-up home
+     * state, [HomePreview]; `off` for the real one), `--ez stream true` (open the display screen).
      */
     private fun handleAutomation(intent: Intent?) {
         if (!BuildConfig.DEBUG || intent == null) return
@@ -282,6 +289,11 @@ class MainActivity : Activity() {
             controller.settings.appearance = Appearance.fromStorage(value)
             if (controller.settings.appearance != appearance) recreate()
         }
+        intent.getStringExtra(EXTRA_PREVIEW)?.let {
+            setPreview(it)
+            render()
+        }
+        if (intent.getBooleanExtra(EXTRA_STREAM, false)) showStream()
         when {
             intent.getBooleanExtra(EXTRA_CONNECT, false) && !controller.state.value.active -> controller.connect()
             intent.getBooleanExtra(EXTRA_DISCONNECT, false) && controller.state.value.active -> controller.disconnect()
@@ -294,6 +306,11 @@ class MainActivity : Activity() {
         }
     }
 
+    private fun setPreview(name: String) {
+        preview = HomePreview.of(name)
+        previewName = name.takeIf { preview != null }
+    }
+
     private fun disconnect() {
         openStreamWhenActive = false
         controller.disconnect()
@@ -301,7 +318,8 @@ class MainActivity : Activity() {
 
     /** Draws [HomeModel] for the latest state and Macs. */
     private fun render() {
-        val model = HomeModel.of(lastState, lastMacs, chosenMethod)
+        val model = preview?.let { HomeModel.of(it.state, it.macs, chosenMethod ?: it.method) }
+            ?: HomeModel.of(lastState, lastMacs, chosenMethod)
         statusOrbit.setState(model.pill.orbit, model.pill.text.resolve(this))
         showPanel(model.panel)
         when (val panel = model.panel) {
@@ -532,6 +550,9 @@ class MainActivity : Activity() {
         private const val EXTRA_DIRECT_CANCEL = "directCancel"
         private const val EXTRA_DIRECT_HOTSPOT = "directHotspot"
         private const val EXTRA_APPEARANCE = "appearance"
+        private const val EXTRA_PREVIEW = "preview"
+        private const val EXTRA_STREAM = "stream"
+        private const val STATE_PREVIEW = "preview"
         private const val STATE_OPEN_STREAM_WHEN_ACTIVE = "openStreamWhenActive"
         private const val STATE_METHOD = "method"
         private const val STATE_DIAGNOSTICS = "diagnosticsExpanded"
