@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Unbounded SemiBold (variable font, wght 600): titles and the brand. SIL OFL, assets/licenses. -->
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font android:font="@font/unbounded_variable" android:fontStyle="normal" android:fontWeight="600" android:fontVariationSettings="'wght' 600" />
+</font-family>

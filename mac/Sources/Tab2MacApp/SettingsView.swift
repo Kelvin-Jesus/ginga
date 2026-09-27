@@ -16,7 +16,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: GingaSpace.s6) {
-                Text(tr("Ajustes", "Settings")).font(.system(size: 22, weight: .bold)).accessibilityAddTraits(.isHeader)
+                Text(tr("Ajustes", "Settings")).font(.gingaDisplay(20)).accessibilityAddTraits(.isHeader)
                 display
                 input
                 capture

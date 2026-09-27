@@ -169,7 +169,7 @@ struct GingaValue: View {
 
     var body: some View {
         Text(text)
-            .font(mono ? .system(size: 12, design: .monospaced) : .system(size: 13))
+            .font(mono ? .gingaMono(12) : .system(size: 13))
             .foregroundStyle(palette.inkMuted)
             .multilineTextAlignment(.trailing)
     }
@@ -435,7 +435,7 @@ struct GingaDeviceRow<Action: View>: View {
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 1) {
                 Text(name).font(.system(size: 13, weight: .semibold))
-                Text(meta).font(.system(size: 11, design: .monospaced)).foregroundStyle(palette.inkMuted)
+                Text(meta).font(.gingaMono(11)).foregroundStyle(palette.inkMuted)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             action
@@ -509,7 +509,7 @@ struct GingaPairingCode: View {
                 HStack(spacing: 2) {
                     ForEach(start..<min(start + 3, digits.count), id: \.self) { index in
                         Text(String(digits[index]))
-                            .font(.system(size: 36, weight: .medium, design: .monospaced))
+                            .font(.gingaMono(36, medium: true))
                             .scaleEffect(shown ? 1 : 0.6)
                             .opacity(shown ? 1 : 0)
                             .animation(reduceMotion ? nil : GingaMotion.sheet.delay(Double(index) * 0.06), value: shown)

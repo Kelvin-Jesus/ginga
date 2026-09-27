@@ -110,6 +110,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: Interactive UI
 
     private func setUpInteractive() {
+        GingaFonts.registerIfNeeded()
         NSApp.setActivationPolicy(.regular)
         NSApp.mainMenu = MainMenu.make()
 

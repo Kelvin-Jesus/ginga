@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
-        Type (tokens.json "type"). The three families live in the three Font styles below: today the
-        platform's sans-serif, sans-serif-medium and monospace. To use the brand fonts, drop
-        Unbounded, Figtree and IBM Plex Mono into res/font/ (SIL OFL) and change only these three
-        fontFamily values (@font/unbounded_semibold, @font/figtree, @font/ibm_plex_mono).
+        Type (tokens.json "type"): the brand fonts in res/font/ (Unbounded and Figtree are variable
+        fonts, instanced by weight in their font-family XML; IBM Plex Mono 400/500), all SIL OFL,
+        licenses in assets/licenses/. Source of truth: brand/fonts/.
     -->
     <style name="TextAppearance.Ginga.FontDisplay" parent="">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/unbounded_semibold</item>
         <item name="android:textColor">?attr/gingaInk</item>
     </style>
     <style name="TextAppearance.Ginga.FontSans" parent="">
-        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:fontFamily">@font/figtree</item>
         <item name="android:textColor">?attr/gingaInk</item>
     </style>
     <style name="TextAppearance.Ginga.FontSansMedium" parent="">
-        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:fontFamily">@font/figtree_medium</item>
         <item name="android:textColor">?attr/gingaInk</item>
     </style>
     <style name="TextAppearance.Ginga.FontMono" parent="">
-        <item name="android:fontFamily">monospace</item>
+        <item name="android:fontFamily">@font/ibm_plex_mono</item>
         <item name="android:textColor">?attr/gingaInk</item>
     </style>
 

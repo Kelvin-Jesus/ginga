@@ -46,7 +46,7 @@ struct MainWindowView: View {
         return HStack(spacing: GingaSpace.s3) {
             GingaMonogram().frame(width: 34, height: 34)
             Text("Ginga")
-                .font(.system(size: 22, weight: .bold))
+                .font(.gingaDisplay(22))
                 .accessibilityAddTraits(.isHeader)
             Spacer(minLength: GingaSpace.s3)
             StatusOrbit(state: status.state, text: status.text)
@@ -196,7 +196,7 @@ struct MainWindowView: View {
                     Text(model.tabletStatus)
                 }
             }
-            .font(.system(size: 11, design: .monospaced))
+            .font(.gingaMono(11))
             .foregroundStyle(palette.inkMuted)
             .textSelection(.enabled)
             .frame(maxWidth: .infinity, alignment: .leading)
