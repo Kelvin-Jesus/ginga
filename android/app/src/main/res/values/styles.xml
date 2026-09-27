@@ -163,7 +163,7 @@
 
     <!-- SettingsGroup: the card, and its 56dp touch rows. -->
     <style name="Widget.Ginga.Group" parent="">
-        <item name="android:background">@drawable/g_group</item>
+        <item name="android:background">?attr/gingaGroupBackground</item>
         <item name="android:foreground">?attr/gingaGroupDust</item>
         <item name="android:foregroundGravity">top|right</item>
         <item name="android:elevation">?attr/gingaCardElevation</item>

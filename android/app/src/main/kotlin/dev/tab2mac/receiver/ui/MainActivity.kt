@@ -21,6 +21,7 @@ import dev.tab2mac.receiver.Tab2MacApplication
 import dev.tab2mac.receiver.WifiMac
 import dev.tab2mac.receiver.direct.DirectKey
 import dev.tab2mac.receiver.session.SessionState
+import dev.tab2mac.receiver.ui.widget.Glow
 import dev.tab2mac.receiver.ui.widget.PairingCodeView
 import dev.tab2mac.receiver.ui.widget.Spark
 import dev.tab2mac.receiver.ui.widget.StatusOrbitView
@@ -129,6 +130,7 @@ class MainActivity : Activity() {
         )
         diagnosticsAction = findViewById(R.id.diagnostics_action)
         diagnosticsText = findViewById(R.id.diagnostics_text)
+        glowPrimary(findViewById(R.id.usb_connect), directStart, pairingAccept, openStream)
 
         findViewById<Button>(R.id.settings).setOnClickListener { startActivity(Intent(this, SettingsActivity::class.java)) }
         chipViews.forEach { (method, chip) ->
@@ -365,6 +367,7 @@ class MainActivity : Activity() {
             val view = macRows[item.mac.id] ?: LayoutInflater.from(this).inflate(R.layout.item_device_row, macList, false).also {
                 macList.addView(it, index.coerceAtMost(macList.childCount))
                 macRows[item.mac.id] = it
+                glowPrimary(it.findViewById(R.id.device_action))
                 Motion.rise(it, entering++, reduced)
             }
             view.findViewById<TextView>(R.id.device_name).text = item.mac.displayName
@@ -416,6 +419,12 @@ class MainActivity : Activity() {
         val asking = code != null && !pairing.confirmed
         pairingAccept.visibility = if (asking) View.VISIBLE else View.GONE
         pairingReject.setText(if (asking) R.string.pairing_dont else R.string.cancel)
+    }
+
+    /** Black espacial: the primary button glows (0 0 16px cobalt 35%) instead of casting a shadow. */
+    private fun glowPrimary(vararg buttons: View) {
+        if (!themeBoolean(R.attr.gingaIsSpace)) return
+        buttons.forEach { Glow.apply(it, themeColor(R.attr.gingaCobalt), 6f) }
     }
 
     /** Disabled controls are at 45% opacity (Button.md). */

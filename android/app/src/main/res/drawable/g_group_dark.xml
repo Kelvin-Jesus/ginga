@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Escuro: the card's shadow-card is a light edge on top (0 1px 0 rgba(255,255,255,0.04) inset). -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#0AFFFFFF" />
+            <corners android:radius="@dimen/ginga_radius_lg" />
+        </shape>
+    </item>
+    <item android:top="1dp">
+        <shape android:shape="rectangle">
+            <solid android:color="?attr/gingaSurface" />
+            <corners android:radius="@dimen/ginga_radius_lg" />
+        </shape>
+    </item>
+</layer-list>

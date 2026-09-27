@@ -25,6 +25,8 @@
     <!-- Per-theme details that are not plain colours. -->
     <!-- Outline of cards and controls: transparent in Claro/Escuro, `line` in Black espacial. -->
     <attr name="gingaOutline" format="color" />
+    <!-- SettingsGroup card: surface, radius-lg; its depth differs per theme. -->
+    <attr name="gingaGroupBackground" format="reference" />
     <!-- Card elevation standing in for shadow-card (none in Black espacial). -->
     <attr name="gingaCardElevation" format="dimension" />
     <!-- Monogram B for this background (the -dark file on dark backgrounds). -->

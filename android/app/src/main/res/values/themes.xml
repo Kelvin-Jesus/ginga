@@ -25,6 +25,7 @@
         <item name="gingaStardust">@color/ginga_stardust_light</item>
         <item name="gingaOutline">@android:color/transparent</item>
         <item name="gingaCardElevation">1dp</item>
+        <item name="gingaGroupBackground">@drawable/g_group</item>
         <item name="gingaMonogram">@drawable/ic_ginga_monogram</item>
         <item name="gingaSwitchThumb">#FFFFFFFF</item>
         <item name="gingaSegmentThumb">@drawable/g_seg_thumb</item>
@@ -66,6 +67,7 @@
         <item name="gingaStardust">@color/ginga_stardust_dark</item>
         <item name="gingaOutline">@android:color/transparent</item>
         <item name="gingaCardElevation">0dp</item>
+        <item name="gingaGroupBackground">@drawable/g_group_dark</item>
         <item name="gingaMonogram">@drawable/ic_ginga_monogram_dark</item>
         <item name="gingaSwitchThumb">#FFFFFFFF</item>
         <item name="gingaSegmentThumb">@drawable/g_seg_thumb</item>
@@ -108,6 +110,7 @@
         <item name="gingaStardust">@color/ginga_stardust_space</item>
         <item name="gingaOutline">@color/ginga_line_space</item>
         <item name="gingaCardElevation">0dp</item>
+        <item name="gingaGroupBackground">@drawable/g_group</item>
         <item name="gingaSwitchThumb">@color/ginga_stardust_space</item>
         <item name="gingaSegmentThumb">@drawable/g_seg_thumb_space</item>
         <item name="gingaGroupDust">@drawable/g_space_dust</item>
