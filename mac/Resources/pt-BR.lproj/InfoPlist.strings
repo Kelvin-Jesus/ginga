@@ -1,0 +1,8 @@
+/* Textos do macOS para o Ginga em português (o Info.plist tem os em inglês). */
+"CFBundleDisplayName" = "Ginga";
+"CFBundleName" = "Ginga";
+"NSBluetoothAlwaysUsageDescription" = "O Ginga encontra seu tablet por Bluetooth para conectar direto, sem roteador, quando você pede.";
+"NSLocationUsageDescription" = "O macOS exige acesso à Localização para ver e entrar em redes Wi‑Fi. O Ginga usa só para entrar na rede do seu tablet quando você conecta direto, e para voltar à sua rede.";
+"NSLocationWhenInUseUsageDescription" = "O macOS exige acesso à Localização para ver e entrar em redes Wi‑Fi. O Ginga usa só para entrar na rede do seu tablet quando você conecta direto, e para voltar à sua rede.";
+"NSLocalNetworkUsageDescription" = "O Ginga mostra o display nos seus tablets pareados pela rede Wi‑Fi local.";
+"NSHumanReadableCopyright" = "Projeto independente, sem vínculo com a Apple ou a Samsung.";

@@ -119,7 +119,7 @@ public final class DirectLinkSession {
         guard !isActive else { return }
         do {
             state = .authorizing
-            guard await wifi.authorize() else { throw Failure("Tab2Mac needs Location access to see and join Wi‑Fi networks (System Settings › Privacy & Security › Location Services)") }
+            guard await wifi.authorize() else { throw Failure("Ginga needs Location access to see and join Wi‑Fi networks (System Settings › Privacy & Security › Location Services)") }
 
             state = .searching
             let sealed = try await channel.readCredentials(timeout: timing.search)

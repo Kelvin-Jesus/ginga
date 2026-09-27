@@ -78,7 +78,7 @@ struct PairingExchange {
             return completeIfBothConfirmed()
         case (.confirmed, _):
             // An app from before commitments confirms a code computed without nonces.
-            return fail("the tablet confirmed before the codes could be compared (update Tab2Mac on the tablet)")
+            return fail("the tablet confirmed before the codes could be compared (update Ginga on the tablet)")
         case (.commit, _), (.reveal, _):
             return fail("unexpected \(message.state) during pairing")
         default:

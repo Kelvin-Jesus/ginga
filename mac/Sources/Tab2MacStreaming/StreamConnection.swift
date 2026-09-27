@@ -39,6 +39,8 @@ public final class StreamConnection: @unchecked Sendable {
         public var encodeMilliseconds: StatisticSummary?
         public var sentKilobitsPerSecond: Double
         public var lastReport: ReceiverReport?
+        /// The tablet can't show the stream right now (PAUSE): nothing is sent.
+        public var isPaused = false
     }
 
     private struct State {
@@ -199,7 +201,7 @@ public final class StreamConnection: @unchecked Sendable {
                 framesSkippedForBackpressure: state.skippedForBackpressure, framesSkippedForRateLimit: state.skippedForRateLimit,
                 framesDroppedByPacer: dropped, encoderFramesInFlight: inFlight,
                 encodeMilliseconds: state.encodeTimes.summary, sentKilobitsPerSecond: state.sentBytes.rate(at: .now()) * 8 / 1000,
-                lastReport: state.lastReport
+                lastReport: state.lastReport, isPaused: state.paused
             )
         }
     }
@@ -284,7 +286,7 @@ public final class StreamConnection: @unchecked Sendable {
         guard accepted else { return }
         if case .adbLoopback(let token) = trust, !LoopbackToken.matches(hello.loopbackToken, expected: token) {
             onUnauthorized()
-            fail(code: "unauthorized", message: "this USB connection didn't present the token the Mac gave the Tab2Mac app over adb", goodbye: "error")
+            fail(code: "unauthorized", message: "this USB connection didn't present the token the Mac gave the Ginga app over adb", goodbye: "error")
             return
         }
         // Wi‑Fi: an unknown tablet must pair first (numeric comparison, PROTOCOL.md §6).

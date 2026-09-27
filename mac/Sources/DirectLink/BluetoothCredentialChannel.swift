@@ -90,7 +90,7 @@ public final class BluetoothCredentialChannel: NSObject, DirectCredentialChannel
         case .poweredOn:
             central.scanForPeripherals(withServices: [DirectLinkUUIDs.service])
         case .unauthorized:
-            finishRead(.failure(Failure.unavailable("Tab2Mac isn't allowed to use Bluetooth (System Settings › Privacy & Security › Bluetooth)")))
+            finishRead(.failure(Failure.unavailable("Ginga isn't allowed to use Bluetooth (System Settings › Privacy & Security › Bluetooth)")))
         case .poweredOff:
             finishRead(.failure(Failure.unavailable("Bluetooth is off")))
         case .unsupported:
