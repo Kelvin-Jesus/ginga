@@ -1,5 +1,6 @@
 import AppKit
 import SwiftUI
+import Tab2MacStreaming
 import Tab2MacCore
 
 /// `--render-ui <dir>`: renders the main window and Ajustes in every appearance to PNGs and
@@ -21,6 +22,12 @@ enum UIRenderer {
             snapshot(GingaThemed(animates: false) { MainWindowView(model: model, showSettings: {}) },
                      size: NSSize(width: 480, height: 700), appearance: appearance,
                      to: directory.appendingPathComponent("mac-main-\(appearance.rawValue).png"))
+            snapshot(GingaThemed(animates: false) { DirectSheet(model: model) },
+                     size: NSSize(width: 440, height: 330), appearance: appearance,
+                     to: directory.appendingPathComponent("mac-direct-\(appearance.rawValue).png"))
+            snapshot(GingaThemed(animates: false) { PairingSheet(request: PairingRequest(tabletName: "Galaxy Tab S11", code: "482913") { _ in }) },
+                     size: NSSize(width: 380, height: 380), appearance: appearance,
+                     to: directory.appendingPathComponent("mac-pairing-\(appearance.rawValue).png"))
             snapshot(GingaThemed(animates: false) { SettingsView(model: model, showPreview: {}) },
                      size: NSSize(width: 540, height: 1500), appearance: appearance,
                      to: directory.appendingPathComponent("mac-settings-\(appearance.rawValue).png"))

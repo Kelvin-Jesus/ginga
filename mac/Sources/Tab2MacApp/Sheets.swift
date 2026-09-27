@@ -35,6 +35,10 @@ struct PairingSheet: View {
         }
         .padding(GingaSpace.s8)
         .frame(width: 380)
+        .background(alignment: .top) {
+            GingaDitherScene(scene: .blackHole).frame(height: 120).opacity(0.7)
+                .mask(LinearGradient(colors: [.black, .clear], startPoint: .center, endPoint: .bottom))
+        }
         .background(palette.bg)
     }
 
@@ -113,6 +117,11 @@ struct DirectSheet: View {
         }
         .padding(GingaSpace.s6)
         .frame(width: 440)
+        .background(alignment: .topTrailing) {
+            // Only in the title's band: the text below stays on plain black.
+            GingaDitherScene(scene: .blackHole).frame(width: 240, height: 84).opacity(0.8)
+                .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
+        }
         .background(palette.bg)
     }
 
