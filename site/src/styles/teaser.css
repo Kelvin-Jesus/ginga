@@ -1,0 +1,64 @@
+/* Dica discreta no horizonte do buraco negro + abertura do teaser (KeynoteTeaser.jsx). */
+
+/* O botão do horizonte já existe no GingaSite; a dica é só CSS, e o idioma vem do aria-label dele (o React troca junto com PT/EN). */
+/* anel fino que respira sobre o horizonte e um triângulo de play quase apagado */
+.hero .blast {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 6.8v10.4a.6.6 0 0 0 .9.5l8.2-5.2a.6.6 0 0 0 0-1L9.9 6.3a.6.6 0 0 0-.9.5z' fill='%23F2F3F8' fill-opacity='.34'/%3E%3C/svg%3E") center / 22px no-repeat;
+  transition: background-size 220ms var(--ease-ginga, cubic-bezier(0.34,1.36,0.64,1));
+}
+.hero .blast::before {
+  content: ""; position: absolute; inset: 22px; border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(242, 243, 248, .16);
+  animation: kt-breathe 3.6s ease-in-out infinite; pointer-events: none;
+}
+.hero .blast::after {
+  content: "Assistir ao teaser · 10 s"; position: absolute; left: 50%; top: calc(100% + 6px); transform: translate(-50%, 4px);
+  white-space: nowrap; font: 500 11px/14px var(--font-mono, "IBM Plex Mono", monospace); letter-spacing: .08em; text-transform: uppercase;
+  color: #A4A9C8; opacity: 0; transition: opacity 220ms ease, transform 220ms ease; pointer-events: none;
+}
+.hero .blast:hover, .hero .blast:focus-visible {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 6.8v10.4a.6.6 0 0 0 .9.5l8.2-5.2a.6.6 0 0 0 0-1L9.9 6.3a.6.6 0 0 0-.9.5z' fill='%23FFC43D' fill-opacity='.95'/%3E%3C/svg%3E");
+  background-size: 26px;
+}
+.hero .blast:hover::before, .hero .blast:focus-visible::before { box-shadow: inset 0 0 0 1px rgba(255, 196, 61, .55), 0 0 18px rgba(255, 196, 61, .25); }
+.hero .blast:hover::after, .hero .blast:focus-visible::after { opacity: 1; transform: translate(-50%, 0); }
+.hero .blast[aria-label^="Fire"]::after { content: "Watch the teaser · 10 s"; }
+@media (hover: none) { .hero .blast::after { opacity: .7; transform: translate(-50%, 0); } }
+@keyframes kt-breathe { 0%, 100% { transform: scale(1); opacity: .6; } 50% { transform: scale(1.06); opacity: 1; } }
+
+/* abertura: o horizonte cresce até engolir a página */
+html.kt-lock, html.kt-lock body { overflow: hidden; }
+.kt { position: fixed; inset: 0; z-index: 2147483000; pointer-events: none; visibility: hidden; }
+.kt:not(.kt--idle) { pointer-events: auto; visibility: visible; }
+.kt-void, .kt-rim { position: absolute; inset: 0; transition: clip-path 1000ms cubic-bezier(0.6, 0, 0.8, 0.25), opacity 400ms ease; }
+.kt-void { background: #0A0C1C; }
+.kt-rim--ring { background: #6F82FF; }
+.kt-rim--halo { background: radial-gradient(circle at var(--cx, 50%) var(--cy, 50%), rgba(46, 71, 245, .55), rgba(46, 71, 245, .35)); opacity: .7; }
+.kt--play .kt-rim { opacity: 0; }
+/* repouso e início: sem transição, o círculo nasce já no horizonte */
+.kt--idle .kt-void, .kt--idle .kt-rim, .kt--start .kt-void, .kt--start .kt-rim { transition: none; }
+.kt--closing .kt-void, .kt--closing .kt-rim { transition: clip-path 750ms cubic-bezier(0.16, 1, 0.3, 1), opacity 300ms ease; }
+
+.kt-stage { position: absolute; inset: 0; display: grid; place-items: center; padding: 56px 24px; opacity: 0; transform: scale(.97); transition: opacity 420ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+.kt--play .kt-stage { opacity: 1; transform: none; }
+.kt--closing .kt-stage { opacity: 0; transition-duration: 220ms; }
+.kt-video { width: min(100%, calc((100vh - 112px) * 16 / 9)); aspect-ratio: 16 / 9; display: block; border-radius: 18px; background: #0A0C1C; box-shadow: 0 0 0 1px rgba(111, 130, 255, .18), 0 0 64px rgba(46, 71, 245, .18); }
+.kt-close {
+  position: absolute; top: 18px; right: 18px; width: 44px; height: 44px; border-radius: 50%; border: 0; display: grid; place-items: center;
+  background: rgba(242, 243, 248, .08); color: #F2F3F8; cursor: pointer; opacity: 0; transition: opacity 300ms ease, background-color 220ms ease;
+}
+.kt--play .kt-close { opacity: 1; }
+.kt-close:hover { background: rgba(242, 243, 248, .16); }
+.kt-close:focus-visible, .kt-sound:focus-visible, .kt-video:focus-visible { outline: 2px solid #6F82FF; outline-offset: 2px; }
+.kt-sound { position: absolute; bottom: 72px; left: 50%; transform: translateX(-50%); height: 36px; padding: 0 16px; border-radius: 999px; border: 0; background: #6F82FF; color: #141830; font: 600 13px/1 var(--font-sans, Figtree, sans-serif); cursor: pointer; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero .blast::before { animation: none; }
+  .kt-void, .kt--closing .kt-void { transition: opacity 150ms ease; clip-path: none; opacity: 0; }
+  .kt--expand .kt-void, .kt--play .kt-void { opacity: 1; }
+  .kt-rim { display: none; }
+}
+
+/* no celular o bloco de texto (.herotext, z-index 3, padding-top de 64vw) cobre o horizonte e engolia o toque:
+   o botão fica acima dele (é só um círculo de 120 px sobre o horizonte, não cobre texto) */
+.hero .blast { z-index: 4; }
