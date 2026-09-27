@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.hardware.display.DisplayManager
 import android.os.Build
+import android.provider.Settings
 import android.view.Display
 import android.view.InputDevice
 import android.view.MotionEvent
@@ -41,7 +42,7 @@ class DeviceCapabilities(context: Context, private val settings: ReceiverSetting
     fun hello(resumeSession: String?, transport: TransportKind): Hello = Hello(
         versions = VersionNegotiation.SUPPORTED,
         app = Hello.App(APP_NAME, BuildConfig.VERSION_NAME),
-        device = Hello.Device(Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE, settings.deviceId),
+        device = Hello.Device(Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE, settings.deviceId, deviceName()),
         display = display(),
         decoders = decoders,
         input = input(),
@@ -49,6 +50,15 @@ class DeviceCapabilities(context: Context, private val settings: ReceiverSetting
         features = features(transport),
         resume = resumeSession?.let(Hello::Resume),
     ).also { AppLog.i("hello.built", "transport" to transport, "display" to it.display, "decoders" to it.decoders.map { d -> d.mime }) }
+
+    /**
+     * The name the owner gave this device in Settings › About ("Galaxy S25 Ultra" by default on
+     * Galaxy devices), so the Mac can show it instead of a model number. No permission needed.
+     */
+    private fun deviceName(): String? =
+        runCatching { Settings.Global.getString(appContext.contentResolver, Settings.Global.DEVICE_NAME) }
+            .getOrNull()
+            ?.let(::cleanDeviceName)
 
     /**
      * What this receiver supports: clock sync, reports, pause, drawing the pointer itself
@@ -142,3 +152,9 @@ class DeviceCapabilities(context: Context, private val settings: ReceiverSetting
         const val APP_NAME = "Ginga for Android"
     }
 }
+
+/** A device name as HELLO carries it: no control characters, whitespace collapsed, at most 64 characters; null if empty. */
+internal fun cleanDeviceName(raw: String): String? =
+    raw.filterNot { it.isISOControl() }.trim().split(Regex("\\s+")).filter { it.isNotEmpty() }.joinToString(" ")
+        .take(64).ifEmpty { null }
+

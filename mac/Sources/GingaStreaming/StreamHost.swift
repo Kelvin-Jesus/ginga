@@ -52,8 +52,12 @@ public struct ReceiverPanel: Sendable, Equatable {
     public var heightPx: Int
     public var densityDpi: Int
     public var refreshRates: [Double]
+    /// The device's own name (HELLO `device.name`): what the display is called when Ginga has no
+    /// profile for the model.
+    public var name: String?
 
-    public init(model: String, deviceId: String, widthPx: Int, heightPx: Int, densityDpi: Int, refreshRates: [Double]) {
+    public init(model: String, deviceId: String, widthPx: Int, heightPx: Int, densityDpi: Int, refreshRates: [Double], name: String? = nil) {
+        self.name = name
         self.model = model
         self.deviceId = deviceId
         self.widthPx = widthPx
@@ -214,7 +218,7 @@ public final class DisplayStreamHost: StreamHost {
         guard session.configuration.streaming.matchTabletDisplay else { return nil }
         let profile = DeviceProfile.matching(model: receiver.model) ?? DeviceProfile.generic(
             model: receiver.model, widthPx: receiver.widthPx, heightPx: receiver.heightPx,
-            densityDpi: receiver.densityDpi, refreshRates: receiver.refreshRates
+            densityDpi: receiver.densityDpi, refreshRates: receiver.refreshRates, name: receiver.name
         )
         if profile.id == session.configuration.display.profileID { return nil }  // already configured for it
         if profile.id == "auto", receiver.widthPx < 640 || receiver.heightPx < 400 { return nil }  // nonsense panel

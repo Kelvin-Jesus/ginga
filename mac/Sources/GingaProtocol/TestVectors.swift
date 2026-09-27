@@ -199,6 +199,14 @@ public enum ProtocolTestVectors {
             input: nil, transport: "wifi-tls", features: ["clock-sync", "receiver-report", "pause", "pairing"],
             pairingRequested: true
         )))
+        try add("hello-device-name", "HELLO from a phone that sends the name its owner gave it", .hello(Hello(
+            versions: .init(min: 1, max: 1),
+            app: .init(name: "Ginga for Android", version: "0.1.1"),
+            device: .init(manufacturer: "samsung", model: "SM-S938B", android: "16", id: "c41d7a0e9b2f3856", name: "Galaxy S25 Ultra"),
+            display: .init(widthPx: 3120, heightPx: 1440, densityDpi: 500, refreshRates: [60, 120], rotation: 0),
+            decoders: [.init(mime: "video/hevc", profiles: ["main"], maxWidth: 4096, maxHeight: 2304, maxFps: 120, lowLatency: true)],
+            input: nil, transport: "aoa", features: ["clock-sync", "receiver-report", "pause"]
+        )))
         try add("welcome", "WELCOME with a 2560×1600 HEVC stream", .welcome(Welcome(
             version: 1, session: "b3f1c2d4", mac: .init(name: "MacBook Air", os: "26.6.2", app: "0.3.0"),
             display: display, stream: stream, features: ["clock-sync", "receiver-report"]

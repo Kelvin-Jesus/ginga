@@ -91,7 +91,8 @@ The protocol version is the highest version within both `[min, max]` ranges. If 
 {
   "protocol": { "min": 1, "max": 1 },
   "app": { "name": "Ginga for Android", "version": "0.1.0" },
-  "device": { "manufacturer": "samsung", "model": "SM-X730", "android": "16", "id": "7f0c…" },
+  "device": { "manufacturer": "samsung", "model": "SM-X730", "android": "16", "id": "7f0c…",
+              "name": "Galaxy Tab S11 de Kelvin" },
   "display": { "widthPx": 2560, "heightPx": 1600, "densityDpi": 274, "refreshRates": [60, 120],
                "rotation": 0, "wideColor": true },
   "decoders": [
@@ -109,6 +110,8 @@ The protocol version is the highest version within both `[min, max]` ranges. If 
 ```
 
 `device.id` is a stable, app-scoped random ID.
+
+`device.name` (optional, added in 1.x; vector `hello-device-name`) is the name the person gave the device in the system settings (Android `Settings.Global.DEVICE_NAME`; on Galaxy devices it defaults to the marketing name, e.g. "Galaxy S25 Ultra"). At most 64 characters, trimmed; omitted when the system has none. The Mac shows it wherever it names the device (menus, the device list, the pairing sheet) and names the virtual display after it, falling back to its own model table and then to `model`. It is only a label: trust and identity never depend on it. Receivers that don't send it and Macs that don't read it interoperate unchanged (JSON receivers ignore unknown fields, rule 3 at the top).
 
 `transport` names the link: `adb-tcp` (USB through `adb reverse`), `aoa` (USB accessory mode) or `wifi-tls` (Wi‑Fi). It is informational. The Mac decides trust from the listener that accepted the connection, never from this field.
 

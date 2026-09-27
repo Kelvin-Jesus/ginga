@@ -138,12 +138,28 @@ public struct Hello: Codable, Hashable, Sendable {
         public var android: String
         /// Stable, app-scoped random ID; the Mac derives the virtual display serial from it.
         public var id: String
-        public init(manufacturer: String, model: String, android: String, id: String) {
+        /// The name the person gave the device ("Galaxy S25 Ultra", "Tablet da Ana"); optional,
+        /// only a label (§3.1 HELLO).
+        public var name: String?
+        public init(manufacturer: String, model: String, android: String, id: String, name: String? = nil) {
             self.manufacturer = manufacturer
             self.model = model
             self.android = android
             self.id = id
+            self.name = name
         }
+
+        /// [name] made safe to show: control characters dropped, whitespace collapsed, at most 64
+        /// characters; nil when nothing is left.
+        public var displayName: String? {
+            guard let name else { return nil }
+            let visible = name.unicodeScalars.filter { !CharacterSet.controlCharacters.contains($0) }
+            let words = String(String.UnicodeScalarView(visible)).split(whereSeparator: \.isWhitespace).joined(separator: " ")
+            return words.isEmpty ? nil : String(words.prefix(64))
+        }
+
+        /// What to call the device: its own name, else "manufacturer model".
+        public var label: String { displayName ?? "\(manufacturer) \(model)" }
     }
 
     public struct Display: Codable, Hashable, Sendable {

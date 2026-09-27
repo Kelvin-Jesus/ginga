@@ -144,8 +144,9 @@ public struct DeviceProfile: Hashable, Sendable, Identifiable {
     }
 
     /// A profile for any other Android device, from what it reports in HELLO: its panel in
-    /// landscape, pixel-exact Retina by default, and its fastest refresh rate as the maximum.
-    public static func generic(model: String, widthPx: Int, heightPx: Int, densityDpi: Int, refreshRates: [Double]) -> DeviceProfile {
+    /// landscape, pixel-exact Retina by default, and its fastest refresh rate as the maximum. The
+    /// display is called [name] (the device's own name) when there is one, else [model].
+    public static func generic(model: String, widthPx: Int, heightPx: Int, densityDpi: Int, refreshRates: [Double], name: String? = nil) -> DeviceProfile {
         let pixels = PixelSize(width: max(widthPx, heightPx), height: min(widthPx, heightPx))
         let inches = densityDpi > 0 ? (Double(pixels.width * pixels.width + pixels.height * pixels.height)).squareRoot() / Double(densityDpi) : 11
         let exact = PointSize(width: pixels.width / 2, height: pixels.height / 2)
@@ -155,7 +156,7 @@ public struct DeviceProfile: Hashable, Sendable, Identifiable {
         let maxRate = min(refreshRates.max() ?? 60, 120)
         return DeviceProfile(
             id: "auto",
-            displayName: model,
+            displayName: name ?? model,
             panel: PanelSpecification(nativePixels: pixels, physicalSize: PhysicalSize(diagonalInches: inches, aspectOf: pixels), maxRefreshRate: maxRate),
             resolutionOptions: [scaled(0.8), exact, scaled(1.25)],
             defaultResolution: exact,

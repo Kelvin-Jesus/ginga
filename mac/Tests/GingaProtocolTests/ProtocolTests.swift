@@ -94,6 +94,21 @@ struct MessageCodecTests {
         }
     }
 
+    /// HELLO device.name is optional, shown cleaned up, and never replaces the model for trust.
+    @Test func helloDeviceNameIsOptionalAndCleanedUp() throws {
+        let json = #"{"manufacturer":"samsung","model":"SM-X730","android":"16","id":"7f0c"}"#
+        let bare = try JSONDecoder().decode(Hello.Device.self, from: Data(json.utf8))
+        #expect(bare.name == nil && bare.displayName == nil && bare.label == "samsung SM-X730")
+        #expect(!String(decoding: try JSONEncoder().encode(bare), as: UTF8.self).contains("name"))  // omitted, not null
+        var named = bare
+        named.name = "  Tablet\u{0007} da\n Ana  "
+        #expect(named.displayName == "Tablet da Ana" && named.label == "Tablet da Ana")
+        named.name = String(repeating: "g", count: 100)
+        #expect(named.displayName?.count == 64)
+        named.name = " \t "
+        #expect(named.displayName == nil && named.label == "samsung SM-X730")
+    }
+
     @Test func messagesTravelOnTheirSpecifiedStreams() {
         #expect(MessageCodec.encode(.ping(Ping(id: 0, t1: 0))).stream == .control)
         #expect(MessageCodec.encode(.keyframeRequest(KeyframeRequest(reason: "loss"))).stream == .video)

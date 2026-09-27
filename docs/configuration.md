@@ -57,8 +57,9 @@ Every section and key is optional. A missing key takes the default below, so a f
 | `displayLingerSeconds` | `15` | A display created because a tablet connected is removed this long after the last tablet leaves, 0–86400. `null` keeps it |
 | `directUSB` | **`true`** | USB accessory mode (M6): no developer mode or adb, and the steadiest link (120 Hz with no dropped frames, where adb's relay drops about 1.7 %). Only tablets in `approvedUSBDevices` are ever switched, so this lists candidates and does nothing else until you approve one |
 | `approvedUSBDevices` | `[]` | Serial numbers allowed to be switched to accessory mode, and the only devices in accessory mode that get a session. The control panel's "Use this tablet" adds them; "Forget" removes one and ends its session |
+| `usbDeviceNames` | `{}` | Written by the app: the name each USB device sent in its last HELLO (`device.name`), by serial number, so the device list shows "Galaxy S25 Ultra" before it connects instead of what USB reports ("SAMSUNG_Android"). A label only; safe to delete |
 | `wifi` | `false` | Accept paired tablets over Wi‑Fi (M7): TLS 1.3, Bonjour `_ginga._tcp`, pairing by a 6-digit code. The no-router mode starts the listener for its session even when this is off |
-| `matchTabletDisplay` | `true` | A display created because a tablet connected takes that device's panel: its profile if known (Tab S11, S11 Ultra, S9 FE+, S25 Ultra), otherwise the size, density and refresh rates it reports. The refresh rate is capped at the panel's, the stream at the decoder's. A display you created from the control panel uses `display` as configured |
+| `matchTabletDisplay` | `true` | A display created because a tablet connected takes that device's panel: its profile if known (Tab S11, S11 Ultra, S9 FE+, S25 Ultra), otherwise the size, density and refresh rates it reports, named after the device (HELLO `device.name`, else its model). The refresh rate is capped at the panel's, the stream at the decoder's. A display you created from the control panel uses `display` as configured |
 
 ## `power`
 

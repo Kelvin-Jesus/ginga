@@ -255,6 +255,21 @@ final class AppModel {
         }
     }
 
+    /// Keeps the name a USB device gave in HELLO, by serial, for the device list (saved only when
+    /// it changes; the stream settings themselves are untouched).
+    private func rememberUSBDeviceName() {
+        guard let connection = streaming.connection, connection.phase == .streaming,
+              connection.endpoint.hasPrefix(Self.accessoryEndpointPrefix) else { return }
+        let serial = String(connection.endpoint.dropFirst(Self.accessoryEndpointPrefix.count))
+        let name = Self.deviceName(name: connection.clientName, model: connection.clientModel)
+        guard !serial.isEmpty, name != "tablet", applied.streaming.usbDeviceNames[serial] != name else { return }
+        draft.streaming.usbDeviceNames[serial] = name
+        var updated = applied
+        updated.streaming.usbDeviceNames[serial] = name
+        applied = updated
+        save(updated)
+    }
+
     private func refreshUSB() {
         usbCandidates = (accessories?.candidates.values).map { Array($0) }?.sorted { ($0.name ?? "") < ($1.name ?? "") } ?? []
         directUSBEnabled = accessories?.isEnabled ?? applied.streaming.directUSB
@@ -369,6 +384,7 @@ final class AppModel {
     private func refreshStreaming() {
         streamServer.refresh()
         streaming = streamServer.status
+        rememberUSBDeviceName()
         let overWiFi = streamServer.isStreamingOverWiFi
         if overWiFi != wasStreamingOverWiFi {
             wasStreamingOverWiFi = overWiFi

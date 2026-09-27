@@ -2,6 +2,7 @@ import DirectLink
 import Foundation
 import GingaSecurity
 import GingaStreaming
+import USBAccessory
 import VirtualDisplay
 
 /// What the Ginga UI shows: one connection state, the tablets, in the brand's words.
@@ -33,7 +34,7 @@ extension AppModel {
     /// The one StatusOrbit at the top of the window and in the menu bar.
     var connectionState: (state: StatusOrbit.State, text: String) {
         if let connection = streaming.connection {
-            let name = Self.friendlyName(connection.clientModel)
+            let name = Self.deviceName(name: connection.clientName, model: connection.clientModel)
             switch connection.phase {
             case .streaming where connection.isPaused:
                 return (.paused, tr("Pausado: nada na tela do tablet", "Paused: nothing on the tablet's screen"))
@@ -72,6 +73,24 @@ extension AppModel {
         return "\(Int(mode.refreshRate.rounded())) Hz"
     }
 
+    static let accessoryEndpointPrefix = "usb-accessory:"
+
+    /// The device's own name when it sent one (HELLO `device.name`), else [friendlyName] of its model.
+    static func deviceName(name: String?, model: String?) -> String {
+        if let name, !name.isEmpty { return name }
+        return friendlyName(model)
+    }
+
+    /// A USB device before it says HELLO: the name it gave last time, else what USB reports,
+    /// which for Android devices is only "SAMSUNG_Android" or the like.
+    static func usbDeviceName(_ device: USBDeviceInfo?, serial: String?, remembered: [String: String]) -> String {
+        if let serial, let name = remembered[serial] { return name }
+        guard let raw = device?.name, !raw.isEmpty, raw.range(of: "android", options: .caseInsensitive) == nil else {
+            return device?.vendorID == 0x04E8 ? tr("Aparelho Samsung", "Samsung device") : tr("Aparelho Android", "Android device")
+        }
+        return friendlyName(raw)
+    }
+
     /// "Galaxy Tab S11" for "SM-X730"; the raw model when unknown.
     /// Also for stored names like "samsung SM-X730" (manufacturer and model).
     static func friendlyName(_ model: String?) -> String {
@@ -94,7 +113,7 @@ extension AppModel {
     /// Paired (Wi‑Fi) and approved (USB) tablets, plus USB devices waiting for approval.
     var tablets: [TabletItem] {
         let connection = streaming.connection.flatMap { $0.phase == .streaming ? $0 : nil }
-        let connectedName = connection.map { Self.friendlyName($0.clientModel) }
+        let connectedName = connection.map { Self.deviceName(name: $0.clientName, model: $0.clientModel) }
         let connectedLink = connection.map { Link(endpoint: $0.endpoint) }
         let size = connection?.streamSize.map { "\($0.width)×\($0.height)" }
         var items: [TabletItem] = pairedTablets.map { tablet in
@@ -106,13 +125,13 @@ extension AppModel {
         for serial in approvedUSBDevices {
             let device = usbCandidates.first { $0.serialNumber == serial }
             let online = connectedLink == .usb
-            let name = online ? (connectedName ?? "tablet") : Self.friendlyName(device?.name)
+            let name = online ? (connectedName ?? "tablet") : Self.usbDeviceName(device, serial: serial, remembered: applied.streaming.usbDeviceNames)
             let meta = online ? [tr("USB direto", "Direct USB"), size].compactMap { $0 }.joined(separator: " · ") : tr("aprovado · USB", "approved · USB") + " · \(serial.suffix(4))"
             items.append(TabletItem(id: "usb-\(serial)", name: name, meta: meta, action: .revokeUSB(serial)))
         }
         for device in usbCandidates {
             guard let serial = device.serialNumber, !approvedUSBDevices.contains(serial) else { continue }
-            items.append(TabletItem(id: "new-\(serial)", name: Self.friendlyName(device.name), meta: tr("no cabo · não aprovado", "on the cable · not approved"), action: .approveUSB(serial)))
+            items.append(TabletItem(id: "new-\(serial)", name: Self.usbDeviceName(device, serial: serial, remembered: applied.streaming.usbDeviceNames), meta: tr("no cabo · não aprovado", "on the cable · not approved"), action: .approveUSB(serial)))
         }
         return items
     }

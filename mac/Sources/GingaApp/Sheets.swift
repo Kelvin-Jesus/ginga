@@ -14,7 +14,8 @@ struct PairingSheet: View {
     var body: some View {
         VStack(spacing: GingaSpace.s4) {
             GingaAppIcon().frame(width: 56, height: 56)
-            Text(tr("Parear com \(request.tabletName)?", "Pair with \(request.tabletName)?"))
+            let name = AppModel.friendlyName(request.tabletName)  // "Galaxy Tab S11", not "samsung SM-X730"
+            Text(tr("Parear com \(name)?", "Pair with \(name)?"))
                 .font(.system(size: 17, weight: .semibold))
                 .multilineTextAlignment(.center)
             Text(tr("O tablet mostra o mesmo código? Pareie só tablets seus.", "Does the tablet show the same code? Only pair tablets you own."))

@@ -1,6 +1,7 @@
 import Foundation
 import SwiftUI
 import Testing
+import USBAccessory
 @testable import GingaApp
 
 @Suite("Ginga presentation")
@@ -19,6 +20,20 @@ struct GingaPresentationTests {
         #expect(AppModel.friendlyName("samsung SM-X730") == "Galaxy Tab S11")  // a stored pairing name
         #expect(AppModel.friendlyName("Pixel_Tablet") == "Pixel-Tablet")
         #expect(AppModel.friendlyName(nil) == "tablet")
+    }
+
+    /// The device's own name wins; USB devices keep the name from their last HELLO, and a bare
+    /// "SAMSUNG_Android" becomes a readable fallback until then.
+    @Test @MainActor func devicesAreCalledByTheirOwnNames() {
+        #expect(AppModel.deviceName(name: "Galaxy S25 Ultra", model: "samsung SM-S938B") == "Galaxy S25 Ultra")
+        #expect(AppModel.deviceName(name: nil, model: "samsung SM-X730") == "Galaxy Tab S11")
+        #expect(AppModel.deviceName(name: "", model: "samsung SM-X730") == "Galaxy Tab S11")
+        let phone = USBDeviceInfo(entryID: 1, vendorID: 0x04E8, productID: 0x6860, name: "SAMSUNG_Android", serialNumber: "R5CY20ABCDE")
+        #expect(AppModel.usbDeviceName(phone, serial: "R5CY20ABCDE", remembered: ["R5CY20ABCDE": "Galaxy S25 Ultra"]) == "Galaxy S25 Ultra")
+        #expect(AppModel.usbDeviceName(phone, serial: "R5CY20ABCDE", remembered: [:]) == tr("Aparelho Samsung", "Samsung device"))
+        let other = USBDeviceInfo(entryID: 2, vendorID: 0x18D1, productID: 0x4EE7, name: "Pixel 9", serialNumber: "X")
+        #expect(AppModel.usbDeviceName(other, serial: "X", remembered: [:]) == "Pixel 9")
+        #expect(AppModel.usbDeviceName(nil, serial: nil, remembered: [:]) == tr("Aparelho Android", "Android device"))
     }
 
     /// Black espacial is pure black everywhere that is an area, and a dark appearance.

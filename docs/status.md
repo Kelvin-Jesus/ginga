@@ -24,7 +24,9 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 | Book Cover touchpad (mouse hover, clicks, two-finger scroll) | 🧪 | Android reports it as a mouse with a finger tool; now sent as a mouse (the Mac pointer follows), two-finger swipes scroll, Android's own arrow is hidden over the video. Needs a hand on the touchpad |
 | Decoder stall recovery (MediaTek stops taking input after a stream error) | 🧪 | restart after 1 s without input; seen once on the device (35 s frozen video) |
 | No-router mode (tablet network + BLE handover + CoreWLAN) | ✅ partly | 2026‑09‑26: BLE handover, join and TLS session on the tablet's network, 60 fps. The way back failed (a 28 s scan fought macOS auto-join); rewritten as `NetworkRestore` (8 unit tests) — 🧪 retest, then latency/fps vs normal Wi‑Fi and tablet energy |
-| Other devices (Tab S9 FE+, S25 Ultra, any Android) | 🧪 | profiles + panel from HELLO + decoder cap; not tried on those devices |
+| Galaxy S25 Ultra (phone) | ✅ | tried by the user on 2026‑09‑27: works as a display |
+| Device names (HELLO `device.name`) | ✅ Mac, ✅ Android | the name from Android settings in menus, the device list, the pairing sheet and unknown models' display; USB rows remember it by serial; vector `hello-device-name`, 33/33 on both sides |
+| Other devices (Tab S9 FE+, any Android) | 🧪 | profiles + panel from HELLO + decoder cap; not tried on those devices |
 | Headless `ginga run` | ✅ | idle: 28.7 MB vs 61.7 MB for the app, 0 % CPU |
 | Energy (60 Hz default, pause, battery-aware encoder) | ✅ | performance.md |
 

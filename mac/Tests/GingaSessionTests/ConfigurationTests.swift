@@ -115,6 +115,19 @@ struct GingaConfigurationTests {
         let size = phone.panel.physicalSize
         #expect(abs((size.widthMillimeters * size.widthMillimeters + size.heightMillimeters * size.heightMillimeters).squareRoot() / 25.4 - 6.29) < 0.1)
         try phone.configuration().validate()
+        // The display takes the device's own name when it sent one (HELLO device.name).
+        #expect(phone.displayName == "Pixel 9")
+        #expect(DeviceProfile.generic(model: "SM-S938B", widthPx: 3120, heightPx: 1440, densityDpi: 500, refreshRates: [120], name: "Galaxy S25 Ultra da Ana").displayName == "Galaxy S25 Ultra da Ana")
+    }
+
+    /// Names of USB devices survive a save, and files from before they existed still load.
+    @Test func usbDeviceNamesRoundTripAndDefault() throws {
+        var configuration = GingaConfiguration()
+        configuration.streaming.usbDeviceNames = ["R5CY20ABCDE": "Galaxy S25 Ultra"]
+        let decoded = try JSONDecoder().decode(GingaConfiguration.self, from: JSONEncoder().encode(configuration))
+        #expect(decoded.streaming.usbDeviceNames == ["R5CY20ABCDE": "Galaxy S25 Ultra"])
+        let old = try JSONDecoder().decode(StreamingSettings.self, from: Data(#"{"approvedUSBDevices": ["R52Y80EE15V"]}"#.utf8))
+        #expect(old.usbDeviceNames.isEmpty && old.approvedUSBDevices == ["R52Y80EE15V"])
     }
 
     @Test func newerFileVersionsAreRejected() {

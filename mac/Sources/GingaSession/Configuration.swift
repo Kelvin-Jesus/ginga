@@ -252,6 +252,9 @@ public struct StreamingSettings: Hashable, Sendable {
     public var directUSB: Bool
     /// Serial numbers of the devices the user approved for direct USB.
     public var approvedUSBDevices: [String]
+    /// The name each USB device gave in its last HELLO, by serial number, so the device list
+    /// can name it before it connects (USB itself only says "SAMSUNG_Android").
+    public var usbDeviceNames: [String: String]
     /// M7: accept paired tablets over Wi‑Fi (TLS, Bonjour `_ginga._tcp`).
     public var wifi: Bool
     /// A display created because a tablet connected takes that tablet's panel (its size,
@@ -261,8 +264,10 @@ public struct StreamingSettings: Hashable, Sendable {
     public init(
         codec: VideoCodec = .hevc, bitrateKbps: Int = 40_000, port: UInt16 = 47800, adbAutoReverse: Bool = true,
         helloTimeoutSeconds: Double = 5, encoderPower: EncoderPowerPolicy = .automatic, displayLingerSeconds: Double? = 15,
-        directUSB: Bool = true, approvedUSBDevices: [String] = [], wifi: Bool = false, matchTabletDisplay: Bool = true
+        directUSB: Bool = true, approvedUSBDevices: [String] = [], usbDeviceNames: [String: String] = [:], wifi: Bool = false,
+        matchTabletDisplay: Bool = true
     ) {
+        self.usbDeviceNames = usbDeviceNames
         self.matchTabletDisplay = matchTabletDisplay
         self.codec = codec
         self.bitrateKbps = bitrateKbps
@@ -296,7 +301,7 @@ public enum EncoderPowerPolicy: String, Codable, Sendable, CaseIterable {
 
 extension StreamingSettings: Codable {
     enum CodingKeys: String, CodingKey {
-        case codec, bitrateKbps, port, adbAutoReverse, helloTimeoutSeconds, encoderPower, displayLingerSeconds, directUSB, approvedUSBDevices, wifi, matchTabletDisplay
+        case codec, bitrateKbps, port, adbAutoReverse, helloTimeoutSeconds, encoderPower, displayLingerSeconds, directUSB, approvedUSBDevices, usbDeviceNames, wifi, matchTabletDisplay
     }
 
     public init(from decoder: any Decoder) throws {
@@ -313,6 +318,7 @@ extension StreamingSettings: Codable {
                 ? try container.decodeIfPresent(Double.self, forKey: .displayLingerSeconds) : defaults.displayLingerSeconds,
             directUSB: try container.decodeIfPresent(Bool.self, forKey: .directUSB) ?? defaults.directUSB,
             approvedUSBDevices: try container.decodeIfPresent([String].self, forKey: .approvedUSBDevices) ?? defaults.approvedUSBDevices,
+            usbDeviceNames: try container.decodeIfPresent([String: String].self, forKey: .usbDeviceNames) ?? defaults.usbDeviceNames,
             wifi: try container.decodeIfPresent(Bool.self, forKey: .wifi) ?? defaults.wifi,
             matchTabletDisplay: try container.decodeIfPresent(Bool.self, forKey: .matchTabletDisplay) ?? defaults.matchTabletDisplay
         )
@@ -329,6 +335,7 @@ extension StreamingSettings: Codable {
         try container.encode(displayLingerSeconds, forKey: .displayLingerSeconds)  // null (keep the display) is meaningful
         try container.encode(directUSB, forKey: .directUSB)
         try container.encode(approvedUSBDevices, forKey: .approvedUSBDevices)
+        try container.encode(usbDeviceNames, forKey: .usbDeviceNames)
         try container.encode(wifi, forKey: .wifi)
         try container.encode(matchTabletDisplay, forKey: .matchTabletDisplay)
     }

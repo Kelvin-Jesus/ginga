@@ -26,6 +26,8 @@ public final class StreamConnection: @unchecked Sendable {
         public var phase: Phase
         public var endpoint: String
         public var clientModel: String?
+        /// The name the device's owner gave it (HELLO `device.name`), when it sends one.
+        public var clientName: String?
         public var codec: VideoCodec?
         public var streamSize: PixelSize?
         public var framesSent: Int
@@ -46,6 +48,7 @@ public final class StreamConnection: @unchecked Sendable {
     private struct State {
         var phase: Phase = .awaitingHello
         var clientModel: String?
+        var clientName: String?
         var codec: VideoCodec?
         var encoder: VideoToolboxEncoder?
         var encoderSize: PixelSize?
@@ -195,7 +198,7 @@ public final class StreamConnection: @unchecked Sendable {
         let (dropped, inFlight) = (pacer.droppedCount, pacer.inFlightCount)  // the pacer has its own lock
         return state.withLockUnchecked { state in
             Snapshot(
-                phase: state.phase, endpoint: connection.endpointDescription, clientModel: state.clientModel,
+                phase: state.phase, endpoint: connection.endpointDescription, clientModel: state.clientModel, clientName: state.clientName,
                 codec: state.codec, streamSize: state.encoderSize ?? state.announcedSize,
                 framesSent: state.framesSent, keyframesSent: state.keyframesSent,
                 framesSkippedForBackpressure: state.skippedForBackpressure, framesSkippedForRateLimit: state.skippedForRateLimit,
@@ -281,6 +284,7 @@ public final class StreamConnection: @unchecked Sendable {
             guard state.phase == .awaitingHello else { return false }
             state.phase = .preparing
             state.clientModel = "\(hello.device.manufacturer) \(hello.device.model)"
+            state.clientName = hello.device.displayName
             return true
         }
         guard accepted else { return }
@@ -333,7 +337,8 @@ public final class StreamConnection: @unchecked Sendable {
             do {
                 let panel = ReceiverPanel(
                     model: hello.device.model, deviceId: hello.device.id, widthPx: hello.display.widthPx, heightPx: hello.display.heightPx,
-                    densityDpi: hello.display.densityDpi, refreshRates: hello.display.refreshRates
+                    densityDpi: hello.display.densityDpi, refreshRates: hello.display.refreshRates,
+                    name: hello.device.displayName
                 )
                 lease = try await host.prepareForStreaming(drawsCursor: drawsCursor, receiver: panel)
             } catch {
@@ -719,7 +724,7 @@ public final class StreamConnection: @unchecked Sendable {
             rejectPairing(reason: "nobody can confirm pairing on this Mac")
             return
         }
-        let tabletName = state.withLockUnchecked { $0.pendingHello.map { "\($0.device.manufacturer) \($0.device.model)" } } ?? "Tablet"
+        let tabletName = state.withLockUnchecked { $0.pendingHello.map(\.device.label) } ?? "Tablet"
         let request = PairingRequest(tabletName: tabletName, code: code) { [weak self] accepted in
             self?.macPairingDecision(accepted)
         }
@@ -744,7 +749,7 @@ public final class StreamConnection: @unchecked Sendable {
         }
         guard let (hello, tablet) = pending else { return }
         do {
-            try peer.pins.add(PairedTablet(fingerprint: tablet, name: "\(hello.device.manufacturer) \(hello.device.model)"))
+            try peer.pins.add(PairedTablet(fingerprint: tablet, name: hello.device.label))
         } catch {
             fail(code: "internal", message: "could not store the pairing: \(error)", goodbye: "error")
             return

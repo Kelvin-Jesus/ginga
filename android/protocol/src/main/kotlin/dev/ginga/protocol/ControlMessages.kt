@@ -161,9 +161,18 @@ data class Hello(
     @Serializable
     data class App(val name: String, val version: String)
 
-    /** [id] is a stable, app-scoped random ID; the Mac derives the virtual display serial from it. */
+    /**
+     * [id] is a stable, app-scoped random ID; the Mac derives the virtual display serial from it.
+     * [name] is the name the owner gave the device (optional, a label only; PROTOCOL.md §3.1 HELLO).
+     */
     @Serializable
-    data class Device(val manufacturer: String, val model: String, val android: String, val id: String)
+    data class Device(
+        val manufacturer: String,
+        val model: String,
+        val android: String,
+        val id: String,
+        val name: String? = null,
+    )
 
     /**
      * The tablet panel in its current orientation. [densityDpi] is the physical pixel density;
