@@ -19,7 +19,7 @@ data class StatusText(val headline: String, val detail: String) {
                 // Retried with backoff, and at once when the Mac hands over its adb token.
                 return StatusText(
                     "Waiting for the Mac to authorize this USB connection",
-                    "Is Tab2Mac running on the Mac? It authorizes this tablet through adb when it starts.",
+                    "Is Ginga running on the Mac? It authorizes this tablet through adb when it starts.",
                 )
             }
             val text = describe(state)
@@ -61,7 +61,7 @@ data class StatusText(val headline: String, val detail: String) {
             }
             if (session is SessionState.Handshaking) {
                 return if (state.transport == TransportKind.AOA) {
-                    StatusText("Connected, waiting for the Mac…", "HELLO sent over USB. The Mac answers as soon as Tab2Mac runs there.")
+                    StatusText("Connected, waiting for the Mac…", "HELLO sent over USB. The Mac answers as soon as Ginga runs there.")
                 } else {
                     StatusText("Connected, waiting for the Mac…", "HELLO sent")
                 }
@@ -95,8 +95,8 @@ data class StatusText(val headline: String, val detail: String) {
 
         private fun retryHint(state: ReceiverState): String = when (state.transport) {
             TransportKind.AOA -> ""
-            TransportKind.WIFI_TLS -> "\nIs Tab2Mac running on the Mac, on the same network?"
-            else -> "\nIs Tab2Mac running on the Mac, with adb reverse tcp:47800 tcp:47800?"
+            TransportKind.WIFI_TLS -> "\nIs Ginga running on the Mac, on the same network?"
+            else -> "\nIs Ginga running on the Mac, with adb reverse tcp:47800 tcp:47800?"
         }
 
         /** One word for the overlay. */

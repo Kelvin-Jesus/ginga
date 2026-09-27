@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Tab2Mac</string>
-    <string name="title">Tab2Mac receiver</string>
+    <string name="app_name">Ginga</string>
+    <string name="title">Ginga</string>
     <string name="subtitle">This tablet becomes an extended display of your Mac.</string>
 
     <string name="section_connection">Connection</string>
     <string name="usb_heading">USB cable (Connect)</string>
-    <string name="usb_instructions">Direct USB, no developer options needed: with Tab2Mac running on the Mac, plug in the cable. Android asks to open Tab2Mac for “Second display for your Mac”; tick “Always” and the display opens by itself next time.\n\nADB, with USB debugging on: connect the cable and start Tab2Mac on the Mac (it runs this for you):</string>
+    <string name="usb_instructions">Direct USB, no developer options needed: with Ginga running on the Mac, plug in the cable. Android asks to open Ginga for “Second display for your Mac”; tick “Always” and the display opens by itself next time.\n\nADB, with USB debugging on: connect the cable and start Ginga on the Mac (it runs this for you):</string>
     <string name="usb_command">adb reverse tcp:47800 tcp:47800</string>
     <string name="usb_instructions_after">Then tap Connect. The tablet connects to 127.0.0.1:47800, which adb forwards to the Mac.</string>
 
     <string name="wifi_heading">Wi‑Fi</string>
-    <string name="wifi_searching">Looking for Macs on this network… Tab2Mac on the Mac must have Wi‑Fi turned on, on the same network.</string>
+    <string name="wifi_searching">Looking for Macs on this network… Ginga on the Mac must have Wi‑Fi turned on, on the same network.</string>
     <string name="wifi_pick">Pick a Mac. The first time, both screens show a code to compare.</string>
     <string name="wifi_connect">Connect</string>
     <string name="wifi_pair_again">Pair again</string>

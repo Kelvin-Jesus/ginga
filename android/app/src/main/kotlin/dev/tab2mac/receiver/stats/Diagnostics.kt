@@ -24,7 +24,7 @@ data class DiagnosticsSnapshot(
 /** Renders the overlay text. Pure, so the layout of the numbers is unit-tested. */
 object DiagnosticsFormatter {
     fun format(snapshot: DiagnosticsSnapshot): String = buildString {
-        appendLine("Tab2Mac · ${snapshot.connection}")
+        appendLine("Ginga · ${snapshot.connection}")
         snapshot.error?.let { appendLine("⚠ $it") }
         val size = if (snapshot.width != null && snapshot.height != null) "${snapshot.width}×${snapshot.height}" else "—"
         val decoder = snapshot.decoderName?.let { name -> " · $name" + if (snapshot.lowLatencyDecoder) " (low-latency)" else "" } ?: ""

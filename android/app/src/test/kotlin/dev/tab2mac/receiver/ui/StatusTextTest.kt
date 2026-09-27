@@ -64,7 +64,7 @@ class StatusTextTest {
         assertEquals("Direct USB (attempt 1)", connecting.detail)
 
         val handshaking = StatusText.of(ReceiverState(active = true, transport = TransportKind.AOA, session = SessionState.Handshaking(1)))
-        assertEquals("HELLO sent over USB. The Mac answers as soon as Tab2Mac runs there.", handshaking.detail)
+        assertEquals("HELLO sent over USB. The Mac answers as soon as Ginga runs there.", handshaking.detail)
 
         val streaming = StatusText.of(
             ReceiverState(
@@ -116,7 +116,7 @@ class StatusTextTest {
             ReceiverState(active = true, transport = TransportKind.ADB_TCP, connection = ConnectionState.WaitingToRetry(2, 500, "closed by peer"), lastRemoteError = refused),
         )
         assertEquals("Waiting for the Mac to authorize this USB connection", waiting.headline)
-        assertTrue("Is Tab2Mac running on the Mac?" in waiting.detail, waiting.detail)
+        assertTrue("Is Ginga running on the Mac?" in waiting.detail, waiting.detail)
 
         val streaming = StatusText.of(
             ReceiverState(active = true, transport = TransportKind.ADB_TCP, session = SessionState.Streaming(3, welcome, display, stream, null), lastRemoteError = refused),

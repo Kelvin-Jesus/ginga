@@ -119,7 +119,7 @@ class DiagnosticsFormatterTest {
         )
         assertEquals(
             """
-            Tab2Mac · streaming
+            Ginga · streaming
             2560×1600 hevc · c2.mtk.hevc.decoder (low-latency)
             59.9 fps · 38,512 kbps
             decode p50 6.1 ms · p95 9.8 ms
@@ -157,6 +157,6 @@ class DiagnosticsFormatterTest {
     @Test
     fun showsDashesBeforeDataArrives() {
         val text = DiagnosticsFormatter.format(DiagnosticsSnapshot("connecting", null, null, null, null, false, null, null, null))
-        assertEquals("Tab2Mac · connecting\n— —\nRTT — · clock offset —", text)
+        assertEquals("Ginga · connecting\n— —\nRTT — · clock offset —", text)
     }
 }
