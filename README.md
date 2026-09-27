@@ -5,12 +5,16 @@
   </picture>
 </h1>
 
+<div align="center">
+
 [![mac](https://github.com/Kelvin-Jesus/ginga/actions/workflows/mac.yml/badge.svg)](https://github.com/Kelvin-Jesus/ginga/actions/workflows/mac.yml)
 [![android](https://github.com/Kelvin-Jesus/ginga/actions/workflows/android.yml/badge.svg)](https://github.com/Kelvin-Jesus/ginga/actions/workflows/android.yml)
 [![release](https://img.shields.io/github/v/release/Kelvin-Jesus/ginga?include_prereleases)](https://github.com/Kelvin-Jesus/ginga/releases)
 [![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
 
 **Site: [kelvin-jesus.github.io/ginga](https://kelvin-jesus.github.io/ginga/)** · [Download](https://github.com/Kelvin-Jesus/ginga/releases/latest) · [Design system](https://kelvin-jesus.github.io/ginga/design-system/)
+
+</div>
 
 Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md), and the whole system on one page: [design system](https://kelvin-jesus.github.io/ginga/design-system/) (also [a single HTML file](design/ginga-design/ginga-design-system.html) that opens offline).
 
