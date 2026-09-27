@@ -14,7 +14,7 @@ import { drawLaptop, drawTablet, SCREEN } from "./screens";
 import { BH_POS, CAM, camDistance, laptopPose, projectUV, tabletPose, tabletScreenWorld } from "./poses";
 import { shockAt } from "./Shockwave";
 import { lensAt } from "./LensingPass";
-import { caAmount, CUT, ramp } from "./timing";
+import { caAmount, CUT, expoOut, ramp } from "./timing";
 import { CameraMotionBlur } from "@remotion/motion-blur";
 import { ShotFps, ShotHorizon, ShotIgnition, ShotLogo, ShotPen, ShotTouch } from "./Shots";
 
@@ -24,7 +24,7 @@ export type KeynoteProps = { lang: Lang; sfx?: boolean };
 
 /** Faixas de som (arquivos licenciados em public/sfx/, fornecidos à parte). Silêncio total no corte do quadro 500. */
 export const SFX: { file: string; from: number; dur: number; vol?: number; note: string }[] = [
-  { file: "riser.wav", from: 0, dur: 90, note: "riser grave 0–90 (sintetizado)" },
+  { file: "riser.wav", from: 0, dur: 90, vol: 0.75, note: "riser grave 0–90 (sintetizado)" },
   { file: "kenney/spaceEngineLow_000.wav", from: 0, dur: 90, vol: 0.35, note: "cama do riser" },
   { file: "hit-soft.wav", from: 30, dur: 60, note: "ignição" },
   { file: "kenney/lowFrequency_explosion_001.wav", from: 30, dur: 60, vol: 0.5, note: "ignição, grave" },
@@ -33,7 +33,8 @@ export const SFX: { file: string; from: number; dur: number; vol?: number; note:
   { file: "hit-soft.wav", from: 130, dur: 60, note: "toque" },
   { file: "whoosh.wav", from: 196, dur: 50, note: "órbita" },
   { file: "hit-soft.wav", from: 200, dur: 60, note: "S Pen" },
-  { file: "kenney/forceField_003.wav", from: 214, dur: 57, vol: 0.3, note: "traço da S Pen" },
+  { file: "kenney/forceField_003.wav", from: 214, dur: 57, vol: 0.18, note: "brilho do traço da S Pen" },
+  { file: "pen-scratch.wav", from: 212, dur: 57, vol: 0.7, note: "caneta riscando papel (quadros 212–262)" },
   { file: "whoosh.wav", from: 308, dur: 50, note: "recuo" },
   { file: "kenney/thrusterFire_002.wav", from: 324, dur: 30, vol: 0.4, note: "voo do cometa" },
   { file: "hit-soft.wav", from: 350, dur: 60, note: "impacto do cometa" },
@@ -44,7 +45,7 @@ export const SFX: { file: string; from: number; dur: number; vol?: number; note:
   { file: "kenney/spaceEngineLow_000.wav", from: 440, dur: 60, vol: 0.45, note: "espiral, grave" },
   { file: "hit-soft.wav", from: 510, dur: 60, note: "logo" },
   { file: "kenney/lowFrequency_explosion_001.wav", from: 510, dur: 60, vol: 0.35, note: "logo, grave" },
-  { file: "chord.wav", from: 502, dur: 98, note: "acorde resolvido sob o logo" },
+  { file: "chord.wav", from: 502, dur: 98, vol: 0.75, note: "acorde resolvido sob o logo" },
 ];
 
 const Screens: React.FC<{ lang: Lang }> = ({ lang }) => {
@@ -79,12 +80,14 @@ function fxAt(f: number, aspect: number): FxState {
   const shock = shockAt(f, 130, projectUV(f, tabletScreenWorld(130, 0.66, 0.36), aspect)) ?? shockAt(f, 350, projectUV(f, tabletScreenWorld(350, 0.5, 0.45), aspect));
   const lens = lensAt(f, 440, CUT, projectUV(f, new Vector3(...BH_POS), aspect));
   let fade = ramp(f, 0, 20) * (0.8 + 0.2 * ramp(f, 60, 76));
-  if (f >= CUT) fade = f < CUT + 2 ? 0 : 1 - ramp(f, 580, 600);
-  return { focus, range, bokeh: 5, ca: caAmount(f), shock, lens, fade, frame: f };
+  // sem corte seco: a cena do logo abre do centro (íris) logo depois de o horizonte engolir tudo
+  const iris = f >= CUT ? 1.15 * ramp(f, CUT, CUT + 30, expoOut) : undefined;
+  if (f >= CUT) fade = 1 - ramp(f, 580, 600);
+  return { focus, range, bokeh: 5, ca: caAmount(f), shock, lens, fade, iris, frame: f };
 }
 
 /** Planos rápidos com desfoque de movimento de câmera (180°, 6 amostras): o voo do cometa e a espiral final. */
-export const FAST: [number, number][] = [[324, 356], [470, 500]];
+export const FAST: [number, number][] = [[324, 356], [470, 492]];
 
 export const GingaKeynote: React.FC<KeynoteProps> = ({ lang, sfx = false }) => {
   const f = useCurrentFrame();
@@ -92,11 +95,7 @@ export const GingaKeynote: React.FC<KeynoteProps> = ({ lang, sfx = false }) => {
   return (
     <AbsoluteFill style={{ background: C.cosmos }}>
       {fast ? <CameraMotionBlur shutterAngle={180} samples={6}><KeynoteScene lang={lang} /></CameraMotionBlur> : <KeynoteScene lang={lang} />}
-      {sfx && SFX.map((x, i) => (
-        <Sequence key={i} from={x.from} durationInFrames={Math.min(x.dur, x.from < CUT ? CUT - x.from : 600 - x.from)}>
-          <Audio src={staticFile(`sfx/${x.file}`)} volume={(fr) => (x.vol ?? 1) * Math.min(1, fr / 3, (Math.min(x.dur, x.from < CUT ? CUT - x.from : 600 - x.from) - fr) / 4)} />
-        </Sequence>
-      ))}
+      {sfx && <KeynoteSound />}
     </AbsoluteFill>
   );
 };
@@ -126,7 +125,7 @@ const KeynoteScene: React.FC<{ lang: Lang }> = ({ lang }) => {
         <directionalLight position={[-3, 1.5, -5]} color={C.cobalt} intensity={4} />
         <directionalLight position={[4, -1, -4]} color={C.cobaltNight} intensity={2.5} />
         {f < CUT && <Starfield3D px={px} opacity={stars} />}
-        {f >= CUT + 2 && <Starfield3D px={px} opacity={0.35} count={2500} />}
+        {f >= CUT && <Starfield3D px={px} opacity={0.35} count={2500} />}
         <Screens lang={lang} />
         <ShotIgnition overlay={overlay} s={s} />
         <ShotTouch overlay={overlay} s={s} />
@@ -139,3 +138,20 @@ const KeynoteScene: React.FC<{ lang: Lang }> = ({ lang }) => {
     </AbsoluteFill>
   );
 };
+
+/** Ganho geral da mixagem (−3 dB): a soma das camadas estourava no riser e no logo. */
+const MASTER = 0.7;
+
+/** Só a trilha de efeitos (também registrada como composição leve, para trocar o áudio sem renderizar o 3D). */
+export const KeynoteSound: React.FC = () => (
+  <>
+    {SFX.map((x, i) => {
+      const len = Math.min(x.dur, x.from < CUT ? CUT - x.from : 600 - x.from);
+      return (
+        <Sequence key={i} from={x.from} durationInFrames={len}>
+          <Audio src={staticFile(`sfx/${x.file}`)} volume={(fr) => MASTER * (x.vol ?? 1) * Math.min(1, fr / 3, (len - fr) / 4)} />
+        </Sequence>
+      );
+    })}
+  </>
+);

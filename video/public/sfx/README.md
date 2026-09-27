@@ -10,6 +10,7 @@ Os arquivos desta pasta são sintetizados por `npm run sfx` (sons originais, sem
 | `whoosh.wav` | 90, 196, 308 | movimentos de câmera |
 | `whoosh-long.wav` | 420–500 | espiral; é cortado seco no quadro 500 |
 | `chord.wav` | 502–600 | acorde resolvido sob o logo |
+| `pen-scratch.wav` | 212–268 | caneta riscando papel durante o traço da S Pen |
 
 Silêncio total no corte do quadro 500 (nenhuma faixa atravessa esse quadro). A lista está em `src/keynote/GingaKeynote.tsx` (`SFX`).
 

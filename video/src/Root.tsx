@@ -3,7 +3,7 @@ import { Composition } from "remotion";
 import { World, type WorldProps } from "./World";
 import { GingaLoop } from "./Loop";
 import { GingaTeaser } from "./Teaser";
-import { GingaKeynote } from "./keynote/GingaKeynote";
+import { GingaKeynote, KeynoteSound } from "./keynote/GingaKeynote";
 import { SceneComet } from "./scenes/SceneComet";
 import { HERO, HERO_LAYOUT, VERTICAL, VERTICAL_LAYOUT } from "./timeline";
 import type { Lang } from "./i18n";
@@ -20,6 +20,7 @@ export type { WorldProps };
 
 export const Root: React.FC = () => (
   <>
+    <Composition id="GingaKeynoteAudio" component={KeynoteSound} durationInFrames={600} fps={60} width={320} height={180} />
     {LANGS.map((lang) => (
       <React.Fragment key={lang}>
         <Composition id={`GingaHero-${lang}`} component={Hero} durationInFrames={30 * 60} fps={60} width={1920} height={1080} defaultProps={{ lang, repoUrl: REPO_URL }} />

@@ -191,11 +191,11 @@ export const ShotLogo: React.FC<ShotProps> = ({ overlay, s }) => {
   const logoTex = useTexture(staticFile("logos/ginga-wordmark-dark.png"));
   const img = logoTex.image as HTMLImageElement;
   const LW = 1500, LH = Math.round((1500 * 423) / 1200);
-  const inL = ramp(f, 502, 530, expoOut);
+  const inL = ramp(f, 508, 538, expoOut);
   const logo = useCanvasTexture(LW, LH, (c) => {
     
     c.drawImage(img, 0, 0, LW, LH);
-    const p = ramp(f, 520, 556);
+    const p = ramp(f, 528, 564);
     if (p > 0 && p < 1) {
       c.globalCompositeOperation = "source-atop";
       const x = -300 + (LW + 600) * p, g = c.createLinearGradient(x - 180, 0, x + 180, 0);
@@ -209,13 +209,13 @@ export const ShotLogo: React.FC<ShotProps> = ({ overlay, s }) => {
   const oss = useCanvasTexture(2000, 140, (c) => {
     c.font = `400 52px ${F.mono}`; c.textAlign = "center"; c.textBaseline = "middle"; c.fillStyle = C.star; c.fillText(s.freeOss, 1000, 70);
   }, [s]);
-  if (f < 502) return null;
-  const tagIn = ramp(f, 540, 566, expoOut), ossIn = ramp(f, 552, 578, expoOut);
-  const glint = ramp(f, 528, 540, ginga) * (1 - ramp(f, 548, 575));
+  if (f < 500) return null;
+  const tagIn = ramp(f, 544, 568, expoOut), ossIn = ramp(f, 554, 578, expoOut);
+  const glint = ramp(f, 536, 548, ginga) * (1 - ramp(f, 556, 580));
   const lscale = 0.94 + 0.06 * inL;
   return (
     <>
-      <DitherPlane w={9} h={5.6} iw={960} ih={600} t={f / 60} opacity={0.1} glow={0.9} position={[0, 1.1, -5]} rotation={[0, 0, (f - 500) * 0.0025]} />
+      <group scale={0.35 + 0.65 * ramp(f, 500, 545, expoOut)} position={[0, 1.1, -5]}><DitherPlane w={9} h={5.6} iw={960} ih={600} t={f / 60} opacity={0.1 + 0.2 * (1 - ramp(f, 500, 545))} glow={0.9} rotation={[0, 0, (f - 500) * 0.0025]} /></group>
       <ScreenPlane overlay={overlay} map={logo} w={LW * lscale} h={LH * lscale} y={-170} opacity={inL} />
       <ScreenPlane overlay={overlay} map={tag} w={2400} h={200} y={330 - 16 * tagIn} opacity={tagIn} />
       <ScreenPlane overlay={overlay} map={oss} w={2000} h={140} y={450 - 16 * ossIn} opacity={ossIn} />

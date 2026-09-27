@@ -67,3 +67,20 @@ for (const [name, d, lo, hi] of [["whoosh.wav", 0.75, 350, 2600], ["whoosh-long.
   }
   wav("chord.wav", L, R);
 }
+// caneta riscando papel (0.95 s): ruído agudo filtrado, volume pela velocidade do traço (smoothstep → sino),
+// quedas nas curvas do caminho e estalos curtos de fibra de papel
+{
+  const d = 0.95, n = Math.round(d * SR), draw = 50 / 60; // o traço dura 50 quadros
+  const hi = bandpass(noise(n), (t) => 3800 + 900 * Math.sin(t * 23), 0.9);
+  const lo = bandpass(noise(n), () => 1400, 1.6);
+  const x = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = i / SR, k = Math.min(1, t / draw);
+    const speed = t < draw ? 6 * k * (1 - k) / 1.5 : 0;               // derivada do smoothstep, normalizada
+    const turns = 0.55 + 0.45 * Math.abs(Math.sin(Math.PI * 5.2 * k)); // o traço desacelera nas curvas
+    const grit = rnd() > 0.9985 ? 1 : 0;                                // estalos de fibra
+    const tail = t < draw ? 1 : Math.exp(-(t - draw) * 40);
+    x[i] = (hi[i] * 0.8 + lo[i] * 0.35) * Math.pow(speed, 0.8) * turns * tail + grit * 0.5 * speed;
+  }
+  wav("pen-scratch.wav", ...pan(x, (t) => -0.35 + 0.7 * Math.min(1, t / draw)));
+}

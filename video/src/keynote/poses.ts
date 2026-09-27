@@ -19,7 +19,9 @@ export const CAM: CamKey[] = [
   { f: 420, pos: [0.2, 0.6, 10.2], target: [-0.1, 0, 0], fov: 34 },
   { f: 458, pos: [-1.5, 0.6, 8.6], target: [-9, 0.8, -8], fov: 36 },
   { f: 499, pos: [-3.6, 0.7, 3.2], target: [-9, 0.8, -8], fov: 38 },
-  { f: 500, pos: [0, 0, 8], target: [0, 0, 0], fov: 30 },
+  // saímos de dentro do buraco: a câmera nasce perto do centro e recua
+  { f: 500, pos: [0, 0, 3.4], target: [0, 0, 0], fov: 30 },
+  { f: 545, pos: [0, 0, 8], target: [0, 0, 0], fov: 30 },
   { f: 600, pos: [0, 0, 7.3], target: [0, 0, 0], fov: 30 },
 ];
 
