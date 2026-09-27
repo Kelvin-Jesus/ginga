@@ -1,19 +1,25 @@
-## Instalação / Installation
+## Downloads
 
-**Mac** (`Ginga-*-macOS.zip`, Apple Silicon e Intel, macOS 14+)
+| | Arquivo | Requisitos |
+|---|---|---|
+| **Mac** | [Ginga-{{VERSION}}-macOS.dmg](https://github.com/Kelvin-Jesus/ginga/releases/download/{{TAG}}/Ginga-{{VERSION}}-macOS.dmg) | macOS 14 ou mais novo, Apple Silicon ou Intel |
+| **Tablet** | [Ginga-{{VERSION}}-android.apk](https://github.com/Kelvin-Jesus/ginga/releases/download/{{TAG}}/Ginga-{{VERSION}}-android.apk) | Galaxy Tab com Android 12 ou mais novo |
 
-1. Descompacte e arraste o **Ginga** para **Aplicativos**.
-2. O Ginga não é notarizado pela Apple, então na primeira vez o macOS bloqueia: abra **Ajustes do Sistema › Privacidade e Segurança** e clique em **Abrir Mesmo Assim** (ou, no Terminal: `xattr -dr com.apple.quarantine /Applications/Ginga.app`).
-3. Conceda **Gravação de Tela** e **Acessibilidade** quando pedido (para o modo sem roteador, também Bluetooth e Localização). As permissões continuam valendo nas próximas versões.
+### Instalar no Mac
 
-Intel: precisa de um Mac com codificador HEVC por hardware (2017 ou mais novo); ainda não testado em hardware Intel.
+1. Abra o `.dmg` e arraste o **Ginga** para **Aplicativos**.
+2. Na primeira vez, o macOS avisa que não pode verificar o desenvolvedor (o Ginga ainda não é notarizado pela Apple). Abra **Ajustes do Sistema › Privacidade e Segurança** e clique em **Abrir Mesmo Assim**.
+3. Permita **Gravação de Tela** e **Acessibilidade** quando o Ginga pedir. No modo sem roteador ele pede também Bluetooth e Localização. As permissões continuam valendo nas próximas versões.
 
-**Tablet** (`Ginga-*-android.apk`, Android 12+)
+### Instalar no tablet
 
-Abra o APK no tablet e permita "instalar apps desconhecidos" para o navegador ou gerenciador de arquivos. Se você tinha uma versão de desenvolvimento instalada, desinstale-a antes (a assinatura é outra).
+Baixe o APK no tablet, abra e permita instalar apps desta fonte. Se você tinha uma versão de desenvolvimento do Ginga, desinstale antes.
 
-Confira os arquivos com `shasum -a 256 -c SHA256SUMS`.
+<details>
+<summary>English</summary>
 
----
+**Mac:** open the `.dmg` and drag **Ginga** to Applications. The first time, macOS can't verify the developer (Ginga isn't notarized yet): allow it in System Settings › Privacy & Security › Open Anyway, then grant Screen Recording and Accessibility when asked. **Tablet:** download the APK on the tablet, open it and allow installs from that source; uninstall any development build first.
 
-**Mac:** unzip, move **Ginga** to Applications, then allow it once in System Settings › Privacy & Security › Open Anyway (the app is not notarized). Grant Screen Recording and Accessibility when asked. Intel Macs need a hardware HEVC encoder (2017 or newer) and are untested so far. **Tablet:** install the APK (allow unknown apps); uninstall any development build first.
+</details>
+
+Para conferir os arquivos: `shasum -a 256 -c SHA256SUMS`.

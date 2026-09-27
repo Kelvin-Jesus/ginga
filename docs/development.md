@@ -169,10 +169,13 @@ Default report locations: `~/Library/Application Support/Ginga/reports/`.
 
 ## Releases
 
-Pushing a tag `vX.Y.Z` runs [release.yml](../.github/workflows/release.yml): Android tests and a signed `assembleRelease`; Swift tests and a universal `Ginga.app` (`GINGA_ARCHS="arm64 x86_64"`, one `swift build --triple` per architecture joined with `lipo`); then a GitHub release with both, `SHA256SUMS`, and [.github/release-notes.md](../.github/release-notes.md) above the generated changelog. A suffix (`v0.2.0-beta.1`) makes a pre-release.
+Pushing a tag `vX.Y.Z` runs [release.yml](../.github/workflows/release.yml): Android tests and a signed `assembleRelease`; Swift tests and a universal `Ginga.app` (`GINGA_ARCHS="arm64 x86_64"`, one `swift build --triple` per architecture joined with `lipo`) in a `.dmg` with an Applications shortcut; then a GitHub release with the APK, the DMG and `SHA256SUMS`. A suffix (`v0.2.0-beta.1`) makes a pre-release.
+
+The release text is written for the people who use Ginga, not generated from commits: [docs/releases/](releases/)`vX.Y.Z.md` says what's new (pt-BR first, English in a `<details>` block), and [.github/release-notes.md](../.github/release-notes.md) adds the downloads table and the installation steps (`{{VERSION}}` and `{{TAG}}` are filled in). The workflow stops before building if the version's file is missing.
 
 ```sh
-git tag v0.2.0 && git push origin v0.2.0
+$EDITOR docs/releases/v0.2.0.md && git add docs/releases && git commit -m "docs: release notes for 0.2.0"
+git tag v0.2.0 && git push origin main v0.2.0
 ```
 
 Versions come from the tag: `versionName`/`CFBundleShortVersionString` = `X.Y.Z[-suffix]`, `versionCode`/`CFBundleVersion` = `X*10000 + Y*100 + Z` (`-Pginga.version`, `GINGA_VERSION`).

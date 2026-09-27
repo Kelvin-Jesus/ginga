@@ -1,8 +1,9 @@
 name: release
 # Push a tag to publish: git tag v0.2.0 && git push origin v0.2.0
-# Builds the signed APK and a universal (Apple Silicon + Intel) Ginga.app, then creates the GitHub
-# release with both, SHA256SUMS and .github/release-notes.md above the generated changelog.
-# Tags with a suffix (v0.2.0-beta.1) become pre-releases. Keys: scripts/setup-release-signing.sh.
+# Builds the signed APK and a universal (Apple Silicon + Intel) Ginga.app in a .dmg, then creates the
+# GitHub release with both and SHA256SUMS. The text is docs/releases/<tag>.md (what's new, written for
+# people who use Ginga; the job fails without it) followed by .github/release-notes.md (downloads and
+# installation). Tags with a suffix (v0.2.0-beta.1) become pre-releases. Keys: scripts/setup-release-signing.sh.
 on:
   push:
     tags: ["v*"]
@@ -11,7 +12,16 @@ permissions:
   contents: read
 
 jobs:
+  notes:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Release notes exist
+        run: |
+          test -s "docs/releases/$GITHUB_REF_NAME.md" || { echo "::error::write docs/releases/$GITHUB_REF_NAME.md (what's new in this version) and tag again"; exit 1; }
+
   android:
+    needs: notes
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -48,6 +58,7 @@ jobs:
           path: dist/
 
   mac:
+    needs: notes
     runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
@@ -82,8 +93,9 @@ jobs:
       - name: Package
         run: |
           codesign --display --verbose=2 mac/build/Ginga.app 2>&1 | grep -E "Authority|Identifier|Signature"
-          mkdir dist
-          ditto -c -k --keepParent mac/build/Ginga.app "dist/Ginga-${GITHUB_REF_NAME#v}-macOS.zip"
+          # a disk image with the app and a shortcut to Applications: open it, drag Ginga across
+          mkdir -p dist dmg && ditto mac/build/Ginga.app dmg/Ginga.app && ln -s /Applications dmg/Applications
+          hdiutil create -volname "Ginga ${GITHUB_REF_NAME#v}" -srcfolder dmg -fs HFS+ -format UDZO -ov "dist/Ginga-${GITHUB_REF_NAME#v}-macOS.dmg"
       - uses: actions/upload-artifact@v4
         with:
           name: mac
@@ -107,5 +119,5 @@ jobs:
           cd dist && sha256sum * > SHA256SUMS && cat SHA256SUMS && cd ..
           prerelease=""
           case "$GITHUB_REF_NAME" in *-*) prerelease="--prerelease" ;; esac
-          gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --title "Ginga ${GITHUB_REF_NAME#v}" \
-            --notes-file .github/release-notes.md --generate-notes $prerelease
+          { cat "docs/releases/$GITHUB_REF_NAME.md"; echo; sed "s/{{VERSION}}/${GITHUB_REF_NAME#v}/g; s/{{TAG}}/$GITHUB_REF_NAME/g" .github/release-notes.md; } > notes.md
+          gh release create "$GITHUB_REF_NAME" dist/* --verify-tag --title "Ginga ${GITHUB_REF_NAME#v}" --notes-file notes.md $prerelease
