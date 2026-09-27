@@ -664,6 +664,7 @@ a { color: var(--cobalt); } a:hover { color: var(--ink); }
       <div class="compat">
         <h3>{{t.cpTab}}</h3>
         <div class="it"><span class="chipok">{{t.cpTested}}</span><div><b>Galaxy Tab S11</b><span class="spec">SM‑X730 · 2560×1600 · 120 Hz</span></div></div>
+        <div class="it"><span class="chipok">{{t.cpTested}}</span><div><b>Galaxy S25 Ultra</b><span class="spec">SM‑S938 · 3120×1440 · {{t.cpPhone}}</span></div></div>
         <div class="it"><span class="chipok wait">{{t.cpCheck}}</span><div><b>{{t.cpOtherTabs}}</b><span>{{t.cpOtherTabsP}}</span></div></div>
         <div class="it"><span class="chipok">{{t.cpReq}}</span><div><b>Android 12+</b><span>{{t.cpAndroidP}}</span></div></div>
       </div>
@@ -812,15 +813,15 @@ class Component extends DCLogic {
     sec4h: "Código aberto", sec4: "Todo o código do Mac e do Android está no GitHub. Qualquer pessoa pode ler, auditar e compilar.",
     perm1h: "Gravação de Tela", perm1: "O macOS pede essa permissão para o Ginga capturar o display virtual que ele cria para o tablet. É o que vai para a tela do tablet.",
     perm2h: "Acessibilidade", perm2: "Necessária para que o toque e a S Pen no tablet movam o cursor e cliquem no Mac. Sem ela, o tablet só mostra a imagem.",
-    cpEy: "Compatibilidade", cpH: "Funciona com o que você tem?", cpTab: "Tablets", cpTested: "testado", cpCheck: "a confirmar", cpReq: "requisito", cpConn: "conexão",
-    cpOtherTabs: "Galaxy Tab S9 FE+, Galaxy S25 Ultra e outros Android", cpOtherTabsP: "Já têm perfil de tela e o app se ajusta ao painel informado pelo aparelho, mas ainda não foram testados neles.",
+    cpEy: "Compatibilidade", cpH: "Funciona com o que você tem?", cpTab: "Tablets e celulares", cpPhone: "celular", cpTested: "testado", cpCheck: "a confirmar", cpReq: "requisito", cpConn: "conexão",
+    cpOtherTabs: "Galaxy Tab S9 FE+ e outros Android", cpOtherTabsP: "Já têm perfil de tela e o app se ajusta ao painel informado pelo aparelho, mas ainda não foram testados neles.",
     cpAndroidP: "O app do tablet é um APK no GitHub. Pelo USB direto não precisa de modo desenvolvedor.",
     cpMacP: "Testado no macOS 26.6.2. O Ginga confere a cada versão se o display virtual continua disponível e avisa em vez de travar.",
     cpChipP: "Macs com Intel não são suportados: a codificação em hardware e o display virtual usados dependem do Apple Silicon.",
     cpConnH: "USB‑C, Wi‑Fi ou sem roteador", cpConnP: "Cabo USB com dados, a mesma rede Wi‑Fi, ou a rede Wi‑Fi criada pelo próprio tablet.",
     faqH: "Perguntas frequentes",
     faq: [
-      ["Funciona com qualquer tablet Android?", "O Ginga foi feito e testado no Galaxy Tab S11 (2560×1600, até 120 Hz). O app se ajusta ao painel de outros aparelhos com Android 12 ou mais novo, e o Tab S9 FE+ e o S25 Ultra já têm perfil, mas ainda não foram testados neles."],
+      ["Funciona com qualquer tablet Android?", "O Ginga foi feito e testado no Galaxy Tab S11 (2560×1600, até 120 Hz) e também funciona no celular Galaxy S25 Ultra. O app se ajusta ao painel de outros aparelhos com Android 12 ou mais novo; o Tab S9 FE+ já tem perfil, mas ainda não foi testado."],
       ["Preciso ativar o modo desenvolvedor?", "Não. Pelo USB direto, o Android só pergunta uma vez se pode abrir o Ginga; marque “Sempre”. O caminho com adb continua disponível em Avançado para quem prefere."],
       ["Funciona sem internet?", "Sim. Pelo cabo, pela rede Wi‑Fi local, ou pela conexão direta, em que o tablet cria a própria rede e o Mac entra nela. Enquanto isso o Mac fica fora do Wi‑Fi de antes, a menos que tenha cabo de rede."],
       ["O toque e a S Pen funcionam?", "Sim. O toque clica, arrasta e rola com dois dedos. A S Pen vira uma mesa digitalizadora para o macOS, com pressão, inclinação, borracha e proximidade, como a Apple Pencil no Sidecar. O macOS pede a permissão de Acessibilidade para isso."],
@@ -910,15 +911,15 @@ class Component extends DCLogic {
     sec4h: "Open source", sec4: "All the Mac and Android code is on GitHub. Anyone can read, audit and build it.",
     perm1h: "Screen Recording", perm1: "macOS asks for this so Ginga can capture the virtual display it creates for the tablet. That is what goes to the tablet’s screen.",
     perm2h: "Accessibility", perm2: "Needed so touch and the S Pen on the tablet can move the cursor and click on the Mac. Without it, the tablet only shows the picture.",
-    cpEy: "Compatibility", cpH: "Does it work with what you have?", cpTab: "Tablets", cpTested: "tested", cpCheck: "to confirm", cpReq: "required", cpConn: "connection",
-    cpOtherTabs: "Galaxy Tab S9 FE+, Galaxy S25 Ultra and other Androids", cpOtherTabsP: "They already have display profiles and the app adapts to the panel the device reports, but they haven’t been tested yet.",
+    cpEy: "Compatibility", cpH: "Does it work with what you have?", cpTab: "Tablets and phones", cpPhone: "phone", cpTested: "tested", cpCheck: "to confirm", cpReq: "required", cpConn: "connection",
+    cpOtherTabs: "Galaxy Tab S9 FE+ and other Androids", cpOtherTabsP: "They already have display profiles and the app adapts to the panel the device reports, but they haven’t been tested yet.",
     cpAndroidP: "The tablet app is an APK on GitHub. Over direct USB, no developer mode needed.",
     cpMacP: "Tested on macOS 26.6.2. Ginga checks on every version that the virtual display is still available and tells you instead of crashing.",
     cpChipP: "Intel Macs are not supported: the hardware encoding and virtual display Ginga uses depend on Apple Silicon.",
     cpConnH: "USB‑C, Wi‑Fi or no router", cpConnP: "A USB data cable, the same Wi‑Fi network, or the Wi‑Fi network the tablet creates itself.",
     faqH: "Frequently asked questions",
     faq: [
-      ["Does it work with any Android tablet?", "Ginga was built and tested on the Galaxy Tab S11 (2560×1600, up to 120 Hz). The app adapts to the panel of other devices with Android 12 or later, and the Tab S9 FE+ and S25 Ultra already have profiles, but they haven’t been tested yet."],
+      ["Does it work with any Android tablet?", "Ginga was built and tested on the Galaxy Tab S11 (2560×1600, up to 120 Hz), and it also works on the Galaxy S25 Ultra phone. The app adapts to the panel of other devices with Android 12 or later; the Tab S9 FE+ already has a profile but hasn’t been tested yet."],
       ["Do I need developer mode?", "No. Over direct USB, Android asks once whether to open Ginga; tick “Always”. The adb path is still available under Advanced if you prefer it."],
       ["Does it work without internet?", "Yes. Over the cable, the local Wi‑Fi, or the direct connection, where the tablet creates its own network and the Mac joins it. Meanwhile the Mac is off its previous Wi‑Fi unless it also has Ethernet."],
       ["Do touch and the S Pen work?", "Yes. Touch clicks, drags and scrolls with two fingers. The S Pen becomes a pen tablet for macOS, with pressure, tilt, eraser and hover, like the Apple Pencil with Sidecar. macOS asks for the Accessibility permission for this."],
