@@ -1,0 +1,7 @@
+@import "./home.gen.css";
+
+/* Chegando da 404: o buraco negro devolve a página */
+.site.arrive .hero > .wrap, .site.arrive .stagewrap { animation: gingaArrive 1.2s cubic-bezier(0.34, 1.36, 0.64, 1) both; transform-origin: 72% 30%; }
+.site.arrive .stagewrap { animation-delay: 120ms; }
+@keyframes gingaArrive { from { opacity: 0; transform: scale(.55) rotate(-7deg); filter: blur(10px); } 60% { filter: blur(0); } to { opacity: 1; transform: none; filter: none; } }
+@media (prefers-reduced-motion: reduce) { .site.arrive .hero > .wrap, .site.arrive .stagewrap { animation: none; } }

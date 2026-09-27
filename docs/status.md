@@ -44,8 +44,9 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 
 | Item | State | Evidence |
 |---|---|---|
-| Tag → GitHub release (signed APK, universal Ginga.app, SHA256SUMS) | 📝 not run yet (no GitHub remote) | `.github/workflows/release.yml`; development.md › Releases |
+| Tag → GitHub release (signed APK, universal Ginga.app, SHA256SUMS) | 📝 waits for the signing secrets | `.github/workflows/release.yml`; development.md › Releases |
 | Android release signing from env / secrets, version from the tag | ✅ | local `assembleRelease` with a throwaway key: v2 signature, versionCode 200 for 0.2.0-beta.1 |
+| Site (Astro, pt/en) on GitHub Pages | ✅ | `site/`, `.github/workflows/site.yml`; kelvin-jesus.github.io/ginga |
 | Universal Mac app (arm64 + x86_64) | ✅ build, 🧪 Intel hardware | `lipo` shows both; 386 tests pass as x86_64 under Rosetta; x86_64 `ginga protocol-vectors` identical |
 
 ## Not done

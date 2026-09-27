@@ -1,0 +1,20 @@
+/* Fontes da marca, servidas pelo próprio site (subconjunto latino, WOFF2). Licença: SIL OFL 1.1 (public/fonts/OFL-*.txt). */
+@font-face { font-family: "Unbounded"; src: url("../fonts/Unbounded-Variable.woff2") format("woff2"); font-weight: 200 900; font-display: swap; }
+@font-face { font-family: "Figtree"; src: url("../fonts/Figtree-Variable.woff2") format("woff2"); font-weight: 300 900; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("../fonts/IBMPlexMono-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "IBM Plex Mono"; src: url("../fonts/IBMPlexMono-Medium.woff2") format("woff2"); font-weight: 500; font-display: swap; }
+
+html, body { margin: 0; background: #0A0C1C; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Transição entre páginas (Chrome, Edge, Safari 18.2+): a página nova nasce do centro do buraco negro */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: 280ms ease-in both vt-out; }
+::view-transition-new(root) { animation: 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both vt-in; }
+@keyframes vt-out { to { opacity: 0; } }
+@keyframes vt-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { ::view-transition-old(root), ::view-transition-new(root) { animation: none; } }
+
+.skip { position: absolute; left: 16px; top: -60px; z-index: 10001; background: #FFC43D; color: #0A0C1C; padding: 10px 14px; border-radius: 10px; font: 600 14px/18px Figtree, sans-serif; text-decoration: none; }
+.skip:focus { top: 16px; }

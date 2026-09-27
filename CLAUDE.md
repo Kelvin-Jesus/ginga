@@ -66,7 +66,7 @@ Diagrams (Mermaid): `docs/diagrams.md`. Decisions: `docs/architecture.md` §8 (A
 - Overwrite the user's `~/Library/Application Support/Ginga/config.json` with tests or experiments: pass `--config <scratch file>`.
 - Run `scripts/build-app.sh` while nobody can answer a keychain prompt (it falls back to ad-hoc signing, and that build loses the Screen Recording grant). Use `swift build -c release` to check compilation.
 - Bundle Google's adb; expose the loopback listener beyond 127.0.0.1; log tokens, keys, passphrases or codes.
-- Commit, push or create branches unless the user asks. History is local (branch `main`, no remote yet); commits end with the co-author trailer.
+- Commit, push or create branches unless the user asks. Remote: `github.com/Kelvin-Jesus/ginga` (public, branch `main`); commits end with the co-author trailer.
 
 ## Working on the device
 

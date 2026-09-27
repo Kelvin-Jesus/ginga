@@ -1,5 +1,12 @@
 # Ginga
 
+[![mac](https://github.com/Kelvin-Jesus/ginga/actions/workflows/mac.yml/badge.svg)](https://github.com/Kelvin-Jesus/ginga/actions/workflows/mac.yml)
+[![android](https://github.com/Kelvin-Jesus/ginga/actions/workflows/android.yml/badge.svg)](https://github.com/Kelvin-Jesus/ginga/actions/workflows/android.yml)
+[![release](https://img.shields.io/github/v/release/Kelvin-Jesus/ginga?include_prereleases)](https://github.com/Kelvin-Jesus/ginga/releases)
+[![license: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](LICENSE)
+
+**Site: [kelvin-jesus.github.io/ginga](https://kelvin-jesus.github.io/ginga/)** · [Download](https://github.com/Kelvin-Jesus/ginga/releases/latest)
+
 Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md).
 
 macOS gets a genuine extended display:
@@ -41,7 +48,7 @@ Android:                    Render ← Hardware Decode ← Transport ←┘ → 
 
 ## Download
 
-[Releases](../../releases) has the tablet APK and a universal `Ginga.app` (Apple Silicon and Intel, macOS 14+), built by [release.yml](.github/workflows/release.yml) from the tagged commit. The Mac app is not notarized: allow it once in System Settings › Privacy & Security › Open Anyway, then grant Screen Recording and Accessibility. Intel Macs need a hardware HEVC encoder (2017 or newer) and are untested on hardware so far. Each release lists the steps and SHA256SUMS.
+[Releases](https://github.com/Kelvin-Jesus/ginga/releases) has the tablet APK and a universal `Ginga.app` (Apple Silicon and Intel, macOS 14+), built by [release.yml](.github/workflows/release.yml) from the tagged commit. The Mac app is not notarized: allow it once in System Settings › Privacy & Security › Open Anyway, then grant Screen Recording and Accessibility. Intel Macs need a hardware HEVC encoder (2017 or newer) and are untested on hardware so far. Each release lists the steps and SHA256SUMS.
 
 ## Quick start
 
@@ -81,9 +88,13 @@ mac/         Swift package: GingaCore, VirtualDisplay, CGVirtualDisplayShim, CGV
              DisplayCapture, VideoPipeline, GingaProtocol, Transport, USBAccessoryShim, USBAccessory,
              GingaSecurity, DirectLink, GingaStreaming, InputInjection, GingaSession,
              GingaRuntime, EnergyMeter, GingaApp (app), ginga (CLI, incl. headless `ginga run`), Tests
-scripts/     bootstrap.sh (environment), check-all.sh (both suites + vectors), docker-android.sh
+scripts/     bootstrap.sh (environment), check-all.sh (both suites + vectors), docker-android.sh, setup-release-signing.sh
 .claude/     slash commands for agents (check-all, protocol-change, device-test); see CLAUDE.md
 brand/       Ginga brand: logos, app-icon source, colours, usage rules
+design/      Ginga design system (tokens, components, DitherSpace reference) and UI screenshots
+site/        website (Astro, pt/en), deployed to GitHub Pages by .github/workflows/site.yml
+video/       demo videos (Remotion)
+.github/     CI (mac, android), release (tag → APK + universal Ginga.app), site
 android/     Kotlin receiver app (Gradle modules: protocol, transport, decoder, renderer, input, discovery, app)
 ```
 

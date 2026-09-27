@@ -1,0 +1,1622 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ginga — seu Galaxy Tab vira tela do Mac</title>
+<meta name="description" content="Ginga transforma um Galaxy Tab em display estendido do Mac, com toque e S Pen. Por cabo USB sem modo desenvolvedor, Wi‑Fi ou sem roteador. Código aberto.">
+<meta name="theme-color" content="#0A0C1C">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Ginga">
+<meta property="og:title" content="Ginga — seu Galaxy Tab vira tela do Mac">
+<meta property="og:description" content="Display estendido com toque e S Pen. USB, Wi‑Fi ou sem roteador. Código aberto.">
+<meta property="og:image" content="/_blob/eb4b9d00b1c913d0c95302c748cf4676">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/_blob/03eedbb8dcc1ff53d4ca97e3fa6b6a88">
+<link rel="apple-touch-icon" href="/_blob/03eedbb8dcc1ff53d4ca97e3fa6b6a88">
+<link rel="alternate" hreflang="pt-BR" href="?lang=pt">
+<link rel="alternate" hreflang="en" href="?lang=en">
+<link rel="alternate" hreflang="x-default" href="?lang=pt">
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/ginga/tokens.css">
+<link rel="stylesheet" href="ds/ginga/components/bundle.css">
+<script src="ds/ginga/components/bundle.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=Unbounded:wght@600;800&amp;display=swap">
+<style>
+body { margin: 0; }
+a { color: var(--cobalt); } a:hover { color: var(--ink); }
+* { box-sizing: border-box; }
+.site { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+.wrap { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+.hero { position: relative; overflow: hidden; }
+.hero > canvas.sky { position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+.nav { position: relative; z-index: 3; display: flex; align-items: center; gap: 28px; height: 84px; }
+.nav img { height: 30px; display: block; }
+.nav .links { display: flex; gap: 24px; flex: 1; }
+.nav .links a { color: #C9CCE0; text-decoration: none; font-size: 15px; font-weight: 500; }
+.nav .links a:hover { color: #FFFFFF; }
+.seg-dark { background: rgba(242,243,248,.07) !important; box-shadow: inset 0 0 0 1px rgba(242,243,248,.14) !important; padding: 3px; border-radius: 12px; display: inline-flex; gap: 2px; }
+.seg-dark button { height: 30px; padding: 0 12px; border: 0; border-radius: 9px; background: transparent; color: #A4A9C8; font: 500 13px/18px var(--font-sans); cursor: pointer; transition: background-color var(--dur-ui) var(--ease-out), color var(--dur-ui) var(--ease-out); }
+.seg-dark button.on { background: rgba(111,130,255,.28); color: #F2F3F8; }
+.seg-dark button:focus-visible { outline: 2px solid #6F82FF; outline-offset: 1px; }
+.gh { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border-radius: 12px; color: #F2F3F8 !important; text-decoration: none; font: 600 13px/18px var(--font-sans); box-shadow: inset 0 0 0 1px rgba(242,243,248,.22); transition: box-shadow var(--dur-ui) var(--ease-out), transform var(--dur-tap) var(--ease-out); }
+.gh:hover { box-shadow: inset 0 0 0 1px rgba(111,130,255,.8), 0 0 18px rgba(111,130,255,.35); }
+.gh:active, .cta:active { transform: scale(.97); }
+.herotext { position: relative; z-index: 3; text-align: left; padding: 72px 0 36px; max-width: 600px; }
+.dither { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
+.bh { position: absolute; z-index: 1; top: 64px; right: max(-160px, calc(50% - 760px)); width: 760px; height: 486px; transition: transform 900ms var(--ease-out); pointer-events: none; }
+.blast { position: absolute; z-index: 2; top: 232px; right: max(135px, calc(50% - 465px)); width: 170px; height: 170px; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+.blast:focus-visible { outline: 2px solid #FFC43D; outline-offset: 4px; }
+.bhcap { display: none; position: absolute; z-index: 2; top: 500px; right: max(210px, calc(50% - 390px)); font: 500 11px/14px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: #6E7394; }
+.gal { position: relative; z-index: 1; flex: none; width: 400px; height: 400px; margin: -80px -24px -80px 0; pointer-events: none; }
+.wallgal { position: absolute; inset: 0; width: 100%; height: 100%; }
+.kicker { display: inline-flex; align-items: center; gap: 8px; font: 500 12px/16px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: #FFC43D; }
+.h1 { margin: 18px 0 0; max-width: 620px; font-family: var(--font-display); font-weight: 800; font-size: 64px; line-height: 70px; letter-spacing: -0.02em; color: #F2F3F8; }
+.lead { margin: 20px 0 0; max-width: 560px; font-size: 19px; line-height: 29px; color: #B4B8D2; }
+.ctas { display: flex; justify-content: flex-start; gap: 12px; margin-top: 32px; flex-wrap: wrap; }
+.cta { display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 999px; font: 600 16px/20px var(--font-sans); text-decoration: none; transition: box-shadow var(--dur-ui) var(--ease-out), transform var(--dur-tap) var(--ease-out); }
+.cta.primary { background: #2E47F5; color: #FFFFFF !important; box-shadow: 0 0 0 0 rgba(111,130,255,0); }
+.cta.primary:hover { box-shadow: 0 0 0 5px rgba(111,130,255,.28), 0 0 32px rgba(46,71,245,.55); }
+.cta.ghost { color: #F2F3F8 !important; box-shadow: inset 0 0 0 1px rgba(242,243,248,.25); }
+.cta.ghost:hover { box-shadow: inset 0 0 0 1px rgba(111,130,255,.9), 0 0 20px rgba(111,130,255,.3); }
+.cta small { font: 500 11px/14px var(--font-mono); opacity: .75; }
+.trynote { position: relative; z-index: 3; text-align: left; margin: 40px 0 0; font: 500 13px/18px var(--font-mono); color: #8E93B3; letter-spacing: .04em; }
+.trynote b { color: #FFC43D; font-weight: 500; }
+.stagewrap { position: relative; z-index: 2; width: 100%; max-width: 1200px; margin: 0 auto; }
+.stage { position: absolute; left: 0; top: 0; width: 1200px; height: 860px; transform-origin: 0 0; }
+.stagewrap.m { overflow: hidden; border-radius: 24px; box-shadow: inset 0 0 0 1px rgba(242,243,248,.1); margin: 0 auto; width: calc(100% - 32px); }
+.stage.m { transition: transform 750ms var(--ease-ginga); }
+.stage.m .dtop, .stage.m .story { display: none; }
+.mstory { position: relative; z-index: 3; padding: 20px 16px 8px; color: #F2F3F8; }
+.mstory .rail { flex-wrap: wrap; gap: 6px; }
+.mstory .rail span { height: 28px; font-size: 12px; }
+.mstory .story__k { margin-top: 18px; }
+.mstory .story__h { font-size: 20px; line-height: 26px; }
+.mstory .row { display: flex; gap: 8px; margin-top: 16px; flex-wrap: wrap; }
+.mstory .altbtn, .mstory .reset { height: 44px; }
+.gh .ghl { display: inline; }
+
+/* ---------- sections ---------- */
+.sec { padding: 112px 0; }
+.eyebrow { font: 500 12px/16px var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--cobalt); display: flex; align-items: center; gap: 8px; }
+.h2 { margin: 14px 0 0; font-family: var(--font-display); font-weight: 600; font-size: 40px; line-height: 48px; letter-spacing: -0.01em; color: var(--ink); max-width: 760px; }
+.sub { margin: 16px 0 0; font-size: 17px; line-height: 27px; color: var(--ink-muted); max-width: 640px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 48px; }
+.card { position: relative; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); padding: 28px; transition: transform var(--dur-sheet) var(--ease-ginga), box-shadow var(--dur-ui) var(--ease-out); overflow: hidden; }
+.card:hover { transform: translateY(-4px) rotate(-0.4deg); box-shadow: var(--shadow-float); }
+.card h3 { margin: 18px 0 8px; font: 600 20px/26px var(--font-display); color: var(--ink); }
+.card p { margin: 0; font-size: 15px; line-height: 23px; color: var(--ink-muted); }
+.card .tag { display: inline-block; margin-top: 18px; font: 500 12px/16px var(--font-mono); color: var(--ink); padding: 4px 10px; border-radius: 999px; background: var(--surface-2); }
+.ico { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; background: var(--cobalt-soft); color: var(--cobalt); transition: transform var(--dur-sheet) var(--ease-ginga); }
+.card:hover .ico { transform: rotate(-8deg) scale(1.06); }
+.ico svg { width: 24px; height: 24px; }
+.orbitline { position: absolute; right: -60px; top: -60px; width: 180px; height: 180px; border-radius: 50%; border: 1px dashed var(--line); transition: transform 1.2s var(--ease-out); }
+.card:hover .orbitline { transform: rotate(40deg); }
+.orbitline::after { content: ""; position: absolute; left: 22px; bottom: 30px; width: 7px; height: 7px; border-radius: 50%; background: var(--star); box-shadow: var(--glow-star); }
+.feat { background: transparent; box-shadow: none; padding: 8px 0; }
+.feat:hover { transform: none; box-shadow: none; }
+.feat h3 { font: 600 18px/24px var(--font-sans); margin: 16px 0 6px; }
+.feat .hl { color: var(--ink); font-family: var(--font-mono); font-weight: 500; }
+.feat .hl .st { color: var(--star); }
+/* ---- cursor astronauta ---- */
+.site.astro-on, .site.astro-on a, .site.astro-on button, .site.astro-on label, .site.astro-on summary, .site.astro-on input, .site.astro-on .notes { cursor: none !important; }
+.astro { position: fixed; left: 0; top: 0; width: 44px; height: 44px; z-index: 9999; pointer-events: none; image-rendering: pixelated; opacity: 0; transition: opacity 160ms; will-change: transform; transform-origin: 4px 5px; }
+/* seleção de texto legível nos dois temas (o padrão do navegador fica escuro no tema claro quando o sistema está no escuro) */
+.site[data-theme="light"] { color-scheme: light; }
+.site[data-theme="dark"] { color-scheme: dark; }
+.site[data-theme="light"] ::selection { background: rgba(46, 71, 245, .18); color: #141830; }
+.site[data-theme="dark"] ::selection { background: rgba(111, 130, 255, .38); color: #FFFFFF; }
+.tether { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 9998; pointer-events: none; image-rendering: pixelated; }
+.cstar { position: fixed; left: 0; top: 0; width: 14px; height: 14px; z-index: 10000; pointer-events: none; opacity: 0; background: #FFC43D; clip-path: polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); filter: drop-shadow(0 0 1px #141830) drop-shadow(0 0 6px rgba(255,196,61,.7)); transition: opacity 150ms; will-change: transform; }
+.cstar.on { opacity: 1; }
+.astro.on { opacity: 1; }
+.trail { position: fixed; left: 0; top: 0; width: 4px; height: 4px; z-index: 9998; pointer-events: none; opacity: 0; will-change: transform, opacity; }
+.trail.t0, .trail.t3 { background: #FFC43D; } .trail.t1, .trail.t4 { background: #6F82FF; } .trail.t2, .trail.t5 { background: #F2F3F8; }
+
+/* ---- seções novas ---- */
+.sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; flex-wrap: wrap; }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 44px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin-top: 44px; }
+.sbox { position: relative; border-radius: var(--radius-lg); padding: 24px; background: var(--surface); box-shadow: var(--shadow-card); }
+.sbox h3 { margin: 16px 0 6px; font: 600 17px/23px var(--font-sans); color: var(--ink); }
+.sbox p { margin: 0; font-size: 14.5px; line-height: 22px; color: var(--ink-muted); }
+.sbox .ico { width: 44px; height: 44px; border-radius: 12px; }
+.secpanel { margin-top: 20px; border-radius: var(--radius-lg); padding: 22px 24px; box-shadow: inset 0 0 0 1px var(--line); display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 10px 24px; }
+.secpanel dt { font: 600 14px/20px var(--font-sans); color: var(--ink); }
+.secpanel dd { margin: 0; font-size: 14.5px; line-height: 22px; color: var(--ink-muted); }
+.compat { border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-card); overflow: hidden; }
+.compat h3 { margin: 0; padding: 20px 24px 12px; font: 600 18px/24px var(--font-display); color: var(--ink); display: flex; align-items: center; gap: 10px; }
+.compat .it { display: flex; gap: 14px; align-items: flex-start; padding: 14px 24px; border-top: 1px solid var(--line); }
+.compat .it b { display: block; font: 600 15px/21px var(--font-sans); color: var(--ink); }
+.compat .it span { display: block; font-size: 13.5px; line-height: 20px; color: var(--ink-muted); }
+.compat .it .spec { font-family: var(--font-mono); font-size: 12.5px; }
+.chipok { flex: none; margin-top: 2px; font: 500 11px/14px var(--font-mono); padding: 4px 9px; border-radius: 999px; background: var(--cobalt-soft); color: var(--ink); }
+.chipok.wait { background: var(--surface-2); color: var(--ink-muted); }
+.faq { margin-top: 40px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; align-items: start; }
+.faq details { border-radius: 16px; background: var(--surface); box-shadow: var(--shadow-card); overflow: hidden; }
+.faq summary { list-style: none; cursor: pointer; padding: 18px 52px 18px 20px; position: relative; font: 600 15.5px/22px var(--font-sans); color: var(--ink); }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: ""; position: absolute; right: 20px; top: 50%; width: 12px; height: 12px; margin-top: -6px; background: var(--cobalt); clip-path: polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); transition: transform var(--dur-sheet) var(--ease-ginga); }
+.faq details[open] summary::after { transform: rotate(45deg) scale(1.2); background: var(--star); }
+.faq summary:focus-visible { outline: 2px solid var(--cobalt); outline-offset: -2px; border-radius: 16px; }
+.faq .ans { padding: 0 20px 18px; font-size: 14.5px; line-height: 22px; color: var(--ink-muted); }
+.oss { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 20px; margin-top: 44px; }
+.ossbox { border-radius: var(--radius-xl); padding: 32px; background: var(--cosmos); color: #F2F3F8; position: relative; overflow: hidden; }
+.ossbox h3 { margin: 0; font: 800 30px/36px var(--font-display); letter-spacing: -0.01em; }
+.ossbox p { margin: 12px 0 0; color: #B4B8D2; font-size: 15px; line-height: 23px; max-width: 460px; }
+.ossbox .code { margin-top: 20px; font: 400 13px/20px var(--font-mono); color: #A4A9C8; background: rgba(242,243,248,.06); border-radius: 12px; padding: 14px 16px; box-shadow: inset 0 0 0 1px rgba(242,243,248,.1); white-space: pre; overflow-x: auto; }
+.ossbox .code b { color: #FFC43D; font-weight: 500; } .ossbox .code i { color: #6F82FF; font-style: normal; }
+.ossbox .ctas { margin-top: 22px; }
+.ossbox .cta { height: 44px; font-size: 14px; padding: 0 18px; }
+.road { border-radius: var(--radius-xl); padding: 28px; box-shadow: inset 0 0 0 1px var(--line); }
+.road h3 { margin: 0 0 6px; font: 600 20px/26px var(--font-display); color: var(--ink); }
+.road > p { margin: 0 0 16px; font-size: 14.5px; line-height: 22px; color: var(--ink-muted); }
+.ritem { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-top: 1px solid var(--line); }
+.ritem b { display: block; font: 600 15px/21px var(--font-sans); color: var(--ink); }
+.ritem span { display: block; font-size: 13.5px; line-height: 20px; color: var(--ink-muted); }
+.ritem .dot { flex: none; width: 12px; height: 12px; margin-top: 5px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--line); }
+.ritem.soon .dot { background: var(--star); box-shadow: 0 0 10px rgba(255,196,61,.6); }
+.ritem.soon b::after { content: attr(data-tag); margin-left: 8px; font: 500 11px/14px var(--font-mono); padding: 2px 8px; border-radius: 999px; background: var(--cobalt-soft); color: var(--ink); vertical-align: 2px; }
+.ritem a { color: var(--cobalt); font-weight: 600; text-decoration: none; }
+.ritem a:hover { text-decoration: underline; }
+.author { margin-top: 44px; display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 28px; align-items: center; border-radius: var(--radius-xl); padding: 32px; background: var(--surface); box-shadow: var(--shadow-card); }
+.author .av { width: 120px; height: 120px; border-radius: 30px; background: var(--cosmos); display: grid; place-items: center; position: relative; overflow: hidden; }
+.author .av img { width: 76px; height: 76px; }
+.author h3 { margin: 0; font: 600 24px/30px var(--font-display); color: var(--ink); }
+.author p { margin: 10px 0 0; font-size: 16px; line-height: 26px; color: var(--ink-muted); max-width: 720px; }
+.author .sig { margin-top: 14px; font: 500 12px/16px var(--font-mono); color: var(--cobalt); letter-spacing: .06em; text-transform: uppercase; }
+.band .mini { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 22px; font-size: 13.5px; line-height: 18px; color: #B4B8D2; }
+.band .mini span { display: inline-flex; align-items: center; gap: 8px; }
+.band .mini b { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font: 500 11px/1 var(--font-mono); background: rgba(111,130,255,.25); color: #F2F3F8; }
+/* S Pen na demo */
+.notes .ink { position: absolute; left: 10px; top: 24px; width: 200px; height: 116px; overflow: visible; }
+.notes .ink path { stroke-dasharray: 0 2000; fill: none; stroke: #FFC43D; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.notes .pen { position: absolute; left: 0; top: 0; width: 70px; height: 8px; border-radius: 4px; background: #2A2D3E; box-shadow: inset 0 0 0 1px #3A3E55; transform-origin: 0 50%; opacity: 0; transition: opacity 200ms; }
+.notes .pen::before { content: ""; position: absolute; left: -6px; top: 1px; border: 3px solid transparent; border-right: 6px solid #6F82FF; }
+.notes .pen.on { opacity: 1; }
+.vidsec { padding: 96px 0 0; }
+.vid { position: relative; margin-top: 36px; border-radius: var(--radius-xl); overflow: hidden; background: #0A0C1C; box-shadow: var(--shadow-float), 0 0 0 1px rgba(111,130,255,.18); aspect-ratio: 16 / 9; }
+.vid video { display: block; width: 100%; height: 100%; object-fit: cover; }
+.vid .tag { position: absolute; left: 16px; top: 16px; font: 500 11px/14px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; background: rgba(10,12,28,.7); color: #FFC43D; }
+.cmpwrap { margin-top: 44px; overflow-x: auto; border-radius: var(--radius-lg); box-shadow: inset 0 0 0 1px var(--line); background: var(--surface); -webkit-overflow-scrolling: touch; }
+.cmp { display: grid; grid-template-columns: minmax(180px, 1.3fr) repeat(6, minmax(118px, 1fr)); min-width: 940px; }
+.cmp .hc, .cmp .rh, .cmp .cell { padding: 16px 14px; border-top: 1px solid var(--line); font-size: 14px; line-height: 20px; }
+.cmp .hc { border-top: 0; font: 600 14px/18px var(--font-sans); color: var(--ink); display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; min-height: 76px; }
+.cmp .hc small { font: 500 11px/14px var(--font-mono); color: var(--ink-muted); }
+.cmp .rh { position: sticky; left: 0; z-index: 1; background: var(--surface); color: var(--ink); font-weight: 600; }
+.cmp .corner { position: sticky; left: 0; z-index: 2; background: var(--surface); }
+.cmp .cell { color: var(--ink-muted); display: flex; flex-direction: column; gap: 4px; }
+.cmp .me { background: var(--cobalt-soft); color: var(--ink); }
+.cmp .hc.me { border-radius: 16px 16px 0 0; box-shadow: inset 0 3px 0 var(--cobalt); }
+.cmp .hc.me .nm { font-family: var(--font-display); font-size: 16px; }
+.cmp .yes .mk, .cmp .no .mk, .cmp .part .mk { font: 600 13px/18px var(--font-sans); color: var(--ink); display: inline-flex; align-items: center; gap: 6px; }
+.cmp .yes .mk svg { width: 14px; height: 14px; flex: none; }
+.cmp .yes .mk svg path { fill: var(--cobalt); }
+.cmp .me.yes .mk svg path { fill: var(--star); }
+.cmp .no .mk::before { content: ""; width: 10px; height: 2px; background: var(--ink-muted); display: inline-block; border-radius: 1px; }
+.cmp .part .mk::before { content: ""; width: 10px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--ink-muted); display: inline-block; }
+.cmp .note { font-size: 12.5px; line-height: 17px; }
+.cmp .txt .mk { font: 500 13px/18px var(--font-sans); color: var(--ink); }
+.cmpfoot { margin-top: 14px; font-size: 12.5px; line-height: 19px; color: var(--ink-muted); max-width: 820px; }
+.cmphint { display: none; margin-top: 10px; font: 500 11px/14px var(--font-mono); color: var(--ink-muted); }
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 48px; counter-reset: s; }
+.step { position: relative; padding: 28px 28px 28px 28px; border-radius: var(--radius-lg); box-shadow: inset 0 0 0 1px var(--line); }
+.step .n { font: 500 13px/16px var(--font-mono); color: var(--cobalt); }
+.step h3 { margin: 10px 0 6px; font: 600 18px/24px var(--font-sans); color: var(--ink); }
+.step p { margin: 0; font-size: 15px; line-height: 23px; color: var(--ink-muted); }
+.step .dash { position: absolute; top: 36px; right: -20px; width: 20px; border-top: 1px dashed var(--line); }
+.band { position: relative; overflow: hidden; background: var(--cosmos); color: #F2F3F8; border-radius: var(--radius-xl); padding: 72px 64px; display: flex; align-items: center; gap: 48px; }
+.band .bt { flex: 1; position: relative; z-index: 2; }
+.band h2 { margin: 0; font: 800 44px/50px var(--font-display); letter-spacing: -0.02em; }
+.band p { margin: 14px 0 0; color: #B4B8D2; font-size: 16px; line-height: 25px; max-width: 520px; }
+.band .ctas { justify-content: flex-start; margin-top: 28px; position: relative; z-index: 2; }
+.band .req { margin-top: 18px; font: 500 12px/16px var(--font-mono); color: #8E93B3; }
+.band .icon { position: relative; z-index: 2; width: 168px; height: 168px; transform: rotate(-6deg); animation: g-sway 7s ease-in-out infinite; }
+.foot { padding: 56px 0 64px; display: flex; gap: 32px; align-items: flex-start; border-top: 1px solid var(--line); }
+.foot img { height: 26px; }
+.foot .legal { flex: 1; font-size: 13px; line-height: 20px; color: var(--ink-muted); max-width: 640px; }
+.foot .fl { display: flex; gap: 20px; font-size: 14px; }
+.foot .fl a { color: var(--ink); text-decoration: none; }
+.foot .fl a:hover { color: var(--cobalt); }
+.star4 { display: inline-block; width: 10px; height: 10px; background: #FFC43D; clip-path: polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); }
+
+/* ---------- demo (mesma da ConnectDemo do design system) ---------- */
+.orbits { position: absolute; inset: 0; pointer-events: none; }
+.orbits .o { fill: none; stroke: #F2F3F8; stroke-opacity: .07; stroke-width: 1; }
+.orbits .o.dash { stroke-dasharray: 2 8; stroke-opacity: .16; }
+.dtop { position: absolute; left: 48px; right: 48px; top: 20px; height: 40px; display: flex; align-items: center; gap: 12px; z-index: 6; }
+.rail { display: flex; gap: 6px; flex: 1; }
+.rail span { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px 0 8px; border-radius: 999px; color: #A4A9C8; font: 500 13px/18px var(--font-sans); box-shadow: inset 0 0 0 1px rgba(242,243,248,.12); transition: color var(--dur-ui) var(--ease-out), background-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out); }
+.rail b { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font: 500 11px/1 var(--font-mono); background: rgba(242,243,248,.1); }
+.rail span.on { color: #F2F3F8; background: rgba(111,130,255,.16); box-shadow: inset 0 0 0 1px rgba(111,130,255,.55); }
+.rail span.on b { background: #6F82FF; color: #0A0C1C; }
+.rail span.done { color: #F2F3F8; }
+.rail span.done b { background: #FFC43D; color: #0A0C1C; }
+.reset { height: 32px; padding: 0 14px; border: 0; border-radius: 10px; background: transparent; color: #F2F3F8; font: 500 13px/18px var(--font-sans); box-shadow: inset 0 0 0 1px rgba(242,243,248,.2); cursor: pointer; }
+.reset:hover { box-shadow: inset 0 0 0 1px rgba(111,130,255,.8); }
+.mac { position: absolute; left: 48px; top: 96px; width: 660px; z-index: 2; }
+.mac__lid { position: relative; height: 424px; padding: 14px 14px 18px; border-radius: 22px 22px 8px 8px; background: #1B1D2A; box-shadow: inset 0 0 0 2px #2C2F42, 0 30px 80px rgba(0,0,0,.5); }
+.mac__notch { position: absolute; top: 14px; left: 50%; width: 110px; height: 16px; margin-left: -55px; background: #1B1D2A; border-radius: 0 0 8px 8px; z-index: 4; }
+.mac__screen { position: relative; height: 100%; border-radius: 10px; overflow: hidden; background: #0A0C1C; }
+.mac__base { height: 16px; margin: 0 -34px; border-radius: 0 0 16px 16px; background: #2A2D3E; box-shadow: inset 0 2px 0 #3A3E55; position: relative; }
+.mac__base::after { content: ""; position: absolute; left: 50%; top: 0; width: 120px; margin-left: -60px; height: 6px; border-radius: 0 0 8px 8px; background: #1E2030; }
+.wall { position: absolute; inset: 0; overflow: hidden; }
+.wall .planet { position: absolute; right: -120px; bottom: -260px; width: 520px; height: 520px; border-radius: 50%; background: #2E47F5; opacity: .9; }
+.wall .ring { position: absolute; right: -200px; bottom: -120px; width: 700px; height: 220px; border-radius: 50%; border: 2px solid rgba(255,196,61,.55); transform: rotate(-14deg); }
+.wall .star4 { position: absolute; width: 14px; height: 14px; animation: g-twinkle 3.2s ease-in-out infinite; }
+.menubar { position: absolute; top: 0; left: 0; right: 0; height: 24px; display: flex; align-items: center; gap: 14px; padding: 0 12px; background: rgba(10,12,28,.55); color: #F2F3F8; font: 600 11px/1 var(--font-sans); z-index: 3; }
+.menubar .sp { flex: 1; }
+.menubar .mi { opacity: .85; font-weight: 500; }
+.gicon { width: 16px; height: 16px; border-radius: 4px; display: block; position: relative; }
+.gwrap { position: relative; display: block; }
+.gwrap.live::after { content: ""; position: absolute; right: -2px; bottom: -2px; width: 6px; height: 6px; border-radius: 50%; background: #4FD08E; box-shadow: 0 0 6px #4FD08E; }
+.win { position: absolute; left: 26px; top: 34px; width: 318px; border-radius: 14px; background: var(--bg); color: var(--ink); box-shadow: var(--shadow-float), 0 0 0 1px rgba(0,0,0,.25); overflow: hidden; z-index: 2; }
+.win__bar { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 12px; }
+.win__bar i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+.win__bar i.r { background: #FF5F57 } .win__bar i.y { background: #FEBC2E } .win__bar i.g { background: #28C840 }
+.win__body { padding: 2px 14px 14px; }
+.win__head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.win__head img { width: 28px; height: 28px; }
+.win__head .t { font: 600 16px/20px var(--font-display); flex: 1; }
+.win .g-status { height: 24px; font-size: 11px; padding: 0 10px 0 6px; }
+.win .g-group-title { font-size: 10px; line-height: 14px; margin: 10px 0 5px 4px; }
+.win .g-group { border-radius: 12px; }
+.win .g-row { min-height: 36px; padding: 7px 12px; font-size: 12.5px; line-height: 17px; gap: 9px; }
+.win .g-row + .g-row::before { left: 12px; }
+.win .g-row__icon { width: 22px; height: 22px; border-radius: 6px; }
+.win .g-row__icon svg { width: 13px; height: 13px; }
+.win .g-row__sub { font-size: 10.5px; line-height: 14px; }
+.win .g-switch { transform: scale(.82); transform-origin: right center; margin-left: -8px; }
+.win .g-device { padding: 7px 12px; gap: 9px; }
+.win .g-device__name { font-size: 12.5px; line-height: 16px; }
+.win .g-device__meta { font-size: 10px; line-height: 13px; }
+.win .g-device__art { width: 30px; height: 22px; }
+.win .empty { padding: 10px 12px; font-size: 11.5px; color: var(--ink-muted); }
+.win .actions { display: flex; gap: 8px; margin-top: 12px; }
+.win .actions .g-btn { height: 30px; font-size: 12px; padding: 0 12px; }
+.sheet { position: absolute; inset: 34px 0 0; display: grid; place-items: start center; padding-top: 30px; background: rgba(10,12,28,.38); opacity: 0; pointer-events: none; transition: opacity var(--dur-ui) var(--ease-out); z-index: 5; }
+.sheet.show { opacity: 1; pointer-events: auto; }
+.sheet__card { width: 270px; padding: 18px 18px 14px; border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-float); text-align: center; transform: translateY(-10px) scale(.96); transition: transform var(--dur-sheet) var(--ease-ginga); }
+.sheet.show .sheet__card { transform: none; }
+.sheet__card img { width: 36px; height: 36px; }
+.sheet__card h4 { margin: 6px 0 2px; font: 600 14px/19px var(--font-sans); }
+.sheet__card p { margin: 0 0 10px; font-size: 11px; line-height: 15px; color: var(--ink-muted); }
+.sheet__card .g-code { font-size: 28px; line-height: 34px; gap: 12px; }
+.sheet__card .row { display: flex; gap: 8px; margin-top: 12px; }
+.sheet__card .row .g-btn { flex: 1; height: 30px; font-size: 12px; }
+.notes { position: absolute; right: 22px; top: 70px; width: 220px; height: 150px; border-radius: 12px; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-float); padding: 30px 14px 12px; transition: transform 900ms var(--ease-out), opacity 600ms var(--ease-out); z-index: 1; }
+.notes .nt { position: absolute; top: 9px; left: 14px; font: 600 11px/14px var(--font-sans); color: var(--ink-muted); }
+.notes .l { height: 6px; border-radius: 3px; background: var(--surface-2); margin: 7px 0; }
+.notes .l.s { width: 60%; } .notes .l.c { background: var(--cobalt-soft); width: 80%; }
+.notes.away { transform: translateX(300px); opacity: 0; }
+.tab { position: absolute; left: 756px; top: 246px; width: 400px; height: 260px; z-index: 3; animation: tabfloat 6s ease-in-out infinite; }
+.tab.docked { animation: none; transform: none; }
+@keyframes tabfloat { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+.tab__body { position: absolute; inset: 0; padding: 9px; border-radius: 22px; background: #1B1D2A; box-shadow: inset 0 0 0 2px #30344A, 0 30px 70px rgba(0,0,0,.55); }
+.tab__cam { position: absolute; top: 50%; right: 3px; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%; background: #3A3E55; }
+.tab__screen { position: relative; height: 100%; border-radius: 14px; overflow: hidden; background: var(--bg); color: var(--ink); }
+.scr { position: absolute; inset: 0; padding: 18px 20px; opacity: 0; pointer-events: none; transition: opacity 360ms var(--ease-out); }
+.scr.show { opacity: 1; pointer-events: auto; }
+.scr h5 { margin: 0; font: 600 15px/20px var(--font-display); }
+.scr .sub2 { margin: 2px 0 0; font-size: 11px; line-height: 15px; color: var(--ink-muted); }
+.tabhead { display: flex; align-items: center; gap: 10px; }
+.tabhead img { width: 26px; height: 26px; }
+.chips { display: flex; gap: 6px; position: absolute; left: 20px; bottom: 16px; }
+.chip { height: 24px; padding: 0 10px; border-radius: 999px; display: inline-flex; align-items: center; font: 500 10.5px/1 var(--font-sans); color: var(--ink-muted); box-shadow: inset 0 0 0 1px var(--line); }
+.chip.on { color: var(--ink); background: var(--cobalt-soft); box-shadow: none; }
+.radar { position: absolute; right: 26px; top: 50%; width: 120px; height: 120px; margin-top: -60px; }
+.radar .c { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--line); }
+.radar .c.c2 { inset: 22px; } .radar .c.c3 { inset: 44px; background: var(--cobalt-brand); border: 0; }
+.radar .sat { position: absolute; inset: 0; animation: g-spin var(--dur-orbit) linear infinite; }
+.radar .sat::after { content: ""; position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--star); box-shadow: var(--glow-star); }
+.radar .sat.b { inset: 22px; animation-duration: 1700ms; animation-direction: reverse; }
+.radar .sat.b::after { background: var(--cobalt); box-shadow: none; width: 6px; height: 6px; margin-left: -3px; top: -3px; }
+.radar .ping { position: absolute; inset: 44px; border-radius: 50%; border: 1.5px solid var(--cobalt); animation: g-pulse 2.2s var(--ease-out) infinite; }
+.tab .list { margin-top: 16px; width: 330px; }
+.tab .g-group { border-radius: 14px; }
+.tab .g-device { padding: 9px 12px; }
+.tab .g-device__name { font-size: 13px; line-height: 17px; }
+.tab .g-device__meta { font-size: 10px; }
+.tab .g-btn--sm { height: 28px; border-radius: 999px; padding: 0 14px; }
+.pair { text-align: center; padding-top: 34px; }
+.pair .g-code { font-size: 34px; line-height: 40px; margin: 10px 0 6px; }
+.pair .g-status { height: 24px; font-size: 11px; }
+.dialog { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10,12,28,.45); }
+.dialog__card { width: 270px; border-radius: 22px; background: var(--surface); padding: 16px 18px 12px; box-shadow: var(--shadow-float); font-size: 12px; line-height: 17px; }
+.dialog__card b { display: block; font-size: 13px; margin-bottom: 4px; }
+.dialog__card .al { display: flex; align-items: center; gap: 6px; margin-top: 8px; color: var(--ink-muted); font-size: 11px; }
+.dialog__card .al i { width: 14px; height: 14px; border-radius: 4px; background: var(--cobalt); display: grid; place-items: center; }
+.dialog__card .al i::after { content: ""; width: 6px; height: 3px; border: solid var(--on-cobalt); border-width: 0 0 1.6px 1.6px; transform: rotate(-45deg) translateY(-1px); }
+.dialog__card .row { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; }
+.dialog__card .g-btn { height: 28px; font-size: 12px; border-radius: 999px; }
+.stream { padding: 0; background: #0A0C1C; }
+.stream .wall .planet { right: auto; left: -180px; bottom: -300px; width: 460px; height: 460px; }
+.stream .wall .ring { right: auto; left: -260px; bottom: -150px; width: 600px; }
+.stream .notes { right: auto; left: 150px; top: 44px; transform: none; opacity: 1; }
+.stream .notes.pre { transform: translateX(-260px); opacity: 0; }
+.toast { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-ginga); z-index: 3; }
+.toast.hide { opacity: 0; transform: translate(-50%, -12px); }
+.stream .g-status { background: rgba(10,12,28,.72); color: #F2F3F8; height: 24px; font-size: 11px; }
+.warp { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 300ms; z-index: 4; pointer-events: none; }
+.warp.on { opacity: 1; }
+.fx { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+.fx path { fill: none; }
+.fx .route { stroke: #6F82FF; stroke-opacity: .5; stroke-width: 1.2; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0; transition: opacity 400ms; }
+.fx .route.on { opacity: 1; }
+.fx .tail { stroke: #FFC43D; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 6px #FFC43D); opacity: 0; }
+.fx .cable { stroke: #3A3E55; stroke-width: 6; stroke-linecap: round; opacity: 0; }
+.fx .cable-glow { stroke: #6F82FF; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 5px #6F82FF); opacity: 0; }
+.fx .head { fill: #FFF6DA; filter: drop-shadow(0 0 10px #FFC43D); opacity: 0; }
+.fx .burst { fill: none; stroke: #FFC43D; stroke-width: 2; opacity: 0; }
+.hint { position: absolute; z-index: 8; pointer-events: none; border-radius: 999px; box-shadow: 0 0 0 2px #FFC43D; transition: left 420ms var(--ease-ginga), top 420ms var(--ease-ginga), width 420ms var(--ease-ginga), height 420ms var(--ease-ginga), opacity 300ms; }
+.hint::before { content: ""; position: absolute; inset: -2px; border-radius: inherit; border: 2px solid #FFC43D; animation: g-pulse 1.6s var(--ease-out) infinite; }
+.hint span { position: absolute; left: 50%; top: calc(100% + 10px); transform: translateX(-50%); white-space: nowrap; padding: 5px 10px; border-radius: 999px; background: #FFC43D; color: #0A0C1C; font: 600 11px/14px var(--font-sans); }
+.hint.up span { top: auto; bottom: calc(100% + 10px); }
+.hint.off { opacity: 0; }
+.story { position: absolute; left: 48px; right: 48px; bottom: 30px; display: flex; align-items: flex-end; gap: 32px; z-index: 5; color: #F2F3F8; }
+.story__txt { flex: 1; max-width: 660px; }
+.story__k { font: 500 11px/14px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: #FFC43D; }
+.story__h { margin: 6px 0 4px; font: 600 24px/30px var(--font-display); }
+.story__p { margin: 0; font-size: 14px; line-height: 21px; color: #A4A9C8; }
+.altbtn { height: 36px; padding: 0 16px; border: 0; border-radius: 12px; background: rgba(242,243,248,.08); color: #F2F3F8; font: 500 13px/18px var(--font-sans); box-shadow: inset 0 0 0 1px rgba(242,243,248,.16); cursor: pointer; }
+.altbtn:hover { box-shadow: inset 0 0 0 1px rgba(111,130,255,.7), 0 0 16px rgba(111,130,255,.3); }
+
+@media (max-width: 1100px) { .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .nav .links { gap: 16px; } }
+@media (max-width: 900px) {
+  .nav .links { display: none; }
+  .nav { gap: 10px; height: 72px; }
+  .nav > a:first-child { margin-right: auto; }
+  .gh { padding: 0 10px; } .gh .ghl { display: none; }
+  .herotext { padding-top: 64vw; }
+  .herotext .ctas .cta { width: 100%; justify-content: center; }
+  .cta { white-space: nowrap; } .cta small { display: none; }
+  .h1 { font-size: 40px; line-height: 46px; }
+  .lead { font-size: 17px; line-height: 26px; }
+  .grid3, .steps { grid-template-columns: minmax(0, 1fr); }
+  .step .dash { display: none; }
+  .cmphint { display: block; }
+  .grid2, .grid4, .faq, .oss { grid-template-columns: minmax(0, 1fr); }
+  .secpanel { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .secpanel dd { margin-bottom: 12px; }
+  .author { grid-template-columns: minmax(0, 1fr); padding: 24px; }
+  .author .av { width: 88px; height: 88px; border-radius: 22px; } .author .av img { width: 56px; height: 56px; }
+  .ossbox, .road { padding: 24px; } .ossbox h3 { font-size: 24px; line-height: 30px; }
+  .cmp .rh { min-width: 150px; }
+  .h2 { font-size: 30px; line-height: 38px; }
+  .band { flex-direction: column; align-items: flex-start; padding: 48px 28px; }
+  .band h2 { font-size: 32px; line-height: 38px; }
+  .band .icon { width: 112px; height: 112px; }
+  .bh { width: 130%; height: auto; aspect-ratio: 760 / 486; right: -15%; top: 64px; opacity: 1; }
+  .bhcap { display: none; }
+  .blast { width: 120px; height: 120px; right: auto; left: calc(50% - 60px); top: calc(64px + 43vw - 60px); }
+  .gal { width: 280px; height: 280px; margin: -20px auto -40px; }
+  .foot { flex-direction: column; }
+  .wrap { padding: 0 20px; }
+  .sec { padding: 80px 0; }
+}
+@media (prefers-reduced-motion: reduce) { .tab, .band .icon { animation: none; } .bh { transition: none; } }
+</style>
+</helmet>
+
+<div class="site g-root {{astroCls}}" data-theme="{{theme}}" style="width: 100%; min-height: 4700px; background: var(--bg); color: var(--ink);" onPointerMove="{{onRootMove}}" onPointerLeave="{{onRootLeave}}" onPointerOver="{{onRootOver}}">
+<canvas class="tether" ref="{{refTether}}" aria-hidden="true"></canvas>
+<span class="cstar" ref="{{refCstar}}" aria-hidden="true"></span>
+<img class="astro" ref="{{refAstro}}" src="/_blob/b9c20f802cc19b60c5609469490e4f54" alt="" aria-hidden="true">
+<span class="trail t0" ref="{{refTr0}}"></span><span class="trail t1" ref="{{refTr1}}"></span><span class="trail t2" ref="{{refTr2}}"></span><span class="trail t3" ref="{{refTr3}}"></span><span class="trail t4" ref="{{refTr4}}"></span><span class="trail t5" ref="{{refTr5}}"></span>
+
+<!-- ================= HERO ================= -->
+<section class="hero" style="background: var(--cosmos); padding-bottom: 40px;" onPointerMove="{{onHeroMove}}" onPointerLeave="{{onHeroLeave}}">
+  <canvas class="sky dither" ref="{{refSky}}" aria-hidden="true"></canvas>
+  <canvas class="dither bh" ref="{{refBh}}" width="190" height="122" aria-hidden="true" style="transform: {{bhTransform}};"></canvas>
+  <button class="blast" ref="{{refBlast}}" onClick="{{onBlast}}" aria-label="{{t.blast}}" style="transform: {{bhTransform}};"></button>
+  <div class="bhcap">{{t.bhCap}}</div>
+  <div class="wrap">
+    <nav class="nav" aria-label="{{t.navLabel}}">
+      <a href="#top" aria-label="Ginga"><img src="/_blob/44ecdf02e81f5d55cd285dada8aa8766" alt="ginga"></a>
+      <div class="links">
+        <a href="#recursos">{{t.navFeat}}</a>
+        <a href="#seguranca">{{t.navSec}}</a>
+        <a href="#comparar">{{t.navCmp}}</a>
+        <a href="#faq">FAQ</a>
+        <a href="#baixar">{{t.navDl}}</a>
+      </div>
+      <div class="seg-dark" role="group" aria-label="{{t.langLabel}}">
+        <button class="{{langPt}}" onClick="{{setPt}}" aria-pressed="{{isPt}}">PT</button>
+        <button class="{{langEn}}" onClick="{{setEn}}" aria-pressed="{{isEn}}">EN</button>
+      </div>
+      <div class="seg-dark" role="group" aria-label="{{t.themeLabel}}">
+        <button class="{{thLight}}" onClick="{{setLight}}" aria-label="{{t.light}}"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M8 1.5v1.6M8 12.9v1.6M1.5 8h1.6M12.9 8h1.6M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></button>
+        <button class="{{thDark}}" onClick="{{setDark}}" aria-label="{{t.dark}}"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.8 5.8 0 0 1 6.4 2.5a5.8 5.8 0 1 0 7.1 7.1z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path></svg></button>
+      </div>
+      <a class="gh" href="{{github}}" aria-label="GitHub"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 0 0-2.53 15.59c.4.07.55-.17.55-.38v-1.33c-2.23.48-2.7-1.07-2.7-1.07-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.23.83 1.23.83.72 1.22 1.87.87 2.33.67.07-.52.28-.87.5-1.07-1.78-.2-3.65-.89-3.65-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.66 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 8 0z"></path></svg><span class="ghl">GitHub</span></a>
+    </nav>
+
+    <div class="herotext" id="top">
+      <div class="kicker"><span class="star4"></span>{{t.kicker}}</div>
+      <h1 class="h1">{{t.h1}}</h1>
+      <p class="lead">{{t.lead}}</p>
+      <div class="ctas">
+        <a class="cta primary" href="{{github}}"><svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M3 13.5h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{t.ctaMac}}<small>GitHub</small></a>
+        <a class="cta ghost" href="{{github}}"><svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v8.5M4.5 7 8 10.5 11.5 7M3 13.5h10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{t.ctaAnd}}<small>APK · GitHub</small></a>
+      </div>
+      <p class="trynote"><b>{{t.tryA}}</b> {{t.tryB}}</p>
+    </div>
+  </div>
+
+  <!-- ===== demo interativa ===== -->
+  <div class="stagewrap {{mCls}}" ref="{{refWrap}}" style="height: {{stageH}}px;">
+    <div class="stage {{mCls}}" ref="{{refStage}}" style="transform: {{stageTransform}}; left: {{stageLeft}}px;">
+      <svg class="orbits" viewBox="0 0 1200 860" aria-hidden="true">
+        <ellipse class="o" cx="600" cy="400" rx="560" ry="250"></ellipse>
+        <ellipse class="o dash" cx="600" cy="400" rx="470" ry="190" transform="rotate(-6 600 400)"></ellipse>
+        <ellipse class="o" cx="960" cy="380" rx="260" ry="120" transform="rotate(-10 960 380)"></ellipse>
+      </svg>
+
+      <div class="dtop">
+        <div class="rail" aria-live="polite">
+          <sc-for list="{{rail}}" as="it" hint-placeholder-count="4">
+            <span class="{{it.cls}}"><b>{{it.n}}</b>{{it.label}}</span>
+          </sc-for>
+        </div>
+        <button class="reset" onClick="{{doReset}}">{{t.reset}}</button>
+      </div>
+
+      <!-- MacBook -->
+      <div class="mac" ref="{{refMac}}" data-theme="{{theme}}">
+        <div class="mac__lid">
+          <div class="mac__notch"></div>
+          <div class="mac__screen" ref="{{refMacScreen}}">
+            <canvas class="dither wallgal" ref="{{refMacWall}}" width="158" height="98" aria-hidden="true"></canvas>
+            <div class="menubar"><span>Finder</span><span class="mi">{{t.mFile}}</span><span class="mi">{{t.mEdit}}</span><span class="mi">{{t.mView}}</span><span class="sp"></span><span class="gwrap {{menuLive}}"><img class="gicon" src="/_blob/03eedbb8dcc1ff53d4ca97e3fa6b6a88" alt=""></span><span class="mi">{{t.clock}}</span></div>
+
+            <div class="notes {{macNotesCls}}" ref="{{refNotes}}" onPointerDown="{{notesDown}}" onPointerMove="{{notesMove}}" onPointerUp="{{notesUp}}" onPointerCancel="{{notesUp}}" style="touch-action: none;"><span class="nt">{{t.notes}}</span><div class="l"></div><div class="l s"></div><div class="l c"></div><div class="l"></div><div class="l s"></div></div>
+
+            <div class="win">
+              <div class="win__bar"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+              <div class="win__body">
+                <div class="win__head">
+                  <img src="{{mono}}" alt="">
+                  <span class="t">Ginga</span>
+                  <span class="{{statusCls}}"><span class="g-status__orb"></span>{{statusTxt}}</span>
+                </div>
+                <h3 class="g-group-title">{{t.gConn}}</h3>
+                <div class="g-group">
+                  <label class="g-row"><span class="g-row__icon"><svg viewBox="0 0 16 16"><path d="M2 6.2a8.5 8.5 0 0 1 12 0M4.3 8.6a5.2 5.2 0 0 1 7.4 0M6.6 11a2 2 0 0 1 2.8 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></span><span class="g-row__label">{{t.rWifi}}</span><span class="g-switch" ref="{{refWifi}}"><input type="checkbox" role="switch" checked="{{wifi}}" onChange="{{onWifi}}"><span class="g-switch__track"></span><span class="g-switch__thumb"></span></span></label>
+                  <label class="g-row"><span class="g-row__icon"><svg viewBox="0 0 16 16"><path d="M8 1.5v9M5.5 4 8 1.5 10.5 4M4 7.5v2.5l4 2.5 4-2.5V7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span class="g-row__label">{{t.rUsb}}<span class="g-row__sub">{{t.rUsbSub}}</span></span><span class="g-switch" ref="{{refUsb}}"><input type="checkbox" role="switch" checked="{{usb}}" onChange="{{onUsb}}"><span class="g-switch__track"></span><span class="g-switch__thumb"></span></span></label>
+                </div>
+                <h3 class="g-group-title">{{t.gTabs}}</h3>
+                <div class="g-group">
+                  <sc-if value="{{noDevice}}" hint-placeholder-val="{{true}}"><div class="empty">{{t.noTabs}}</div></sc-if>
+                  <sc-if value="{{hasDevice}}" hint-placeholder-val="{{false}}"><div class="g-device"><span class="g-device__art"></span><span class="g-device__name">Galaxy Tab S11<span class="g-device__meta">{{deviceMeta}}</span></span><button class="g-btn g-btn--sm g-btn--danger">{{t.forget}}</button></div></sc-if>
+                </div>
+                <div class="actions"><button class="{{mainCls}}" ref="{{refMain}}" disabled="{{mainDisabled}}" onClick="{{onMain}}">{{mainLabel}}</button><button class="g-btn g-btn--ghost">{{t.settings}}</button></div>
+              </div>
+
+              <div class="sheet {{sheetCls}}">
+                <div class="sheet__card">
+                  <img src="/_blob/03eedbb8dcc1ff53d4ca97e3fa6b6a88" alt="">
+                  <h4>{{t.pairQ}}</h4>
+                  <p>{{t.pairP}}</p>
+                  <sc-if value="{{sheetOpen}}" hint-placeholder-val="{{false}}"><span class="g-code" aria-label="4 8 2 9 1 3"><span class="g-code__group"><span class="g-code__d">4</span><span class="g-code__d">8</span><span class="g-code__d">2</span></span><span class="g-code__group"><span class="g-code__d">9</span><span class="g-code__d">1</span><span class="g-code__d">3</span></span></span></sc-if>
+                  <div class="row"><button class="g-btn" onClick="{{noPair}}">{{t.noPair}}</button><button class="g-btn g-btn--primary" ref="{{refDoPair}}" onClick="{{doPair}}">{{t.doPair}}</button></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mac__base"></div>
+      </div>
+
+      <!-- Tablet -->
+      <div class="tab {{tabCls}}" ref="{{refTab}}" data-theme="{{theme}}">
+        <div class="tab__body">
+          <div class="tab__cam"></div>
+          <div class="tab__screen" ref="{{refTabScreen}}">
+            <div class="scr {{scrSearch}}">
+              <div class="tabhead"><img src="{{mono}}" alt=""><div><h5>{{t.tSearch}}</h5><p class="sub2">{{t.tSearchP}}</p></div></div>
+              <div class="radar"><div class="c"></div><div class="c c2"></div><div class="c c3"></div><div class="ping"></div><div class="sat"></div><div class="sat b"></div></div>
+              <div class="chips"><span class="chip on">Wi‑Fi</span><span class="chip">{{t.chipUsb}}</span><span class="chip">{{t.chipDirect}}</span></div>
+            </div>
+            <div class="scr {{scrFound}}">
+              <div class="tabhead"><img src="{{mono}}" alt=""><div><h5>{{t.tFound}}</h5><p class="sub2">{{t.tFoundP}}</p></div></div>
+              <div class="list g-group"><div class="g-device"><span class="g-device__art"></span><span class="g-device__name">MacBook Pro<span class="g-device__meta">{{foundMeta}}</span></span><button class="g-btn g-btn--sm g-btn--primary" ref="{{refTabConnect}}" onClick="{{tabConnect}}">{{tabConnectLabel}}</button></div></div>
+              <div class="chips"><span class="chip on">Wi‑Fi</span><span class="chip">{{t.chipUsb}}</span><span class="chip">{{t.chipDirect}}</span></div>
+            </div>
+            <div class="scr pair {{scrPair}}">
+              <h5>{{t.tConfirm}}</h5>
+              <sc-if value="{{showTabCode}}" hint-placeholder-val="{{false}}"><span class="g-code" aria-label="4 8 2 9 1 3"><span class="g-code__group"><span class="g-code__d">4</span><span class="g-code__d">8</span><span class="g-code__d">2</span></span><span class="g-code__group"><span class="g-code__d">9</span><span class="g-code__d">1</span><span class="g-code__d">3</span></span></span></sc-if>
+              <div><span class="g-status g-status--pairing"><span class="g-status__orb"></span>{{t.tWaitMac}}</span></div>
+            </div>
+            <div class="scr {{scrUsb}}">
+              <div class="tabhead"><img src="{{mono}}" alt=""><div><h5>{{t.tCable}}</h5><p class="sub2">{{t.tCableP}}</p></div></div>
+              <div class="dialog"><div class="dialog__card"><b>{{t.dlgQ}}</b>{{t.dlgP}}<span class="al"><i></i>{{t.dlgAlways}}</span><div class="row"><button class="g-btn g-btn--ghost">{{t.cancel}}</button><button class="g-btn g-btn--primary" ref="{{refUsbOk}}" onClick="{{usbOk}}">{{t.open}}</button></div></div></div>
+            </div>
+            <div class="scr stream {{scrStream}}">
+              <canvas class="dither wallgal" ref="{{refTabWall}}" width="96" height="60" aria-hidden="true"></canvas>
+              <div class="notes {{tabNotesCls}}" ref="{{refTabNotes}}" onClick="{{penDraw}}"><span class="nt">{{t.notes}}</span><div class="l"></div><div class="l s"></div><div class="l c"></div><div class="l"></div><div class="l s"></div><svg class="ink" viewBox="0 0 200 116" aria-hidden="true"><path ref="{{refInk}}" d="M14 92 C 30 60, 44 58, 52 78 S 70 100, 84 70 S 104 30, 118 62 S 140 96, 156 58 C 164 40, 176 36, 186 48"></path></svg><span class="pen" ref="{{refPen}}"></span></div>
+              <div class="toast {{toastCls}}"><span class="g-status g-status--connected"><span class="g-status__orb"></span>{{toastTxt}}</span></div>
+            </div>
+            <canvas class="warp" ref="{{refWarp}}"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <svg class="fx" viewBox="0 0 1200 860" aria-hidden="true">
+        <path class="cable" ref="{{refCable}}" d="M0 0"></path>
+        <path class="cable-glow" ref="{{refCableGlow}}" d="M0 0"></path>
+        <path class="route {{routeCls}}" ref="{{refRoute}}" d="M0 0"></path>
+        <path class="tail" ref="{{refTail}}" d="M0 0"></path>
+        <circle class="head" ref="{{refHead}}" r="5"></circle>
+        <circle class="burst" ref="{{refBurst}}" r="10"></circle>
+      </svg>
+
+      <div class="hint {{hintCls}}" ref="{{refHint}}"><span>{{hintTxt}}</span></div>
+
+      <div class="story">
+        <div class="story__txt">
+          <div class="story__k">{{story.k}}</div>
+          <div class="story__h">{{story.h}}</div>
+          <p class="story__p">{{story.p}}</p>
+        </div>
+        <button class="altbtn" onClick="{{altUsb}}">{{t.altUsb}}</button>
+      </div>
+    </div>
+  </div>
+  <sc-if value="{{mobile}}" hint-placeholder-val="{{false}}">
+    <div class="mstory">
+      <div class="rail" aria-live="polite">
+        <sc-for list="{{rail}}" as="it" hint-placeholder-count="4">
+          <span class="{{it.cls}}"><b>{{it.n}}</b>{{it.label}}</span>
+        </sc-for>
+      </div>
+      <div class="story__k">{{story.k}}</div>
+      <div class="story__h">{{story.h}}</div>
+      <p class="story__p">{{story.p}}</p>
+      <div class="row"><button class="altbtn" onClick="{{altUsb}}">{{t.altUsb}}</button><button class="reset" onClick="{{doReset}}">{{t.reset}}</button></div>
+    </div>
+  </sc-if>
+</section>
+
+<!-- ================= VÍDEO ================= -->
+<section class="vidsec" id="video">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>{{t.vidEy}}</div>
+    <h2 class="h2">{{t.vidH}}</h2>
+    <div class="vid">
+      <video ref="{{refVid}}" src="/_blob/f195cb7509dc51f7df8a99a6d0180d0f" poster="/_blob/cf6d4ab242897316cb20248dfdcef847" autoplay="" muted="" loop="" playsinline="" preload="metadata" aria-label="{{t.vidAlt}}"></video>
+      <span class="tag">{{t.vidTag}}</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3 JEITOS ================= -->
+<section class="sec" id="como">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>{{t.howEy}}</div>
+    <h2 class="h2">{{t.howH}}</h2>
+    <p class="sub">{{t.howP}}</p>
+    <div class="grid3">
+      <div class="card"><span class="orbitline"></span>
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 9.3a12.7 12.7 0 0 1 18 0M6.4 12.9a7.8 7.8 0 0 1 11.2 0M9.9 16.5a3 3 0 0 1 4.2 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></div>
+        <h3>Wi‑Fi</h3><p>{{t.w1}}</p><span class="tag">{{t.w1t}}</span>
+      </div>
+      <div class="card"><span class="orbitline"></span>
+        <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2.5v13M8.5 6 12 2.5 15.5 6M6 11v3.5l6 3.5 6-3.5V10M12 18v3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+        <h3>{{t.w2h}}</h3><p>{{t.w2}}</p><span class="tag">{{t.w2t}}</span>
+      </div>
+      <div class="card"><span class="orbitline"></span>
+        <div class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="6" width="11" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M15 17.5a4 4 0 0 0 5-5M17 15.5a1.2 1.2 0 0 0 1.4-1.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></div>
+        <h3>{{t.w3h}}</h3><p>{{t.w3}}</p><span class="tag">{{t.w3t}}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RECURSOS ================= -->
+<section class="sec" id="recursos" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>{{t.featEy}}</div>
+    <h2 class="h2">{{t.featH}}</h2>
+    <div class="grid3">
+      <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 12h3l2-6 4 12 2-6h7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><h3><span class="hl">60 · <span class="st">120</span> Hz</span></h3><p>{{t.f1}}</p></div>
+      <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20l3.5-1 11-11a2.1 2.1 0 0 0-3-3l-11 11L4 20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path><path d="M13.5 7.5l3 3" stroke="currentColor" stroke-width="2"></path></svg></div><h3>{{t.f2h}}</h3><p>{{t.f2}}</p></div>
+      <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M8 20h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></div><h3><span class="hl">2560×1600</span></h3><p>{{t.f3}}</p></div>
+      <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path><path d="M19 2.5c.4 1.7.8 2.1 2.5 2.5-1.7.4-2.1.8-2.5 2.5-.4-1.7-.8-2.1-2.5-2.5 1.7-.4 2.1-.8 2.5-2.5z" fill="currentColor"></path></svg></div><h3>{{t.f4h}}</h3><p>{{t.f4}}</p></div>
+      <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M6 10h1M10 10h1M14 10h1M18 10h0M7 14h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></div><h3>{{t.f5h}}</h3><p>{{t.f5}}</p></div>
+      <div class="card feat"><div class="ico"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><h3>{{t.f6h}}</h3><p>{{t.f6}}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SEGURANÇA ================= -->
+<section class="sec" id="seguranca" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>{{t.secEy}}</div>
+    <h2 class="h2">{{t.secH}}</h2>
+    <p class="sub">{{t.secP}}</p>
+    <div class="grid4">
+      <div class="sbox"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 9.5V20h13V9.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><h3>{{t.sec1h}}</h3><p>{{t.sec1}}</p></div>
+      <div class="sbox"><div class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></div><h3>{{t.sec2h}}</h3><p>{{t.sec2}}</p></div>
+      <div class="sbox"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="8" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect><rect x="13.5" y="7" width="8" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M5 12h3M16 12h3" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg></div><h3>{{t.sec3h}}</h3><p>{{t.sec3}}</p></div>
+      <div class="sbox"><div class="ico"><svg viewBox="0 0 24 24"><path d="M8 7 3 12l5 5M16 7l5 5-5 5M13.5 4.5l-3 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><h3>{{t.sec4h}}</h3><p>{{t.sec4}}</p></div>
+    </div>
+    <dl class="secpanel">
+      <dt>{{t.perm1h}}</dt><dd>{{t.perm1}}</dd>
+      <dt>{{t.perm2h}}</dt><dd>{{t.perm2}}</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ================= COMPATÍVEIS ================= -->
+<section class="sec" id="compativeis" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>{{t.cpEy}}</div>
+    <h2 class="h2">{{t.cpH}}</h2>
+    <div class="grid2">
+      <div class="compat">
+        <h3>{{t.cpTab}}</h3>
+        <div class="it"><span class="chipok">{{t.cpTested}}</span><div><b>Galaxy Tab S11</b><span class="spec">SM‑X730 · 2560×1600 · 120 Hz</span></div></div>
+        <div class="it"><span class="chipok wait">{{t.cpCheck}}</span><div><b>{{t.cpOtherTabs}}</b><span>{{t.cpOtherTabsP}}</span></div></div>
+        <div class="it"><span class="chipok">{{t.cpReq}}</span><div><b>Android 12+</b><span>{{t.cpAndroidP}}</span></div></div>
+      </div>
+      <div class="compat">
+        <h3>Mac</h3>
+        <div class="it"><span class="chipok">{{t.cpReq}}</span><div><b>macOS 14 Sonoma+</b><span>{{t.cpMacP}}</span></div></div>
+        <div class="it"><span class="chipok">{{t.cpReq}}</span><div><b>Apple Silicon (M1+)</b><span>{{t.cpChipP}}</span></div></div>
+        <div class="it"><span class="chipok">{{t.cpConn}}</span><div><b>{{t.cpConnH}}</b><span>{{t.cpConnP}}</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARAÇÃO ================= -->
+<section class="sec" id="comparar" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>{{t.cmpEy}}</div>
+    <h2 class="h2">{{t.cmpH}}</h2>
+    <p class="sub">{{t.cmpP}}</p>
+    <div class="cmphint">{{t.cmpSwipe}}</div>
+    <div class="cmpwrap">
+      <div class="cmp" role="table" aria-label="{{t.cmpH}}">
+        <div class="hc corner" role="columnheader"><small>{{t.cmpCol}}</small></div>
+        <sc-for list="{{cmpCols}}" as="col" hint-placeholder-count="6">
+          <div class="hc {{col.cls}}" role="columnheader"><span class="nm">{{col.name}}</span><small>{{col.by}}</small></div>
+        </sc-for>
+        <sc-for list="{{cmpRows}}" as="row" hint-placeholder-count="5">
+          <div class="rh" role="rowheader">{{row.label}}</div>
+          <sc-for list="{{row.cells}}" as="c" hint-placeholder-count="6">
+            <div class="cell {{c.cls}}" role="cell"><span class="mk"><sc-if value="{{c.isYes}}" hint-placeholder-val="{{true}}"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M5 0 6 4 10 5 6 6 5 10 4 6 0 5 4 4Z"></path></svg></sc-if>{{c.word}}</span><span class="note">{{c.note}}</span></div>
+          </sc-for>
+        </sc-for>
+      </div>
+    </div>
+    <p class="cmpfoot">{{t.cmpFoot}}</p>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="sec" id="faq" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>FAQ</div>
+    <h2 class="h2">{{t.faqH}}</h2>
+    <div class="faq">
+      <sc-for list="{{faq}}" as="q" hint-placeholder-count="8">
+        <details><summary>{{q.q}}</summary><div class="ans">{{q.a}}</div></details>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CÓDIGO ABERTO + PRÓXIMOS PASSOS ================= -->
+<section class="sec" id="aberto" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="eyebrow"><span class="star4"></span>{{t.ossEy}}</div>
+    <h2 class="h2">{{t.ossH}}</h2>
+    <div class="oss">
+      <div class="ossbox">
+        <h3>{{t.ossBoxH}}</h3>
+        <p>{{t.ossBoxP}}</p>
+        <div class="code"><i>$</i> git clone <b>{{githubRepo}}</b>
+<i>$</i> open mac/        <i># SwiftUI</i>
+<i>$</i> open android/    <i># Kotlin</i></div>
+        <div class="ctas">
+          <a class="cta primary" href="{{githubRepo}}">{{t.ossCode}}</a>
+          <a class="cta ghost" href="{{githubIssues}}">{{t.ossContrib}}</a>
+        </div>
+      </div>
+      <div class="road">
+        <h3>{{t.roadH}}</h3>
+        <p>{{t.roadP}}</p>
+        <div class="ritem soon"><span class="dot"></span><div><b data-tag="{{t.soon}}">Linux</b><span>{{t.roadLinux}}</span></div></div>
+        <div class="ritem"><span class="dot"></span><div><b>{{t.roadMultiH}}</b><span>{{t.roadMulti}}</span></div></div>
+        <div class="ritem"><span class="dot"></span><div><b>{{t.roadSignH}}</b><span>{{t.roadSign}}</span></div></div>
+        <div class="ritem"><span class="dot"></span><div><b>{{t.roadIdeaH}}</b><span>{{t.roadIdea}} <a href="{{githubIssues}}">{{t.roadIdeaLink}}</a></span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= QUEM FEZ ================= -->
+<section class="sec" id="autor" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="author">
+      <div class="av"><img src="/_blob/0996a6b0e9a173b117d9b76d62375b0f" alt=""></div>
+      <div>
+        <div class="eyebrow"><span class="star4"></span>{{t.auEy}}</div>
+        <h3 style="margin-top: 10px;">{{t.auH}}</h3>
+        <p>{{t.auP}}</p>
+        <div class="sig">{{t.auSig}}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DOWNLOAD ================= -->
+<section class="sec" id="baixar" style="padding-top: 0;">
+  <div class="wrap">
+    <div class="band">
+      <canvas class="dither gal" ref="{{refGal}}" width="120" height="120" aria-hidden="true"></canvas>
+      <div class="bt">
+        <h2>{{t.dlH}}</h2>
+        <p>{{t.dlP}}</p>
+        <div class="ctas">
+          <a class="cta primary" href="{{github}}">{{t.ctaMac}}<small>GitHub</small></a>
+          <a class="cta ghost" href="{{github}}">{{t.ctaAnd}}<small>APK</small></a>
+        </div>
+        <div class="mini"><span><b>1</b>{{t.s1h}}</span><span><b>2</b>{{t.s2h}}</span><span><b>3</b>{{t.s3h}}</span></div>
+        <div class="req">{{t.req}}</div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <div class="foot">
+    <sc-if value="{{isLight}}" hint-placeholder-val="{{false}}"><img src="/_blob/203870db4f317396b97b0e07dc97bcd4" alt="ginga"></sc-if>
+    <sc-if value="{{isDark}}" hint-placeholder-val="{{true}}"><img src="/_blob/44ecdf02e81f5d55cd285dada8aa8766" alt="ginga"></sc-if>
+    <p class="legal" style="margin: 0;">{{t.legal}}</p>
+    <div class="fl"><a href="{{githubRepo}}">GitHub</a><a href="#faq">FAQ</a><a href="#seguranca">{{t.navSec}}</a><a href="#baixar">{{t.navDl}}</a></div>
+  </div>
+</footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"githubUrl":{"editor":"text","default":"https://github.com/[OWNER]/[REPO]/releases/latest","section":"Links"},"repoUrl":{"editor":"text","default":"https://github.com/[OWNER]/[REPO]","section":"Links"},"astronaut":{"editor":"boolean","default":true,"section":"Efeitos"},"$preview":{"width":1440,"height":4700}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { lang: "pt", theme: "dark", phase: "off", via: null, paired: false, wifi: false, usb: false,
+      screen: "search", sheet: false, docked: false, live: false, macNotesAway: false, tabNotesIn: false, toast: false,
+      route: false, story: "s1", rail: 1, hint: { k: "wifi", t: "hWifi", up: false }, scale: 1, left: 0, px: 0, py: 0, wrapW: 1200, mobile: false };
+    this.r = {}; this.refFns = {}; this.timers = [];
+  }
+  dict() {
+    if (!this._T) this._T = {
+  pt: {
+    vidEy: "Veja funcionando", vidH: "O cometa: Mac e tablet entrando em órbita", vidAlt: "Animação: o Mac envia o sinal como um cometa até o Galaxy Tab, que entra em warp e mostra a janela de Notas.", vidTag: "prévia · vídeo completo em breve",
+    docTitle: "Ginga — seu Galaxy Tab vira tela do Mac", navSec: "Segurança",
+    hDrag: "Arraste a janela para o tablet", hPen: "Toque para desenhar com a S Pen",
+    secEy: "Segurança e privacidade", secH: "Seu Mac, seu tablet, e mais ninguém no meio", secP: "O Ginga pede permissões sensíveis no Mac, então aqui está exatamente o que ele faz com elas.",
+    sec1h: "Fica na sua rede", sec1: "Mac e tablet falam direto: pelo cabo, pelo Wi‑Fi da sua casa ou pela rede do próprio tablet. Sem servidor no meio e sem conta.",
+    sec2h: "Criptografado", sec2: "O Wi‑Fi usa TLS 1.3 com o certificado de cada lado fixado. Pelo USB direto, só tablets que você aprovou abrem uma sessão.",
+    sec3h: "Pareamento por código", sec3: "Na primeira vez, as duas telas mostram os mesmos 6 dígitos. Só pareie tablets seus; “Esquecer” remove o acesso na hora.",
+    sec4h: "Código aberto", sec4: "Todo o código do Mac e do Android está no GitHub. Qualquer pessoa pode ler, auditar e compilar.",
+    perm1h: "Gravação de Tela", perm1: "O macOS pede essa permissão para o Ginga capturar o display virtual que ele cria para o tablet. É o que vai para a tela do tablet.",
+    perm2h: "Acessibilidade", perm2: "Necessária para que o toque e a S Pen no tablet movam o cursor e cliquem no Mac. Sem ela, o tablet só mostra a imagem.",
+    cpEy: "Compatibilidade", cpH: "Funciona com o que você tem?", cpTab: "Tablets", cpTested: "testado", cpCheck: "a confirmar", cpReq: "requisito", cpConn: "conexão",
+    cpOtherTabs: "Galaxy Tab S9 FE+, Galaxy S25 Ultra e outros Android", cpOtherTabsP: "Já têm perfil de tela e o app se ajusta ao painel informado pelo aparelho, mas ainda não foram testados neles.",
+    cpAndroidP: "O app do tablet é um APK no GitHub. Pelo USB direto não precisa de modo desenvolvedor.",
+    cpMacP: "Testado no macOS 26.6.2. O Ginga confere a cada versão se o display virtual continua disponível e avisa em vez de travar.",
+    cpChipP: "Macs com Intel não são suportados: a codificação em hardware e o display virtual usados dependem do Apple Silicon.",
+    cpConnH: "USB‑C, Wi‑Fi ou sem roteador", cpConnP: "Cabo USB com dados, a mesma rede Wi‑Fi, ou a rede Wi‑Fi criada pelo próprio tablet.",
+    faqH: "Perguntas frequentes",
+    faq: [
+      ["Funciona com qualquer tablet Android?", "O Ginga foi feito e testado no Galaxy Tab S11 (2560×1600, até 120 Hz). O app se ajusta ao painel de outros aparelhos com Android 12 ou mais novo, e o Tab S9 FE+ e o S25 Ultra já têm perfil, mas ainda não foram testados neles."],
+      ["Preciso ativar o modo desenvolvedor?", "Não. Pelo USB direto, o Android só pergunta uma vez se pode abrir o Ginga; marque “Sempre”. O caminho com adb continua disponível em Avançado para quem prefere."],
+      ["Funciona sem internet?", "Sim. Pelo cabo, pela rede Wi‑Fi local, ou pela conexão direta, em que o tablet cria a própria rede e o Mac entra nela. Enquanto isso o Mac fica fora do Wi‑Fi de antes, a menos que tenha cabo de rede."],
+      ["O toque e a S Pen funcionam?", "Sim. O toque clica, arrasta e rola com dois dedos. A S Pen vira uma mesa digitalizadora para o macOS, com pressão, inclinação, borracha e proximidade, como a Apple Pencil no Sidecar. O macOS pede a permissão de Acessibilidade para isso."],
+      ["Gasta muita bateria?", "Pouco. Medido no Mac: um display de 60 Hz com animação contínua acrescenta cerca de 230 mW, e uma área de trabalho parada acrescenta quase zero, porque nada é capturado nem enviado quando a tela não muda."],
+      ["Qual o melhor jeito de conectar?", "O USB direto: 120 fps a 120 Hz, sem quadros perdidos e cerca de 13 ms de ponta a ponta. O Wi‑Fi (60 fps) dá liberdade de levar o tablet pela casa. A conexão direta é para hotel, trem ou lugares sem roteador."],
+      ["Por que o Mac pede Gravação de Tela?", "Porque o Ginga cria um display virtual e captura só ele para enviar ao tablet. A partir do macOS 15, o sistema pede para reconfirmar essa permissão todo mês. Conteúdo com DRM aparece preto, e nada é capturado na tela de bloqueio."],
+      ["Quanto custa?", "Nada. O Ginga é software livre (AGPL‑3.0) e o download é pelo GitHub. Ele usa uma API privada do macOS para criar o display, então não pode estar na Mac App Store."],
+      ["E Linux e Windows?", "Linux está nos próximos passos. Para Windows, a própria Samsung já oferece o Second Screen, então o foco do Ginga é quem usa Mac e, em breve, Linux."]
+    ],
+    ossEy: "Código aberto", ossH: "Aberto de ponta a ponta", ossBoxH: "100% do código no GitHub", ossBoxP: "Os apps do Mac (Swift 6) e do Android (Kotlin) e o protocolo estão no mesmo repositório, sob a licença AGPL‑3.0. Leia, compile, abra uma issue ou mande um pull request.",
+    ossCode: "Ver o código", ossContrib: "Contribuir",
+    roadH: "Próximos passos", roadP: "O que vem por aí. Dá para acompanhar tudo pelas issues.", soon: "em breve",
+    roadLinux: "Um host para Linux com o mesmo protocolo e o mesmo app no tablet: X11 primeiro, depois Wayland.",
+    roadMultiH: "Vários tablets", roadMulti: "Mais de um tablet ao mesmo tempo, um display para cada.", roadSignH: "App assinado e notarizado", roadSign: "Distribuição com Developer ID, para abrir sem avisos do macOS.",
+    roadIdeaH: "Sua ideia", roadIdea: "Falta algo?", roadIdeaLink: "Abra uma issue",
+    auEy: "Quem fez", auH: "Feito por um estudante de Engenharia de Software",
+    auP: "O Ginga é um projeto independente do Kelvin Jesus, estudante de Engenharia de Software. Nasceu de uma vontade simples: usar o Galaxy Tab como segunda tela do MacBook, sem assinatura e sem modo desenvolvedor. Cada linha do código está aberta para quem quiser aprender com ela ou melhorá-la.",
+    auSig: "Kelvin Jesus · Engenharia de Software",
+    navLabel: "Principal", navHow: "Como conectar", navFeat: "Recursos", navDl: "Baixar", navCmp: "Comparar", langLabel: "Idioma", themeLabel: "Tema", light: "Tema claro", dark: "Tema escuro",
+    kicker: "Segunda tela para Mac", bhCap: "passe o mouse · clique no horizonte", blast: "Disparar o buraco negro",
+    h1: "Seu Galaxy Tab vira tela do Mac.",
+    lead: "Arraste janelas, toque na tela e desenhe com a S Pen: o Ginga transforma o tablet num display estendido de verdade. Por cabo USB sem modo desenvolvedor, por Wi‑Fi ou sem roteador.",
+    ctaMac: "Baixar para Mac", ctaAnd: "Baixar para Android",
+    tryA: "Experimente aqui embaixo:", tryB: "toque ou clique na tela do Mac e conecte o tablet.",
+    reset: "Recomeçar", r1: "Ligar no Mac", r2: "Encontrar", r3: "Parear", r4: "Estender",
+    mFile: "Arquivo", mEdit: "Editar", mView: "Ver", clock: "sáb. 20:20", notes: "Notas — Cálculo II",
+    gConn: "Conexão", rWifi: "Aceitar tablets por Wi‑Fi", rUsb: "Aceitar tablet por USB", rUsbSub: "Sem modo desenvolvedor",
+    gTabs: "Tablets", noTabs: "Nenhum tablet pareado ainda.", forget: "Esquecer", settings: "Ajustes…", create: "Criar display", disconnect: "Desconectar",
+    metaWifi: "Wi‑Fi · TLS · 2560×1600", metaUsb: "USB direto · 2560×1600", metaAway: "pareado · fora de alcance",
+    pairQ: "Parear com Galaxy Tab S11?", pairP: "O tablet mostra o mesmo código? Pareie só tablets seus.", noPair: "Não parear", doPair: "Parear",
+    stOff: "Desligado", stAdv: "Anunciando na rede", stPair: "Aguardando código", stConn: "Conectando…", stOk: "Conectado · 60 Hz", stCable: "Esperando o cabo", stApprove: "Tablet aprovando",
+    tSearch: "Procurando seu Mac", tSearchP: "Ligue o Ginga no Mac. Ele aparece aqui.", chipUsb: "Cabo USB", chipDirect: "Sem roteador",
+    tFound: "Mac por perto", tFoundP: "Toque para usar este tablet como segunda tela.", fNew: "não pareado · Wi‑Fi", fPaired: "pareado · Wi‑Fi", connect: "Conectar", reconnect: "Reconectar",
+    tConfirm: "Confirme no Mac", tWaitMac: "Aguardando o Mac",
+    tCable: "Cabo conectado", tCableP: "O Mac pediu para virar display.", dlgQ: "Abrir Ginga para “Segunda tela para seu Mac”?", dlgP: "Nenhuma depuração USB necessária.", dlgAlways: "Sempre, para este acessório", cancel: "Cancelar", open: "Abrir",
+    hWifi: "Ligue o Wi‑Fi", hConnect: "Toque em Conectar", hRe: "Reconectar", hPair: "Os códigos batem? Parear", hOpen: "Toque em Abrir", hDisc: "Desconectar e tentar de novo",
+    altUsb: "Prefiro o cabo USB",
+    story: {
+      s1: { k: "Passo 1 de 4 · Mac", h: "Ligue o Ginga no Mac", p: "Ative “Aceitar tablets por Wi‑Fi”. O Mac começa a se anunciar na rede e o tablet, que já está procurando, o encontra sozinho." },
+      s2: { k: "Passo 2 de 4 · Tablet", h: "O tablet encontra o Mac", p: "Em segundos o Mac aparece na lista do tablet. Nada de IP, porta ou adb." },
+      s3: { k: "Passo 3 de 4 · Os dois", h: "Os mesmos 6 dígitos nas duas telas", p: "Na primeira vez os dois mostram o mesmo código. Se bater, é o seu tablet. A conexão é criptografada com TLS e o par fica salvo." },
+      s4w: { k: "Passo 4 de 4 · Conexão", h: "Mac e tablet entram em órbita", p: "O Mac cria o display virtual e o sinal atravessa a rede como um cometa até o tablet." },
+      s4u: { k: "Passo 4 de 4 · Conexão", h: "Mac e tablet entram em órbita", p: "Pelo cabo o sinal viaja direto: o Android abre o Ginga como acessório, sem modo desenvolvedor." },
+      s5: { k: "Conectado", h: "Seu tablet agora é tela do Mac", p: "Arraste janelas para a direita e elas continuam no tablet. Quando nada aparece nele, o Mac para de enviar quadros e poupa bateria." },
+      s7: { k: "Estender", h: "Arraste uma janela para a direita", p: "O tablet agora é um monitor à direita do Mac. Arraste a janela de Notas até a borda e ela continua na tela do tablet." },
+      s8: { k: "Toque e S Pen", h: "Desenhe direto no tablet", p: "O toque e a S Pen controlam o Mac. Toque na janela no tablet para desenhar com a caneta." },
+      s6: { k: "Pareado", h: "Da próxima vez, sem código", p: "O tablet já é conhecido. Toque em Reconectar: o cometa sai direto, sem pedir os 6 dígitos de novo." },
+      su: { k: "Cabo USB", h: "Plugue o cabo", p: "Com o USB direto, o Android pergunta uma vez se abre o Ginga. Marque “Sempre” e da próxima vez a tela abre sozinha." }
+    },
+    howEy: "Como conectar", howH: "Três jeitos de entrar em órbita", howP: "Use o que tiver à mão. O Ginga escolhe sozinho da próxima vez.",
+    w1: "Pareie uma vez comparando um código de 6 dígitos nas duas telas. Depois o tablet reconecta sozinho, com tudo criptografado.", w1t: "TLS · pareamento por código",
+    w2h: "Cabo USB", w2: "Plugue e pronto: o Android abre o Ginga como acessório. Sem depuração USB, sem adb, sem modo desenvolvedor.", w2t: "120 fps · ~13 ms",
+    w3h: "Sem roteador", w3: "No hotel, no trem ou sem internet: o tablet cria a própria rede Wi‑Fi e o Mac entra nela. Ao terminar, o Mac volta para a sua rede.", w3t: "conexão direta",
+    featEy: "Recursos", featH: "Feito para parecer que sempre esteve ali",
+    f1: "Escolha fluidez ou bateria. 60 Hz gasta cerca de um terço da energia de 120 Hz para o mesmo stream de 60 fps.",
+    f2h: "Toque e S Pen", f2: "O toque clica, arrasta e rola. A S Pen vira mesa digitalizadora para o macOS, com pressão, inclinação e borracha.",
+    f3: "Pixel exato no painel do tablet, com HiDPI: parece 1280 × 800, nítido como uma tela Retina.",
+    f4h: "Poupa energia", f4: "Área de trabalho parada: quase zero de consumo extra. Nada é capturado ou enviado quando a tela não muda.",
+    f5h: "Teclado do tablet", f5: "Escolha qual tecla vira ⌘: a tecla Samsung ou Ctrl. Atalhos do Mac funcionam no teclado da capa.",
+    f6h: "Como um monitor de verdade", f6: "Posicione o tablet à esquerda, à direita, acima ou abaixo nos Ajustes de Telas do macOS, em paisagem ou retrato.",
+    cmpEy: "Comparar", cmpH: "Galaxy Tab + Mac: quem faz o quê", cmpP: "A maioria das opções de “tablet como segunda tela” foi feita para Windows ou para iPad. Veja o que funciona quando o computador é um Mac e o tablet é um Galaxy.",
+    cmpCol: "Mac + tablet Galaxy", cmpByUs: "este app", cmpOpen: "código aberto", cmpSwipe: "Arraste a tabela para o lado →", yes: "Sim", no: "Não", part: "Em parte",
+    cmp: [
+      ["Estende um Mac atual", ["y", "macOS com display virtual"], ["y", "macOS 10.14 ou mais novo"], ["y"], ["n", "só Windows 10 ou mais novo"], ["y"], ["n", "só Windows"]],
+      ["Funciona com tablet Galaxy / Android", ["y", "feito para Galaxy Tab"], ["y", "Android 7 ou mais novo"], ["y", "pelo navegador"], ["y", "Galaxy Tab S7 ou mais novo"], ["n", "só iPad"], ["y"]],
+      ["Tela estendida sem acessório extra", ["y"], ["y"], ["p", "estender pede um adaptador de display virtual"], ["y"], ["y"], ["y"]],
+      ["Por cabo USB", ["y", "sem modo desenvolvedor"], ["y"], ["n", "só Wi‑Fi local"], ["n", "só Wi‑Fi"], ["y"], ["y"]],
+      ["Custo", ["t", "Grátis · AGPL‑3.0"], ["t", "Pago, compras no app"], ["t", "Grátis"], ["t", "Incluso no Galaxy Tab"], ["t", "Incluso no macOS"], ["t", "Grátis para uso pessoal"]]
+    ],
+    cmpFoot: "Informações das páginas oficiais e das lojas de apps em setembro de 2026; podem mudar. Duet Display, Deskreen, Second Screen, Sidecar e spacedesk são marcas de seus donos e aparecem aqui só para comparação.",
+    stEy: "Começar", stH: "Em órbita em três passos",
+    s1h: "Baixe os dois apps", s1: "O app do Mac e o APK do Android estão na página de releases do GitHub.",
+    s2h: "Ligue no Mac", s2: "Abra o Ginga e ative Wi‑Fi ou USB no painel.",
+    s3h: "Conecte no tablet", s3: "Toque em Conectar e confira o código. Pronto.",
+    dlH: "Pronto para decolar?", dlP: "Baixe o Ginga para o Mac e para o tablet no GitHub.", req: "Mac com Apple Silicon e macOS 14+ · Android 12+ · grátis, AGPL‑3.0",
+    iconAlt: "Ícone do Ginga",
+    legal: "Galaxy e Samsung são marcas da Samsung Electronics. Mac, macOS e Sidecar são marcas da Apple Inc. O Ginga funciona com esses produtos e não é afiliado a nenhuma das duas empresas."
+  },
+  en: {
+    vidEy: "See it work", vidH: "The comet: Mac and tablet entering orbit", vidAlt: "Animation: the Mac sends the signal like a comet to the Galaxy Tab, which warps in and shows the Notes window.", vidTag: "preview · full video soon",
+    docTitle: "Ginga — your Galaxy Tab becomes a Mac display", navSec: "Security",
+    hDrag: "Drag the window to the tablet", hPen: "Tap to draw with the S Pen",
+    secEy: "Security and privacy", secH: "Your Mac, your tablet, and nobody in between", secP: "Ginga asks for sensitive permissions on the Mac, so here is exactly what it does with them.",
+    sec1h: "Stays on your network", sec1: "Mac and tablet talk directly: over the cable, your home Wi‑Fi or the tablet’s own network. No server in the middle and no account.",
+    sec2h: "Encrypted", sec2: "Wi‑Fi uses TLS 1.3 with each side’s certificate pinned. Over direct USB, only tablets you approved get a session.",
+    sec3h: "Code pairing", sec3: "The first time, both screens show the same 6 digits. Only pair tablets you own; “Forget” revokes access instantly.",
+    sec4h: "Open source", sec4: "All the Mac and Android code is on GitHub. Anyone can read, audit and build it.",
+    perm1h: "Screen Recording", perm1: "macOS asks for this so Ginga can capture the virtual display it creates for the tablet. That is what goes to the tablet’s screen.",
+    perm2h: "Accessibility", perm2: "Needed so touch and the S Pen on the tablet can move the cursor and click on the Mac. Without it, the tablet only shows the picture.",
+    cpEy: "Compatibility", cpH: "Does it work with what you have?", cpTab: "Tablets", cpTested: "tested", cpCheck: "to confirm", cpReq: "required", cpConn: "connection",
+    cpOtherTabs: "Galaxy Tab S9 FE+, Galaxy S25 Ultra and other Androids", cpOtherTabsP: "They already have display profiles and the app adapts to the panel the device reports, but they haven’t been tested yet.",
+    cpAndroidP: "The tablet app is an APK on GitHub. Over direct USB, no developer mode needed.",
+    cpMacP: "Tested on macOS 26.6.2. Ginga checks on every version that the virtual display is still available and tells you instead of crashing.",
+    cpChipP: "Intel Macs are not supported: the hardware encoding and virtual display Ginga uses depend on Apple Silicon.",
+    cpConnH: "USB‑C, Wi‑Fi or no router", cpConnP: "A USB data cable, the same Wi‑Fi network, or the Wi‑Fi network the tablet creates itself.",
+    faqH: "Frequently asked questions",
+    faq: [
+      ["Does it work with any Android tablet?", "Ginga was built and tested on the Galaxy Tab S11 (2560×1600, up to 120 Hz). The app adapts to the panel of other devices with Android 12 or later, and the Tab S9 FE+ and S25 Ultra already have profiles, but they haven’t been tested yet."],
+      ["Do I need developer mode?", "No. Over direct USB, Android asks once whether to open Ginga; tick “Always”. The adb path is still available under Advanced if you prefer it."],
+      ["Does it work without internet?", "Yes. Over the cable, the local Wi‑Fi, or the direct connection, where the tablet creates its own network and the Mac joins it. Meanwhile the Mac is off its previous Wi‑Fi unless it also has Ethernet."],
+      ["Do touch and the S Pen work?", "Yes. Touch clicks, drags and scrolls with two fingers. The S Pen becomes a pen tablet for macOS, with pressure, tilt, eraser and hover, like the Apple Pencil with Sidecar. macOS asks for the Accessibility permission for this."],
+      ["Does it drain the battery?", "Barely. Measured on the Mac: a 60 Hz display with continuous animation adds about 230 mW, and a still desktop adds close to zero, because nothing is captured or sent while the screen doesn’t change."],
+      ["What’s the best way to connect?", "Direct USB: 120 fps at 120 Hz, no dropped frames and about 13 ms end to end. Wi‑Fi (60 fps) lets you carry the tablet around. The direct connection is for hotels, trains or places with no router."],
+      ["Why does the Mac ask for Screen Recording?", "Because Ginga creates a virtual display and captures only that one to send it to the tablet. Since macOS 15 the system asks you to reconfirm this permission monthly. DRM content shows black, and nothing is captured at the lock screen."],
+      ["How much does it cost?", "Nothing. Ginga is free software (AGPL‑3.0), downloaded from GitHub. It uses a private macOS API to create the display, so it can’t be on the Mac App Store."],
+      ["What about Linux and Windows?", "Linux is next on the roadmap. For Windows, Samsung already offers Second Screen, so Ginga focuses on Mac users and, soon, Linux."]
+    ],
+    ossEy: "Open source", ossH: "Open from end to end", ossBoxH: "100% of the code on GitHub", ossBoxP: "The Mac (Swift 6) and Android (Kotlin) apps and the protocol live in one repository under the AGPL‑3.0. Read it, build it, open an issue or send a pull request.",
+    ossCode: "See the code", ossContrib: "Contribute",
+    roadH: "What’s next", roadP: "What’s coming. You can follow everything in the issues.", soon: "soon",
+    roadLinux: "A Linux host with the same protocol and the same tablet app: X11 first, then Wayland.",
+    roadMultiH: "Several tablets", roadMulti: "More than one tablet at once, one display each.", roadSignH: "Signed and notarized app", roadSign: "Developer ID distribution, so it opens without macOS warnings.",
+    roadIdeaH: "Your idea", roadIdea: "Something missing?", roadIdeaLink: "Open an issue",
+    auEy: "Who made it", auH: "Made by a software engineering student",
+    auP: "Ginga is an independent project by Kelvin Jesus, a software engineering student. It started from a simple wish: use a Galaxy Tab as a second screen for a MacBook, with no subscription and no developer mode. Every line of code is open for anyone who wants to learn from it or improve it.",
+    auSig: "Kelvin Jesus · Software Engineering",
+    navLabel: "Main", navHow: "How to connect", navFeat: "Features", navDl: "Download", navCmp: "Compare", langLabel: "Language", themeLabel: "Theme", light: "Light theme", dark: "Dark theme",
+    kicker: "Second display for Mac", bhCap: "hover · click the horizon", blast: "Fire the black hole",
+    h1: "Your Galaxy Tab becomes a Mac display.",
+    lead: "Drag windows, touch the screen and draw with the S Pen: Ginga turns the tablet into a true extended display. Over USB with no developer mode, over Wi‑Fi, or with no router at all.",
+    ctaMac: "Download for Mac", ctaAnd: "Download for Android",
+    tryA: "Try it right below:", tryB: "tap or click the Mac’s screen and connect the tablet.",
+    reset: "Start over", r1: "Turn on the Mac", r2: "Discover", r3: "Pair", r4: "Extend",
+    mFile: "File", mEdit: "Edit", mView: "View", clock: "Sat 8:20 PM", notes: "Notes — Calculus II",
+    gConn: "Connection", rWifi: "Accept tablets over Wi‑Fi", rUsb: "Accept a tablet over USB", rUsbSub: "No developer mode",
+    gTabs: "Tablets", noTabs: "No paired tablets yet.", forget: "Forget", settings: "Settings…", create: "Create display", disconnect: "Disconnect",
+    metaWifi: "Wi‑Fi · TLS · 2560×1600", metaUsb: "Direct USB · 2560×1600", metaAway: "paired · out of range",
+    pairQ: "Pair with Galaxy Tab S11?", pairP: "Does the tablet show the same code? Only pair tablets you own.", noPair: "Don’t pair", doPair: "Pair",
+    stOff: "Off", stAdv: "Advertising on the network", stPair: "Waiting for code", stConn: "Connecting…", stOk: "Connected · 60 Hz", stCable: "Waiting for the cable", stApprove: "Tablet approving",
+    tSearch: "Looking for your Mac", tSearchP: "Turn on Ginga on the Mac. It shows up here.", chipUsb: "USB cable", chipDirect: "No router",
+    tFound: "Mac nearby", tFoundP: "Tap to use this tablet as a second screen.", fNew: "not paired · Wi‑Fi", fPaired: "paired · Wi‑Fi", connect: "Connect", reconnect: "Reconnect",
+    tConfirm: "Confirm on the Mac", tWaitMac: "Waiting for the Mac",
+    tCable: "Cable connected", tCableP: "The Mac asked to become a display.", dlgQ: "Open Ginga for “Second display for your Mac”?", dlgP: "No USB debugging needed.", dlgAlways: "Always, for this accessory", cancel: "Cancel", open: "Open",
+    hWifi: "Turn on Wi‑Fi", hConnect: "Tap Connect", hRe: "Reconnect", hPair: "Codes match? Pair", hOpen: "Tap Open", hDisc: "Disconnect and try again",
+    altUsb: "I’d rather use USB",
+    story: {
+      s1: { k: "Step 1 of 4 · Mac", h: "Turn Ginga on", p: "Switch on “Accept tablets over Wi‑Fi”. The Mac starts advertising on the network and the tablet, already looking, finds it by itself." },
+      s2: { k: "Step 2 of 4 · Tablet", h: "The tablet finds the Mac", p: "In seconds the Mac shows up on the tablet. No IP, port or adb." },
+      s3: { k: "Step 3 of 4 · Both", h: "The same 6 digits on both screens", p: "The first time, both show the same code. If it matches, it’s your tablet. The connection is TLS‑encrypted and the pair is remembered." },
+      s4w: { k: "Step 4 of 4 · Connection", h: "Mac and tablet enter orbit", p: "The Mac creates the virtual display and the signal crosses the network like a comet to the tablet." },
+      s4u: { k: "Step 4 of 4 · Connection", h: "Mac and tablet enter orbit", p: "Over the cable the signal goes straight through: Android opens Ginga as an accessory, no developer mode." },
+      s5: { k: "Connected", h: "Your tablet is now a Mac screen", p: "Drag windows to the right and they carry on onto the tablet. When nothing is on it, the Mac stops sending frames and saves battery." },
+      s7: { k: "Extend", h: "Drag a window to the right", p: "The tablet is now a monitor to the right of the Mac. Drag the Notes window past the edge and it carries on onto the tablet." },
+      s8: { k: "Touch and S Pen", h: "Draw right on the tablet", p: "Touch and the S Pen control the Mac. Tap the window on the tablet to draw with the pen." },
+      s6: { k: "Paired", h: "Next time, no code", p: "The tablet is already known. Tap Reconnect: the comet flies straight away, no digits needed." },
+      su: { k: "USB cable", h: "Plug in the cable", p: "With direct USB, Android asks once whether to open Ginga. Tick “Always” and next time the display opens by itself." }
+    },
+    howEy: "How to connect", howH: "Three ways into orbit", howP: "Use whatever you have. Ginga remembers next time.",
+    w1: "Pair once by comparing a 6‑digit code on both screens. After that the tablet reconnects on its own, fully encrypted.", w1t: "TLS · code pairing",
+    w2h: "USB cable", w2: "Plug it in: Android opens Ginga as an accessory. No USB debugging, no adb, no developer mode.", w2t: "120 fps · ~13 ms",
+    w3h: "No router", w3: "Hotel, train or no internet: the tablet creates its own Wi‑Fi network and the Mac joins it. When you finish, the Mac goes back to your network.", w3t: "direct connection",
+    featEy: "Features", featH: "Built to feel like it was always there",
+    f1: "Pick smoothness or battery. 60 Hz uses about a third of the power of 120 Hz for the same 60 fps stream.",
+    f2h: "Touch and S Pen", f2: "Touch clicks, drags and scrolls. The S Pen becomes a pen tablet for macOS, with pressure, tilt and eraser.",
+    f3: "Pixel‑exact on the tablet’s panel, with HiDPI: looks like 1280 × 800, sharp like a Retina screen.",
+    f4h: "Saves power", f4: "A still desktop costs close to nothing extra. Nothing is captured or sent while the screen doesn’t change.",
+    f5h: "Tablet keyboard", f5: "Choose which key becomes ⌘: the Samsung key or Ctrl. Mac shortcuts work on the cover keyboard.",
+    f6h: "Like a real monitor", f6: "Place the tablet left, right, above or below in macOS Displays settings, in landscape or portrait.",
+    cmpEy: "Compare", cmpH: "Galaxy Tab + Mac: who does what", cmpP: "Most “tablet as a second screen” options were built for Windows or for iPad. Here is what works when the computer is a Mac and the tablet is a Galaxy.",
+    cmpCol: "Mac + Galaxy tablet", cmpByUs: "this app", cmpOpen: "open source", cmpSwipe: "Swipe the table sideways →", yes: "Yes", no: "No", part: "Partly",
+    cmp: [
+      ["Extends a current Mac", ["y", "macOS virtual display"], ["y", "macOS 10.14 or later"], ["y"], ["n", "Windows 10 or later only"], ["y"], ["n", "Windows only"]],
+      ["Works with a Galaxy / Android tablet", ["y", "built for Galaxy Tab"], ["y", "Android 7 or later"], ["y", "in the browser"], ["y", "Galaxy Tab S7 or later"], ["n", "iPad only"], ["y"]],
+      ["Extended display, no extra hardware", ["y"], ["y"], ["p", "extending needs a virtual display adapter"], ["y"], ["y"], ["y"]],
+      ["Over a USB cable", ["y", "no developer mode"], ["y"], ["n", "local Wi‑Fi only"], ["n", "Wi‑Fi only"], ["y"], ["y"]],
+      ["Cost", ["t", "Free · AGPL‑3.0"], ["t", "Paid, in‑app purchases"], ["t", "Free"], ["t", "Included with Galaxy Tab"], ["t", "Included in macOS"], ["t", "Free for personal use"]]
+    ],
+    cmpFoot: "Based on official pages and app store listings as of September 2026; details may change. Duet Display, Deskreen, Second Screen, Sidecar and spacedesk are trademarks of their owners, named here for comparison only.",
+    stEy: "Get started", stH: "In orbit in three steps",
+    s1h: "Download both apps", s1: "The Mac app and the Android APK are on the GitHub releases page.",
+    s2h: "Turn it on on the Mac", s2: "Open Ginga and switch on Wi‑Fi or USB.",
+    s3h: "Connect the tablet", s3: "Tap Connect and check the code. Done.",
+    dlH: "Ready for liftoff?", dlP: "Get Ginga for your Mac and your tablet on GitHub.", req: "Apple Silicon Mac with macOS 14+ · Android 12+ · free, AGPL‑3.0",
+    iconAlt: "Ginga icon",
+    legal: "Galaxy and Samsung are trademarks of Samsung Electronics. Mac, macOS and Sidecar are trademarks of Apple Inc. Ginga works with these products and is not affiliated with either company."
+  }
+};
+    return this._T;
+  }
+  ref(name) { var self = this; if (!this.refFns[name]) this.refFns[name] = function (el) { self.r[name] = el; }; return this.refFns[name]; }
+  later(fn, ms) { var rm = window.Ginga && (window.Ginga && window.Ginga.reducedMotion); this.timers.push(setTimeout(fn, rm ? Math.min(ms, 60) : ms)); }
+  clearTimers() { this.timers.forEach(clearTimeout); this.timers = []; }
+
+  componentDidMount() {
+    var self = this;
+    try {
+      var qs = new URLSearchParams(location.search).get("lang") || (location.hash.match(/lang=(pt|en)/) || [])[1];
+      if (qs === "pt" || qs === "en") this._langFromUrl = qs;
+    } catch (e) {}
+    this.setupAstro();
+    try { var v = this.r.vid; if (v) { v.muted = true; var rmv = !!(window.Ginga && window.Ginga.reducedMotion); if (rmv) { v.removeAttribute("autoplay"); v.controls = true; } else { var pr = v.play(); if (pr && pr.catch) pr.catch(function () { v.controls = true; }); } } } catch (e) {}
+    try { if (window.matchMedia("(prefers-color-scheme: light)").matches) this.setState({ theme: "light" }); } catch (e) {}
+    if (this._langFromUrl) this.setState({ lang: this._langFromUrl });
+    else { try { if ((navigator.language || "").toLowerCase().indexOf("pt") !== 0) this.setState({ lang: "en" }); } catch (e) {} }
+    if (this.r.sky) this.sky = this.pixelSky(this.r.sky);
+    var fit = function () {
+      var w = self.r.wrap ? self.r.wrap.clientWidth : 1200; if (w < 200) return; var s = Math.min(1, w / 1200);
+      self.setState({ scale: +s.toFixed(4), left: Math.max(0, (w - 1200 * s) / 2), wrapW: w, mobile: w < 760 });
+    };
+    fit();
+    if (window.ResizeObserver && this.r.wrap) { this.ro = new ResizeObserver(fit); this.ro.observe(this.r.wrap); }
+    this.hintTimer = setInterval(function () { self.placeHint(); }, 220);
+    if (this.r.bh) this.bhLoop = this.ditherLoop(this.r.bh, this.blackHole());
+    if (this.r.gal) this.galLoop = this.ditherLoop(this.r.gal, this.galaxy());
+    if (this.r.macWall) this.macWallLoop = this.ditherLoop(this.r.macWall, this.galaxy({ cx: 0.68, cy: 0.62, s: 1.15, spin: 0.15 }));
+    if (this.r.tabWall) this.tabWallLoop = this.ditherLoop(this.r.tabWall, this.galaxy({ cx: 0.2, cy: 0.7, s: 1.2, spin: 0.15 }));
+  }
+
+  /* ---------- céu em pixels: estrelas cintilando em toda a seção inicial + estrelas cadentes ---------- */
+  pixelSky(cv) {
+    var PX = 4, ctx = cv.getContext("2d"), W = 0, H = 0, stars = [], shoot = null, raf = 0, last = 0, visible = true;
+    var COL = ["#252C66", "#2E47F5", "#6F82FF", "#A4A9C8", "#F2F3F8", "#FFC43D"];
+    var rm = !!(window.Ginga && window.Ginga.reducedMotion);
+    var seed = function () {
+      var r = cv.getBoundingClientRect(); W = Math.max(1, Math.ceil(r.width / PX)); H = Math.max(1, Math.ceil(r.height / PX));
+      cv.width = W; cv.height = H; stars = [];
+      var n = Math.round(W * H * 0.0048);
+      for (var i = 0; i < n; i++) {
+        var k = Math.random(), c = k < 0.5 ? 0 : k < 0.74 ? 1 : k < 0.88 ? 2 : k < 0.95 ? 3 : k < 0.99 ? 4 : 5;
+        stars.push({ x: (Math.random() * W) | 0, y: (Math.random() * H) | 0, c: c, p: Math.random() * 6.28, s: 0.5 + Math.random() * 2, big: c >= 4 && Math.random() < 0.25 });
+      }
+      draw(0);
+    };
+    var draw = function (t) {
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < stars.length; i++) {
+        var st = stars[i], tw = Math.sin(st.p + t * st.s), c = st.c + (tw > 0.75 ? 1 : tw < -0.6 ? -1 : 0);
+        if (c < 0) continue; if (c > 5) c = 5;
+        ctx.fillStyle = COL[c]; ctx.fillRect(st.x, st.y, 1, 1);
+        if (st.big && tw > 0.2) { ctx.fillStyle = COL[Math.max(0, c - 2)]; ctx.fillRect(st.x - 1, st.y, 1, 1); ctx.fillRect(st.x + 1, st.y, 1, 1); ctx.fillRect(st.x, st.y - 1, 1, 1); ctx.fillRect(st.x, st.y + 1, 1, 1); }
+      }
+      if (shoot) {
+        var e = t - shoot.t0, len = 14;
+        if (e > 1.1) shoot = null; else {
+          var hx = shoot.x + e * shoot.vx, hy = shoot.y + e * shoot.vy;
+          for (var j = 0; j < len; j++) { ctx.fillStyle = COL[j < 2 ? 5 : j < 5 ? 4 : j < 9 ? 2 : 1]; ctx.fillRect(Math.round(hx - j * shoot.vx / 60), Math.round(hy - j * shoot.vy / 60), 1, 1); }
+        }
+      } else if (Math.random() < 0.004) {
+        shoot = { t0: t, x: Math.random() * W * 0.7, y: Math.random() * H * 0.35, vx: 90 + Math.random() * 60, vy: 30 + Math.random() * 30 };
+      }
+    };
+    var t0 = performance.now();
+    var loop = function (now) { raf = 0; if (!visible || document.hidden) return; if (now - last > 90) { last = now; draw((now - t0) / 1000); } raf = requestAnimationFrame(loop); };
+    seed();
+    var ro = window.ResizeObserver ? new ResizeObserver(seed) : null; if (ro) ro.observe(cv);
+    if (!rm) {
+      raf = requestAnimationFrame(loop);
+      if (window.IntersectionObserver) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; if (visible && !raf) raf = requestAnimationFrame(loop); }).observe(cv);
+      document.addEventListener("visibilitychange", function () { if (!document.hidden && !raf) raf = requestAnimationFrame(loop); });
+    }
+    return { stop: function () { if (raf) cancelAnimationFrame(raf); raf = 0; visible = false; if (ro) ro.disconnect(); } };
+  }
+
+  /* ---------- dithering pixelizado (Bayer 4×4) sobre a paleta da marca ---------- */
+  ditherLoop(cv, shade) {
+    var ctx = cv.getContext("2d"), W = cv.width, H = cv.height, img = ctx.createImageData(W, H), d = img.data;
+    var PAL = [[10,12,28],[20,24,48],[46,71,245],[111,130,255],[242,243,248],[255,196,61]], N = PAL.length - 1;
+    var B = [0,8,2,10,12,4,14,6,3,11,1,9,15,7,13,5];
+    var geo = shade.init(W, H), buf = new Float32Array(W * H), raf = 0, visible = true, last = 0, t0 = performance.now();
+    var rm = window.Ginga && (window.Ginga && window.Ginga.reducedMotion);
+    var draw = function (t) {
+      for (var j = 0; j < buf.length; j++) buf[j] = shade.at(geo, j, t);
+      if (shade.splat) shade.splat(buf, W, H, t);
+      for (var y = 0, i = 0; y < H; y++) for (var x = 0; x < W; x++, i++) {
+        var v = buf[i], th = (B[(y & 3) * 4 + (x & 3)] + 0.5) / 16;
+        var lv = Math.floor(v * N + th); lv = lv < 0 ? 0 : lv > N ? N : lv;
+        var c = PAL[lv], o = i * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = lv === 0 ? 0 : 255;
+      }
+      ctx.putImageData(img, 0, 0);
+    };
+    var loop = function (now) {
+      raf = 0; if (!visible || document.hidden) return;
+      if (now - last > 42) { last = now; draw((now - t0) / 1000); }
+      raf = requestAnimationFrame(loop);
+    };
+    draw(0);
+    if (!rm) {
+      raf = requestAnimationFrame(loop);
+      if (window.IntersectionObserver) new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (visible && !raf) raf = requestAnimationFrame(loop); }).observe(cv);
+      document.addEventListener("visibilitychange", function () { if (!document.hidden && !raf) raf = requestAnimationFrame(loop); });
+    }
+    return { shade: shade, now: function () { return (performance.now() - t0) / 1000; }, stop: function () { if (raf) cancelAnimationFrame(raf); raf = 0; visible = false; } };
+  }
+  blackHole() {
+    /* Buraco negro em dithering: gás espiralando para dentro (disco inclinado com efeito Doppler),
+       anel de fótons, arco lenteado por cima, estrelas de fundo deformadas pela lente
+       e ~700 partículas em órbita kepleriana que colapsam com o mouse e explodem no clique. */
+    var R = 0.28, K = 0.2, rIn = 0.42, rOut = 1.6;
+    var hash = function (a, b) { var x = Math.sin(a * 127.1 + b * 311.7) * 43758.5453; return x - Math.floor(x); };
+    var shade = {
+      pull: 0, pullT: 0, tb: -99, cx: 0, cy: 0, W: 0, H: 0,
+      init: function (W, H) {
+        var n = W * H, g = { x: new Float32Array(n), y: new Float32Array(n), rd: new Float32Array(n), lrd: new Float32Array(n), ang: new Float32Array(n), rs: new Float32Array(n), st: new Float32Array(n) };
+        shade.W = W; shade.H = H; shade.cx = W * 0.5; shade.cy = H * 0.52;
+        for (var yy = 0, i = 0; yy < H; yy++) for (var xx = 0; xx < W; xx++, i++) {
+          var x = (xx - shade.cx) / (H / 2), y = (yy - shade.cy) / (H / 2), v = y / K, rs = Math.sqrt(x * x + y * y);
+          g.x[i] = x; g.y[i] = y; g.rd[i] = Math.sqrt(x * x + v * v); g.lrd[i] = Math.log(g.rd[i] + 0.001); g.ang[i] = Math.atan2(v, x); g.rs[i] = rs;
+          /* lente: a estrela vista aqui vem de um ponto empurrado para fora (Einstein) */
+          var k = rs > R ? 1 + 0.09 / (rs * rs) : 0, sx = x * k, sy = y * k;
+          var h = hash(Math.floor(sx * 60), Math.floor(sy * 60));
+          g.st[i] = rs > R * 1.1 && rs < 1.05 && h > 0.985 ? 0.28 + (h - 0.985) * 40 : 0;
+        }
+        var P = [], NP = Math.min(700, Math.round(W * H * 0.03));
+        for (var p = 0; p < NP; p++) {
+          var r0 = rIn * 0.9 + Math.pow(Math.random(), 0.8) * (rOut * 1.25 - rIn);
+          P.push({ r: r0, a: Math.random() * 6.2832, w: 0.9 / Math.pow(r0, 1.5), b: 0.35 + Math.random() * 0.55, z: (Math.random() - 0.5) * 0.05 });
+        }
+        g.P = P;
+        return g;
+      },
+      at: function (g, i, t) {
+        var x = g.x[i], y = g.y[i], rd = g.rd[i], a = g.ang[i], rs = g.rs[i];
+        var dop = 0.5 - 0.5 * Math.cos(a);
+        var D = 0;
+        if (rd > rIn && rd < rOut) {
+          var f = 1 - (rd - rIn) / (rOut - rIn);
+          /* espirais que puxam o gás para dentro */
+          var sw = 0.5 + 0.5 * Math.sin(a * 3 + g.lrd[i] * 7 + t * 2.2);
+          var sw2 = 0.5 + 0.5 * Math.sin(a * 7 - g.lrd[i] * 11 + t * 3.1);
+          D = Math.pow(f, 1.05) * (0.35 + 0.75 * dop) * (0.45 + 0.4 * sw + 0.2 * sw2) * Math.min(1, (rd - rIn) / 0.06);
+        }
+        var L = 0, dr = Math.abs(rs - 0.47);
+        if (dr < 0.17 && y < 0.05) {
+          var la = Math.atan2(y, x);
+          L = Math.pow(1 - dr / 0.17, 1.4) * (0.55 + 0.45 * (0.5 - 0.5 * Math.cos(la))) * (0.7 + 0.3 * Math.sin(la * 5 + t * 2.4 + rs * 20));
+        }
+        var Pr = Math.max(0, 1 - Math.abs(rs - R * 1.04) / 0.02);
+        if (rs < R) return (y > 0 && D > 0) ? D : 0;
+        var halo = 0.18 * Math.exp(-(rs - R) / 0.14) * (1 + 0.6 * shade.pull);
+        var back = Math.min(1, Math.max(0, (rs - 0.5) / 0.3)); back = back * back * (3 - 2 * back);
+        var v = Math.max(y > 0 ? D : Math.max(D * back, L), Pr * (0.85 + 0.15 * Math.sin(t * 3)), halo);
+        v += g.st[i] * (0.65 + 0.35 * Math.sin(t * 1.7 + i));
+        return v > 1 ? 1 : v;
+      },
+      splat: function (buf, W, H, t) {
+        var g = shade.g; if (!g) return;
+        shade.pull += (shade.pullT - shade.pull) * 0.08;
+        var e = t - shade.tb, burst = e > 0 && e < 2.2 ? Math.sin(Math.PI * Math.min(1, e / 2.2)) * Math.exp(-e * 0.6) : 0;
+        var S = H / 2, dt = 0.042;
+        for (var p = 0; p < g.P.length; p++) {
+          var q = g.P[p];
+          q.a += q.w * dt * (1 + 1.4 * shade.pull);
+          var r = q.r * (1 - 0.38 * shade.pull) * (1 + 1.6 * burst * (0.6 + q.b));
+          for (var k = 0; k < 3; k++) {
+            var aa = q.a - k * 0.05 * (1 + shade.pull), x = r * Math.cos(aa), y = r * Math.sin(aa) * K + q.z;
+            var rs = Math.sqrt(x * x + y * y);
+            if (rs < R && Math.sin(aa) < 0) continue;
+            var px = Math.round(shade.cx + x * S), py = Math.round(shade.cy + y * S);
+            if (px < 0 || py < 0 || px >= W || py >= H) continue;
+            var o = py * W + px, add = q.b * (k === 0 ? 0.75 : 0.32 / k) * (0.6 + 0.6 * (0.5 - 0.5 * Math.cos(aa)));
+            buf[o] = Math.min(1, buf[o] + add);
+          }
+        }
+      }
+    };
+    var init = shade.init;
+    shade.init = function (W, H) { var g = init(W, H); shade.g = g; return g; };
+    return shade;
+  }
+  galaxy(o) {
+    o = o || {}; var CX = o.cx == null ? 0.5 : o.cx, CY = o.cy == null ? 0.5 : o.cy, SC = o.s || 1, SPIN = o.spin == null ? 0.35 : o.spin;
+    return {
+      init: function (W, H) {
+        var n = W * H, g = { r: new Float32Array(n), th: new Float32Array(n) }, U = Math.min(W, H) / 2 * SC;
+        for (var yy = 0, i = 0; yy < H; yy++) for (var xx = 0; xx < W; xx++, i++) {
+          var x = (xx - W * CX) / U, y = (yy - H * CY) / U;
+          var c = Math.cos(-0.5), s = Math.sin(-0.5), u = x * c - y * s, w = (x * s + y * c) / 0.62;
+          g.r[i] = Math.sqrt(u * u + w * w); g.th[i] = Math.atan2(w, u);
+        }
+        return g;
+      },
+      at: function (g, i, t) {
+        var r = g.r[i]; if (r > 1.05) return 0;
+        var arms = Math.pow(0.5 + 0.5 * Math.cos(2 * g.th[i] - 5.2 * Math.log(r + 0.06) - t * SPIN), 3);
+        var edge = Math.min(1, (1.05 - r) / 0.35);
+        var v = (Math.exp(-r * 2.4) * (0.25 + 1.1 * arms)) * edge + 1.15 * Math.exp(-r * r * 60);
+        return v > 1 ? 1 : v;
+      }
+    };
+  }
+  componentDidUpdate(pp, ps) {
+    if (ps && ps.lang !== this.state.lang) this.syncLang();
+  }
+  syncLang() {
+    var L = this.state.lang, t = this.dict()[L];
+    try { document.documentElement.lang = L === "pt" ? "pt-BR" : "en"; document.title = t.docTitle; } catch (e) {}
+    try { var u = new URL(location.href); u.searchParams.set("lang", L); history.replaceState(null, "", u.pathname + u.search + u.hash); } catch (e) {}
+  }
+  /* Cursor astronauta: ele É o ponteiro (a mão levantada é o ponto do clique). Uma cordinha solta presa às
+     costas balança com física Verlet. Com o mouse parado, a gravidade do buraco negro puxa o astronauta numa
+     espiral até o horizonte; mexer o mouse o traz de volta na hora. */
+  setupAstro() {
+    var self = this, fine = false, rm = !!(window.Ginga && window.Ginga.reducedMotion);
+    try { fine = window.matchMedia("(pointer: fine)").matches; } catch (e) {}
+    this.astroOk = fine && !rm && this.props.astronaut !== false;
+    if (!this.astroOk) return;
+    this.setState({ astroOn: true });
+    var gen = this._astroGen = (this._astroGen || 0) + 1;
+    var N = 9, SEG = 6, DAMP = 0.9, ITER = 8, IDLE = 900, VMAX = 4;
+    var A = { tx: -200, ty: -200, x: -200, y: -200, vx: 0, vy: 0, rot: 0, sc: 1, stretch: 1, radial: 0, behind: false, orb: null, hot: false, seen: false, mode: "follow", lastMove: 0 };
+    var rope = []; for (var i = 0; i < N; i++) rope.push({ x: -200, y: -200, px: -200, py: -200 });
+    var parts = [], k = 0, lastSpark = 0, W = 0, H = 0, prev = performance.now();
+    for (var q = 0; q < 6; q++) parts.push({ x: -50, y: -50, life: 0, vx: 0, vy: 0 });
+    this.astroState = A;
+    var sizeCanvas = function () { var c = self.r.tether; if (!c) return; W = window.innerWidth; H = window.innerHeight; c.width = W; c.height = H; };
+    sizeCanvas(); window.addEventListener("resize", sizeCanvas); this._astroResize = sizeCanvas;
+    var anchor = function () { /* ponto da corda nas costas (mochila), girando junto com o astronauta */
+      var a = A.rot * Math.PI / 180, ox = 20 * A.sc, oy = 26 * A.sc;
+      return { x: A.x + ox * Math.cos(a) - oy * Math.sin(a), y: A.y + ox * Math.sin(a) + oy * Math.cos(a) };
+    };
+    var resetRope = function () { var an = anchor(); for (var i = 0; i < N; i++) { rope[i].x = rope[i].px = an.x - i * 2; rope[i].y = rope[i].py = an.y + i * SEG; } };
+    var burst = function (x, y, n) { for (var i = 0; i < (n || 6); i++) { var p = parts[k++ % parts.length], ang = Math.random() * 6.283, v = 1.5 + Math.random() * 2.5; p.x = x; p.y = y; p.vx = Math.cos(ang) * v; p.vy = Math.sin(ang) * v; p.life = 1; } };
+    var hole = function () {
+      var c = self.r.bh; if (!c) return null;
+      if (document.visibilityState !== "visible") return null;
+      var r = c.getBoundingClientRect(); if (r.width < 10) return null;
+      /* só puxa com o buraco negro de fato na tela: o horizonte inteiro visível e pelo menos 60% do disco à vista */
+      var hx = r.left + r.width * 0.5, hy = r.top + r.height * 0.52, R = 0.28 * r.height / 2, vw = window.innerWidth, vh = window.innerHeight;
+      if (hx - R < 0 || hx + R > vw || hy - R < 0 || hy + R > vh) return null;
+      var visH = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0)), visW = Math.max(0, Math.min(r.right, vw) - Math.max(r.left, 0));
+      if (visH * visW < 0.6 * r.width * r.height) return null;
+      return { x: hx, y: hy, R: R };
+    };
+    this._astroMoved = function () {
+      A.lastMove = performance.now();
+      if (A.mode === "eaten") { A.x = A.tx; A.y = A.ty; A.vx = A.vy = 0; A.rot = 0; A.sc = 1; A.stretch = 1; resetRope(); burst(A.x + 10, A.y + 10, 6); }
+      if (A.mode === "pulled") { A.orb = null; A.behind = false; }
+      A.mode = "follow";
+      if (self.bhLoop) self.bhLoop.shade.pullT = 0;
+    };
+    var loop = function (now) {
+      if (gen !== self._astroGen) return;
+      self.astroRaf = requestAnimationFrame(loop);
+      var dt = Math.min(2, (now - prev) / 16.67); prev = now;
+      var el = self.r.astro, star = self.r.cstar, cv = self.r.tether; if (!el || !cv) return;
+      var ctx = cv.getContext("2d"); ctx.clearRect(0, 0, W, H);
+      if (star) star.classList.remove("on");
+      if (!A.seen) { el.classList.remove("on"); return; }
+      var h = hole();
+      if (A.mode === "follow") {
+        var nx = A.x + (A.tx - A.x) * 0.55, ny = A.y + (A.ty - A.y) * 0.55;
+        A.vx = nx - A.x; A.vy = ny - A.y; A.x = nx; A.y = ny;
+        A.rot += ((Math.max(-10, Math.min(10, A.vx * 0.6))) - A.rot) * 0.15;
+        A.sc += (1 - A.sc) * 0.2; A.stretch = 1 + ((A.stretch || 1) - 1) * 0.8; A.behind = false; A.orb = null;
+        if (h && now - A.lastMove > IDLE && Math.hypot(h.x - A.x, h.y - A.y) < Math.max(900, window.innerWidth * 0.8)) { A.mode = "pulled"; A.vx = A.vy = 0; }
+      } else if (A.mode === "pulled") {
+        if (!h) { A.mode = "follow"; A.orb = null; A.behind = false; if (self.bhLoop) self.bhLoop.shade.pullT = 0; }
+        else {
+          /* órbita no plano do disco (achatado) que se fecha em espiral: lei de Kepler, ω ∝ r^-1.5 */
+          var F = 0.42, secs = dt / 60;
+          if (!A.orb) {
+            var ox = A.x - h.x, oy = (A.y - h.y) / F;
+            A.orb = { r: Math.min(520, Math.max(h.R * 2.4, Math.hypot(ox, oy))), th: Math.atan2(oy, ox), blend: 0, sx: A.x, sy: A.y };
+          }
+          var O = A.orb;
+          O.th += Math.min(7, 1.5 * Math.pow(220 / O.r, 1.5)) * secs;
+          O.r *= Math.exp(-0.3 * secs * (O.r < h.R * 2 ? 2.2 : 1));
+          O.blend = Math.min(1, O.blend + secs * 1.4);
+          var bx = h.x + O.r * Math.cos(O.th), by = h.y + O.r * Math.sin(O.th) * F, e2 = O.blend * O.blend * (3 - 2 * O.blend);
+          var nx2 = O.sx + (bx - O.sx) * e2, ny2 = O.sy + (by - O.sy) * e2;
+          if (O.blend >= 1) { O.sx = bx; O.sy = by; }
+          A.vx = nx2 - A.x; A.vy = ny2 - A.y; A.x = nx2; A.y = ny2;
+          /* espaguetificação: estica na direção do buraco e afina conforme se aproxima */
+          var rr = O.blend < 1 ? Math.hypot(A.x - h.x, (A.y - h.y) / F) : O.r;
+          A.stretch = 1 + Math.min(2.4, Math.pow(h.R * 2 / Math.max(rr, h.R), 3) * 1.2);
+          A.radial = Math.atan2(h.y - A.y, h.x - A.x) * 57.2958;
+          A.rot += (1.2 + Math.hypot(A.vx, A.vy) * 0.8) * dt;
+          A.sc = Math.max(0.35, Math.min(1, rr / (h.R * 3)));
+          /* atrás do buraco (metade de cima da órbita) ele some atrás da sombra */
+          A.behind = Math.sin(O.th) < 0 && Math.abs(A.x - h.x) < h.R * 1.05 && Math.abs(A.y - h.y) < h.R;
+          if (self.bhLoop) self.bhLoop.shade.pullT = 1;
+          if (O.r < h.R * 1.02) {
+            A.mode = "eaten"; A.orb = null; burst(A.x, A.y, 6);
+            if (self.bhLoop) { self.bhLoop.shade.tb = self.bhLoop.now(); self.bhLoop.shade.pullT = 0; }
+          }
+        }
+      }
+      /* corda: ponto 0 preso na mochila; o resto solto, com inércia e um pouco de gravidade do buraco negro */
+      var an = anchor(); rope[0].x = rope[0].px = an.x; rope[0].y = rope[0].py = an.y;
+      for (var i = 1; i < N; i++) {
+        var p = rope[i], vx = (p.x - p.px) * DAMP, vy = (p.y - p.py) * DAMP, gx = 0, gy = 0.12, vm = Math.hypot(vx, vy);
+        if (vm > VMAX) { vx *= VMAX / vm; vy *= VMAX / vm; }
+        if (h && A.mode === "pulled") { var ddx = h.x - p.x, ddy = h.y - p.y, dd = Math.max(30, Math.hypot(ddx, ddy)); gx = ddx / dd * 0.12; gy = ddy / dd * 0.12; }
+        p.px = p.x; p.py = p.y; p.x += vx + gx * dt; p.y += vy + gy * dt;
+      }
+      for (var it = 0; it < ITER; it++) for (var j = 0; j < N - 1; j++) {
+        var a1 = rope[j], b1 = rope[j + 1], ex = b1.x - a1.x, ey = b1.y - a1.y, e = Math.hypot(ex, ey) || 0.001, df = (e - SEG * A.sc) / e;
+        if (j === 0) { b1.x -= ex * df; b1.y -= ey * df; } else { a1.x += ex * df * 0.5; a1.y += ey * df * 0.5; b1.x -= ex * df * 0.5; b1.y -= ey * df * 0.5; }
+      }
+      if (A.mode !== "eaten" && !A.behind) {
+        for (var s2 = 0; s2 < N - 1; s2++) {
+          var P = rope[s2], Q = rope[s2 + 1];
+          for (var u = 0; u < 3; u++) {
+            var x = P.x + (Q.x - P.x) * u / 3, y = P.y + (Q.y - P.y) * u / 3;
+            ctx.fillStyle = (s2 * 3 + u) % 4 < 2 ? "#F2F3F8" : "#6F82FF";
+            ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 2, 2);
+          }
+        }
+        /* a ponta solta da corda: um mosquetão dourado */
+        var T = rope[N - 1]; ctx.fillStyle = "#FFC43D"; ctx.fillRect(Math.round(T.x / 2) * 2 - 1, Math.round(T.y / 2) * 2 - 1, 4, 4);
+      }
+      var st = A.stretch || 1, sc0 = A.sc * (A.hot && A.mode === "follow" ? 1.15 : 1), rad = A.radial || 0;
+      el.style.transform = "translate(" + (A.x - 4).toFixed(1) + "px, " + (A.y - 5).toFixed(1) + "px)" +
+        (st > 1.01 ? " rotate(" + rad.toFixed(1) + "deg) scale(" + st.toFixed(3) + ", " + (1 / Math.sqrt(st)).toFixed(3) + ") rotate(" + (-rad).toFixed(1) + "deg)" : "") +
+        " rotate(" + A.rot.toFixed(1) + "deg) scale(" + sc0.toFixed(3) + ")";
+      el.classList.toggle("on", A.mode !== "eaten" && !A.behind);
+      /* faíscas de propulsão ao mover rápido */
+      var sp = Math.hypot(A.vx, A.vy);
+      if (A.mode === "follow" && sp > 4 && now - lastSpark > 45) { lastSpark = now; var pp = parts[k++ % parts.length]; pp.x = an.x; pp.y = an.y; pp.vx = -A.vx * 0.25 + (Math.random() - 0.5); pp.vy = -A.vy * 0.25 + (Math.random() - 0.5); pp.life = 1; }
+      for (var m = 0; m < parts.length; m++) {
+        var z = parts[m], spn = self.r["tr" + m]; if (!spn) continue;
+        if (z.life > 0) { z.life -= 0.045 * dt; z.x += z.vx * dt; z.y += z.vy * dt; }
+        spn.style.opacity = Math.max(0, z.life).toFixed(2);
+        spn.style.transform = "translate(" + Math.round(z.x / 4) * 4 + "px, " + Math.round(z.y / 4) * 4 + "px)";
+      }
+    };
+    this._astroReset = function () { A.x = A.tx; A.y = A.ty; resetRope(); };
+    this.astroRaf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() {
+    if (this.astroRaf) cancelAnimationFrame(this.astroRaf); if (this._astroResize) window.removeEventListener("resize", this._astroResize); [this.bhLoop, this.galLoop, this.macWallLoop, this.tabWallLoop, this.sky].forEach(function (l) { if (l) l.stop(); }); this.clearTimers(); clearInterval(this.hintTimer); if (this.ro) this.ro.disconnect();  }
+
+  /* geometria em coordenadas do stage (ele pode estar escalado) */
+  box(el) {
+    var st = this.r.stage, s = st.getBoundingClientRect(), r = el.getBoundingClientRect(), k = st.offsetWidth / s.width;
+    return { x: (r.left - s.left) * k, y: (r.top - s.top) * k, w: r.width * k, h: r.height * k };
+  }
+  placeHint() {
+    var h = this.state.hint, el = h && this.r[h.k], hint = this.r.hint;
+    if (!hint || !el || !this.r.stage) return;
+    var b = this.box(el), p = 6;
+    hint.style.borderRadius = b.h > 60 ? "20px" : "999px";
+    hint.style.left = (b.x - p) + "px"; hint.style.top = (b.y - p) + "px";
+    hint.style.width = (b.w + p * 2) + "px"; hint.style.height = (b.h + p * 2) + "px";
+  }
+  spark(name) { if (window.Ginga && this.r[name]) window.Ginga.spark(this.r[name]); }
+
+  /* ---------- efeitos ---------- */
+  routePath() {
+    var m = this.box(this.r.macScreen), t = this.box(this.r.tabScreen);
+    var x1 = m.x + m.w - 40, y1 = m.y + 60, x2 = t.x + t.w * 0.45, y2 = t.y + t.h * 0.4;
+    return "M" + x1 + " " + y1 + " C " + (x1 + 90) + " " + (y1 - 150) + ", " + (x2 - 40) + " " + (y2 - 190) + ", " + x2 + " " + y2;
+  }
+  burst(pt) {
+    var b = this.r.burst; if (!b) return;
+    b.setAttribute("cx", pt.x); b.setAttribute("cy", pt.y);
+    if (b.animate) b.animate([{ r: 6, opacity: 1, strokeWidth: 3 }, { r: 70, opacity: 0, strokeWidth: 0.5 }], { duration: 700, easing: "cubic-bezier(0.2,0.8,0.2,1)" });
+  }
+  comet(done) {
+    var self = this, tail = this.r.tail, head = this.r.head, route = this.r.route, d = this.routePath();
+    route.setAttribute("d", d); tail.setAttribute("d", d); this.setState({ route: true });
+    if ((window.Ginga && window.Ginga.reducedMotion)) { done(); return; }
+    var L = tail.getTotalLength(), T = 1400, t0 = performance.now(), TL = 90;
+    tail.style.strokeDasharray = TL + " " + (L + TL); tail.style.opacity = 1; head.style.opacity = 1;
+    var step = function (now) {
+      var p = Math.min(1, (now - t0) / T), e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      var at = e * L, pt = tail.getPointAtLength(at);
+      head.setAttribute("cx", pt.x); head.setAttribute("cy", pt.y); tail.style.strokeDashoffset = (TL - at);
+      if (p < 1) requestAnimationFrame(step); else { tail.style.opacity = 0; head.style.opacity = 0; self.burst(pt); done(); }
+    };
+    requestAnimationFrame(step);
+  }
+  cablePath() {
+    var m = this.box(this.r.mac), t = this.box(this.r.tab);
+    var x1 = m.x + m.w - 18, y1 = m.y + m.h - 8, x2 = t.x + t.w * 0.5, y2 = t.y + t.h + 6;
+    return "M" + x1 + " " + y1 + " C " + (x1 + 30) + " " + (y1 + 110) + ", " + (x2 - 20) + " " + (y2 + 150) + ", " + x2 + " " + y2;
+  }
+  drawCable(done) {
+    var c = this.r.cable, d = this.cablePath(); c.setAttribute("d", d); this.r.cableGlow.setAttribute("d", d);
+    var L = c.getTotalLength(); c.style.strokeDasharray = L; c.style.strokeDashoffset = L; c.style.opacity = 1;
+    var a = c.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], { duration: (window.Ginga && window.Ginga.reducedMotion) ? 1 : 900, easing: "cubic-bezier(0.2,0.8,0.2,1)", fill: "forwards" });
+    a.onfinish = done;
+  }
+  cablePulse(done) {
+    var self = this, g = this.r.cableGlow, L = g.getTotalLength();
+    g.style.opacity = 1; g.style.strokeDasharray = "40 " + L;
+    var a = g.animate([{ strokeDashoffset: 40 }, { strokeDashoffset: -L }], { duration: (window.Ginga && window.Ginga.reducedMotion) ? 1 : 1000, easing: "cubic-bezier(0.4,0,0.2,1)" });
+    a.onfinish = function () { g.style.opacity = 0; self.burst(g.getPointAtLength(L)); done(); };
+  }
+  removeCable() { var c = this.r.cable; if (!c) return; c.getAnimations().forEach(function (a) { a.cancel(); }); c.style.opacity = 0; }
+  warp(done) {
+    var cv = this.r.warp;
+    if (!cv || (window.Ginga && window.Ginga.reducedMotion)) { done(); return; }
+    var ctx = cv.getContext("2d"), w = cv.width = Math.round(cv.offsetWidth * 1.5), h = cv.height = Math.round(cv.offsetHeight * 1.5), stars = [];
+    for (var i = 0; i < 140; i++) stars.push({ a: Math.random() * 6.283, d: Math.random() * 40, v: 0.6 + Math.random() * 1.6, c: Math.random() < 0.15 ? "255,196,61" : Math.random() < 0.3 ? "111,130,255" : "242,243,248" });
+    cv.classList.add("on"); var t0 = performance.now(), T = 1100;
+    var step = function (now) {
+      var p = Math.min(1, (now - t0) / T), sp = Math.pow(p, 2) * 26 + 1, cx = w / 2, cy = h / 2;
+      ctx.fillStyle = "rgba(0,0,0," + (0.35 + p * 0.3) + ")"; ctx.fillRect(0, 0, w, h);
+      stars.forEach(function (s) {
+        var d0 = s.d; s.d += s.v * sp;
+        ctx.strokeStyle = "rgba(" + s.c + "," + Math.min(1, 0.3 + p) + ")"; ctx.lineWidth = 1 + p * 1.5;
+        ctx.beginPath(); ctx.moveTo(cx + Math.cos(s.a) * d0, cy + Math.sin(s.a) * d0); ctx.lineTo(cx + Math.cos(s.a) * s.d, cy + Math.sin(s.a) * s.d); ctx.stroke();
+        if (s.d > w) s.d = Math.random() * 20;
+      });
+      if (p < 1) requestAnimationFrame(step); else { done(); setTimeout(function () { cv.classList.remove("on"); ctx.clearRect(0, 0, w, h); }, 120); }
+    };
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- fluxo ---------- */
+  resetInk() { if (this.r.ink) { this.r.ink.style.strokeDasharray = ""; this.r.ink.style.strokeDashoffset = ""; } if (this.r.notes) this.r.notes.style.transform = ""; }
+  toOff(keepPaired) {
+    this.resetInk();
+    this.clearTimers(); this.removeCable();
+    this.setState({ phase: "off", via: null, wifi: false, usb: false, screen: "search", sheet: false, docked: false, live: false,
+      macNotesAway: false, tabNotesIn: false, toast: false, route: false, story: "s1", rail: 1, penDone: false, sending: false, paired: keepPaired ? this.state.paired : false,
+      hint: { k: "wifi", t: "hWifi", up: false } });
+  }
+  wifiOn() {
+    var self = this;
+    this.setState({ phase: "adv", via: "wifi", wifi: true, rail: 2, story: "s2", hint: null });
+    this.later(function () {
+      self.setState({ phase: "found", screen: "found" });
+      self.later(function () { self.setState({ hint: { k: "tabConnect", t: self.state.paired ? "hRe" : "hConnect", up: false } }); }, 380);
+    }, 1100);
+  }
+  tabConnect() {
+    var self = this;
+    if (this.state.paired) { this.connect("wifi"); return; }
+    this.setState({ phase: "pairing", rail: 3, hint: null, screen: "pair", story: "s3" });
+    this.later(function () {
+      self.setState({ sheet: true });
+      self.later(function () { self.setState({ hint: { k: "doPair", t: "hPair", up: false } }); }, 420);
+    }, 500);
+  }
+  connect(via) {
+    var self = this;
+    this.setState({ phase: "connecting", via: via, rail: 4, hint: null, sheet: false, docked: true, story: via === "usb" ? "s4u" : "s4w" });
+    var go = function () { self.warp(function () { self.connected(); }); };
+    this.later(function () { via === "usb" ? self.cablePulse(go) : self.comet(go); }, 250);
+  }
+  connected() {
+    var self = this;
+    this.setState({ phase: "connected", screen: "stream", paired: this.state.paired || this.state.via === "wifi", live: true, rail: 5, story: "s5" });
+    this.later(function () { self.setState({ toast: true }); }, 150);
+    this.later(function () { self.setState({ toast: false }); }, 3200);
+    this.later(function () { self.setState({ hint: { k: "notes", t: "hDrag", up: false }, story: "s7" }); }, 900);
+  }
+  sendNotes() {
+    var self = this;
+    if (this.state.macNotesAway || this.state.phase !== "connected") return;
+    if (this.r.notes) { this.r.notes.style.transform = ""; }
+    this.setState({ macNotesAway: true, hint: null, sending: true });
+    this.later(function () { self.setState({ tabNotesIn: true, sending: false }); }, 420);
+    this.later(function () { self.setState({ hint: { k: "tabNotes", t: "hPen", up: true }, story: "s8" }); }, 1100);
+  }
+  drawPen() {
+    var self = this, path = this.r.ink, pen = this.r.pen;
+    if (!path || this.state.penDone || !this.state.tabNotesIn) return;
+    this.setState({ hint: null, penDone: true });
+    var L = path.getTotalLength(), rm = !!(window.Ginga && window.Ginga.reducedMotion), T = rm ? 1 : 1600, t0 = performance.now();
+    path.style.strokeDasharray = L; path.style.strokeDashoffset = L;
+    if (pen) pen.classList.add("on");
+    var step = function (now) {
+      var p = Math.min(1, (now - t0) / T), at = p * L, pt = path.getPointAtLength(at);
+      path.style.strokeDashoffset = L - at;
+      if (pen) pen.style.transform = "translate(" + (pt.x + 10) + "px, " + (pt.y + 24) + "px) rotate(-38deg)";
+      if (p < 1) requestAnimationFrame(step);
+      else {
+        if (pen) setTimeout(function () { pen.classList.remove("on"); }, 400);
+        if (window.Ginga && self.r.tabNotes) window.Ginga.spark(self.r.tabNotes, 9);
+        self.setState({ story: "s5" });
+        self.later(function () { self.setState({ hint: { k: "main", t: "hDisc", up: true } }); }, 1600);
+      }
+    };
+    requestAnimationFrame(step);
+  }
+  disconnect() {
+    this.clearTimers();
+    this.setState({ hint: null, docked: false, route: false, live: false, macNotesAway: false, tabNotesIn: false, toast: false, penDone: false, sending: false });
+    this.resetInk();
+    if (this.state.via === "usb") {
+      this.removeCable(); this.setState({ usb: false });
+      if (this.state.wifi) { this.setState({ screen: "search" }); this.wifiOn(); } else this.toOff(true);
+      return;
+    }
+    this.setState({ screen: "search" }); this.wifiOn(); this.setState({ story: "s6" });
+  }
+  usbStart() {
+    var self = this;
+    this.clearTimers();
+    this.setState({ usb: true, via: "usb", rail: 2, sheet: false, hint: null, phase: "usbWait", story: "su" });
+    this.later(function () { self.spark("usb"); }, 30);
+    this.later(function () {
+      self.drawCable(function () {
+        self.setState({ screen: "usb", rail: 3, phase: "usbDialog" });
+        self.later(function () { self.setState({ hint: { k: "usbOk", t: "hOpen", up: false } }); }, 400);
+      });
+    }, 60);
+  }
+
+  renderVals() {
+    var self = this, s = this.state, L = s.lang, t = this.dict()[L];
+    var status = { off: ["", t.stOff], adv: ["searching", t.stAdv], found: ["searching", t.stAdv], pairing: ["pairing", t.stPair],
+      connecting: ["searching", t.stConn], connected: ["connected", t.stOk], usbWait: ["searching", t.stCable], usbDialog: ["pairing", t.stApprove] }[s.phase] || ["", t.stOff];
+    var railLabels = [t.r1, t.r2, t.r3, t.r4];
+    var scr = function (n) { return s.screen === n ? "show" : ""; };
+    var conn = s.phase === "connected";
+    var hasDev = conn || s.paired;
+    return {
+      t: t, theme: s.theme, isLight: s.theme === "light", isDark: s.theme !== "light",
+      github: this.props.githubUrl || "https://github.com/[OWNER]/[REPO]/releases/latest",
+      mono: s.theme === "light" ? "/_blob/542418ae1cbfba4f1464ae40a8aac16c" : "/_blob/0996a6b0e9a173b117d9b76d62375b0f",
+      langPt: L === "pt" ? "on" : "", langEn: L === "en" ? "on" : "", isPt: L === "pt", isEn: L === "en",
+      thLight: s.theme === "light" ? "on" : "", thDark: s.theme === "dark" ? "on" : "",
+      setPt: function () { self.setState({ lang: "pt" }); }, setEn: function () { self.setState({ lang: "en" }); },
+      githubRepo: this.props.repoUrl || "https://github.com/[OWNER]/[REPO]",
+      githubIssues: (this.props.repoUrl || "https://github.com/[OWNER]/[REPO]") + "/issues",
+      faq: t.faq.map(function (x) { return { q: x[0], a: x[1] }; }),
+      astroCls: s.astroOn ? "astro-on" : "",
+      onRootMove: function (e) { var A = self.astroState; if (!A || e.pointerType === "touch") return; A.tx = e.clientX; A.ty = e.clientY; if (!A.seen) { if (self._astroReset) self._astroReset(); A.seen = true; } if (self._astroMoved) self._astroMoved(); },
+      onRootLeave: function () { if (self.astroState) self.astroState.seen = false; },
+      onRootOver: function (e) { var A = self.astroState; if (!A) return; var el = e.target; A.hot = !!(el && el.closest && el.closest("a, button, summary, label, .notes, .blast")); },
+      notesDown: function (e) { if (self.state.phase !== "connected" || self.state.macNotesAway) return; self._drag = { x: e.clientX, moved: 0 }; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (er) {} },
+      notesMove: function (e) { var d = self._drag; if (!d || !self.r.notes) return; var k = self.r.stage ? self.r.stage.offsetWidth / self.r.stage.getBoundingClientRect().width : 1; d.moved = (e.clientX - d.x) * k; self.r.notes.style.transform = "translateX(" + Math.max(0, d.moved) + "px)"; },
+      notesUp: function () { var d = self._drag; self._drag = null; if (!d) return; if (d.moved > 60 || Math.abs(d.moved) < 4) self.sendNotes(); else if (self.r.notes) self.r.notes.style.transform = ""; },
+      penDraw: function () { self.drawPen(); },
+      setLight: function () { self.setState({ theme: "light" }); }, setDark: function () { self.setState({ theme: "dark" }); },
+      mobile: s.mobile, mCls: s.mobile ? "m" : "",
+      cmpCols: [
+        { name: "Ginga", by: t.cmpByUs, cls: "me" }, { name: "Duet Display", by: "Kairos", cls: "" }, { name: "Deskreen", by: t.cmpOpen, cls: "" },
+        { name: "Second Screen", by: "Samsung", cls: "" }, { name: "Sidecar", by: "Apple", cls: "" }, { name: "spacedesk", by: "datronicsoft", cls: "" }
+      ],
+      cmpRows: t.cmp.map(function (row) {
+        return { label: row[0], cells: row.slice(1).map(function (c, i) {
+          var k = c[0], cls = (k === "y" ? "yes" : k === "n" ? "no" : k === "t" ? "txt" : "part") + (i === 0 ? " me" : "");
+          if (k === "t") return { cls: cls, isYes: false, word: c[1], note: "" };
+          return { cls: cls, isYes: k === "y", word: k === "y" ? t.yes : k === "n" ? t.no : t.part, note: c[1] || "" };
+        }) };
+      }),
+      stageH: s.mobile ? 460 : Math.round(860 * s.scale), stageLeft: s.mobile ? 0 : Math.round(s.left),
+      stageTransform: (function () {
+        if (!s.mobile) return "scale(" + s.scale + ")";
+        /* no celular, uma "câmera" acompanha a ação: janela do Mac ↔ tablet, e abre para mostrar o cometa */
+        var REG = { mac2: { x: 380, y: 100, w: 360, h: 360 }, mac: { x: 70, y: 100, w: 360, h: 360 }, tab: { x: 740, y: 226, w: 432, h: 300 }, all: { x: 30, y: 90, w: 1150, h: 640 } };
+        var hk = s.hint && s.hint.k, key;
+        if (s.phase === "connecting" || s.phase === "usbWait") key = "all";
+        else if (s.sending) key = "all";
+        else if (hk) key = { wifi: "mac", usb: "mac", main: "mac", doPair: "mac", notes: "mac2", tabConnect: "tab", usbOk: "tab", tabNotes: "tab" }[hk] || "mac";
+        else if (s.screen === "stream" || s.phase === "adv" || s.phase === "found" || s.phase === "pairing") key = s.sheet ? "mac" : "tab";
+        else key = "mac";
+        var r = REG[key], W = s.wrapW, H = 460, k = Math.min(W / r.w, H / r.h);
+        var tx = W / 2 - (r.x + r.w / 2) * k, ty = H / 2 - (r.y + r.h / 2) * k;
+        return "translate(" + tx.toFixed(1) + "px, " + ty.toFixed(1) + "px) scale(" + k.toFixed(4) + ")";
+      })(),
+      rail: railLabels.map(function (l, i) { return { n: i + 1, label: l, cls: i + 1 === s.rail ? "on" : (i + 1 < s.rail ? "done" : "") }; }),
+      statusCls: "g-status" + (status[0] ? " g-status--" + status[0] : ""), statusTxt: status[1],
+      wifi: s.wifi, usb: s.usb,
+      onWifi: function (e) {
+        if (e.target.checked) { self.spark("wifi"); if (s.phase === "off" || s.phase === "adv" || (s.phase === "usbWait" || s.phase === "usbDialog")) { self.clearTimers(); self.removeCable(); self.setState({ usb: false }); self.wifiOn(); } else self.setState({ wifi: true }); }
+        else if (s.via !== "usb" || s.phase === "off") self.toOff(true); else self.setState({ wifi: false });
+      },
+      onUsb: function (e) {
+        if (e.target.checked) self.usbStart();
+        else if (s.via === "usb") { if (s.phase === "connected") self.disconnect(); else self.toOff(true); }
+      },
+      noDevice: !hasDev, hasDevice: hasDev,
+      deviceMeta: conn ? (s.via === "usb" ? t.metaUsb : t.metaWifi) : t.metaAway,
+      mainCls: conn ? "g-btn g-btn--danger" : "g-btn g-btn--primary", mainDisabled: !conn, mainLabel: conn ? t.disconnect : t.create,
+      onMain: function () { if (self.state.phase === "connected") self.disconnect(); },
+      sheetCls: s.sheet ? "show" : "", sheetOpen: s.sheet,
+      noPair: function () { self.setState({ sheet: false, screen: "search" }); self.wifiOn(); },
+      doPair: function () { self.spark("doPair"); self.connect("wifi"); },
+      tabCls: s.docked ? "docked" : "",
+      scrSearch: scr("search"), scrFound: scr("found"), scrPair: scr("pair"), scrUsb: scr("usb"), scrStream: scr("stream"),
+      showTabCode: s.screen === "pair",
+      foundMeta: s.paired ? t.fPaired : t.fNew, tabConnectLabel: s.paired ? t.reconnect : t.connect,
+      tabConnect: function () { self.tabConnect(); },
+      usbOk: function () { self.spark("usbOk"); self.connect("usb"); },
+      macNotesCls: s.macNotesAway ? "away" : "", tabNotesCls: s.tabNotesIn ? "" : "pre",
+      toastCls: s.toast ? "" : "hide", toastTxt: t.stOk + " · " + (s.via === "usb" ? "USB" : "Wi‑Fi"),
+      menuLive: s.live ? "live" : "", routeCls: s.route ? "on" : "",
+      hintCls: s.hint ? (s.hint.up ? "up" : "") : "off", hintTxt: s.hint ? t[s.hint.t] : "",
+      story: t.story[s.story],
+      altUsb: function () { if (!self.state.usb) self.usbStart(); },
+      doReset: function () { self.toOff(false); },
+      refSky: this.ref("sky"), refWrap: this.ref("wrap"), refStage: this.ref("stage"), refMac: this.ref("mac"), refMacScreen: this.ref("macScreen"),
+      refTab: this.ref("tab"), refTabScreen: this.ref("tabScreen"), refWifi: this.ref("wifi"), refUsb: this.ref("usb"), refMain: this.ref("main"),
+      refDoPair: this.ref("doPair"), refTabConnect: this.ref("tabConnect"), refUsbOk: this.ref("usbOk"), refWarp: this.ref("warp"),
+      refCable: this.ref("cable"), refCableGlow: this.ref("cableGlow"), refRoute: this.ref("route"), refTail: this.ref("tail"),
+      refBh: this.ref("bh"), refGal: this.ref("gal"), refMacWall: this.ref("macWall"), refTabWall: this.ref("tabWall"),
+      bhTransform: "translate(" + (s.px * 18).toFixed(1) + "px, " + (s.py * 12).toFixed(1) + "px) rotate(" + (s.px * -1.5).toFixed(2) + "deg)",
+      onHeroMove: function (e) {
+        var r = e.currentTarget.getBoundingClientRect(); var nx = (e.clientX - r.left) / r.width - 0.5, ny = (e.clientY - r.top) / r.height - 0.5;
+        if (Math.abs(nx - self.state.px) + Math.abs(ny - self.state.py) > 0.04) self.setState({ px: nx, py: ny });
+        if (self.bhLoop && self.r.bh) { var b = self.r.bh.getBoundingClientRect(), dx = e.clientX - (b.left + b.width / 2), dy = e.clientY - (b.top + b.height * 0.52), d = Math.sqrt(dx * dx + dy * dy) / (b.width * 0.5); if (!self.astroState || self.astroState.mode === "follow") self.bhLoop.shade.pullT = Math.max(0, Math.min(1, 1.25 - d)); }
+      },
+      onHeroLeave: function () { if (self.bhLoop) self.bhLoop.shade.pullT = 0; },
+      onBlast: function () { if (self.bhLoop) { self.bhLoop.shade.tb = self.bhLoop.now(); } if (window.Ginga && self.r.blast) window.Ginga.spark(self.r.blast, 11); },
+      refBlast: this.ref("blast"),
+      refHead: this.ref("head"), refNotes: this.ref("notes"), refTabNotes: this.ref("tabNotes"), refInk: this.ref("ink"), refPen: this.ref("pen"), refAstro: this.ref("astro"), refVid: this.ref("vid"), refTether: this.ref("tether"), refCstar: this.ref("cstar"), refTr0: this.ref("tr0"), refTr1: this.ref("tr1"), refTr2: this.ref("tr2"), refTr3: this.ref("tr3"), refTr4: this.ref("tr4"), refTr5: this.ref("tr5"), refBurst: this.ref("burst"), refHint: this.ref("hint")
+    };
+  }
+}
+
+</script>
+</body>
+</html>

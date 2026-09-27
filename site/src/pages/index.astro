@@ -1,0 +1,23 @@
+---
+// A raiz só escolhe o idioma: português por padrão, inglês se o navegador não estiver em português.
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
+const pt = base + "pt/", en = base + "en/";
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ginga</title>
+  <meta name="theme-color" content="#0A0C1C" />
+  <link rel="alternate" hreflang="pt-BR" href={new URL(pt, Astro.site).toString()} />
+  <link rel="alternate" hreflang="en" href={new URL(en, Astro.site).toString()} />
+  <link rel="canonical" href={new URL(pt, Astro.site).toString()} />
+  <meta http-equiv="refresh" content={"0; url=" + pt} />
+  <script is:inline define:vars={{ pt, en }}>
+    try { var l = (navigator.languages && navigator.languages[0]) || navigator.language || "pt"; location.replace(l.toLowerCase().indexOf("pt") === 0 ? pt : en); } catch (e) {}
+  </script>
+  <style>html,body{margin:0;background:#0A0C1C}</style>
+</head>
+<body><noscript><a href={pt} style="color:#F2F3F8">Ginga</a></noscript></body>
+</html>

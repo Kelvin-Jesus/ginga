@@ -1,0 +1,9 @@
+---
+import Base from "../layouts/Base.astro";
+import NotFound from "../components/NotFound.jsx";
+import "../styles/notfound.css";
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
+---
+<Base lang="pt" path="404/" title="404 — Ginga" description="Essa página caiu num buraco negro." alternates={false} noindex>
+  <NotFound client:load base={base} />
+</Base>

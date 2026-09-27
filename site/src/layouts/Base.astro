@@ -1,0 +1,52 @@
+---
+import "../styles/ds-tokens.css";
+import "../styles/ds-bundle.css";
+import "../styles/base.css";
+
+interface Props {
+  lang: "pt" | "en";
+  title: string;
+  description: string;
+  path: string;            // caminho desta página sem a base, ex.: "pt/"
+  alternates?: boolean;    // links hreflang para /pt/ e /en/
+  noindex?: boolean;
+}
+const { lang, title, description, path, alternates = true, noindex = false } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + "/";
+const abs = (p: string) => new URL(base + p, Astro.site).toString();
+const og = abs("assets/ginga-og.png");
+---
+<!doctype html>
+<html lang={lang === "pt" ? "pt-BR" : "en"}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="theme-color" content="#0A0C1C" />
+  <meta name="color-scheme" content="dark light" />
+  {noindex && <meta name="robots" content="noindex" />}
+  <link rel="canonical" href={abs(path)} />
+  {alternates && <link rel="alternate" hreflang="pt-BR" href={abs("pt/")} />}
+  {alternates && <link rel="alternate" hreflang="en" href={abs("en/")} />}
+  {alternates && <link rel="alternate" hreflang="x-default" href={abs("pt/")} />}
+  <link rel="icon" type="image/svg+xml" href={base + "assets/ginga-app-icon.svg"} />
+  <link rel="icon" type="image/png" sizes="32x32" href={base + "assets/favicon-32.png"} />
+  <link rel="apple-touch-icon" href={base + "assets/apple-touch-icon.png"} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Ginga" />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={abs(path)} />
+  <meta property="og:image" content={og} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content={lang === "pt" ? "pt_BR" : "en_US"} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image" content={og} />
+  <script is:inline src={base + "ds/bundle.js"}></script>
+</head>
+<body>
+  <slot />
+</body>
+</html>
