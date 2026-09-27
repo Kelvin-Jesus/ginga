@@ -31,7 +31,7 @@ Test results: `*/build/test-results/**/TEST-*.xml`; the golden-vector count is p
 | `:renderer` | `VideoSurfaceLayout`, `LatestFramePresenter`, `CursorGeometry` | pure parts |
 | `:input` | `InputMapper` (touch, S Pen), `HidKeyboard` + `KeyboardCapture` (hardware keyboard → HID) | mapping tables |
 | `:discovery` | Bonjour (`NsdMacDiscovery`, `NsdMacResolver`), TXT parsing | TXT |
-| `:app` | `Session` (pure state machine: handshake, pairing, pause, timers), `ReceiverController`, `DirectLinkFlow`, Keystore stores, activities | session, flow, status text, manifest |
+| `:app` | `Session` (pure state machine: handshake, pairing, pause, timers), `ReceiverController`, `DirectLinkFlow`, Keystore stores, activities, Ginga UI (`HomeModel`, `ui/widget`) | session, flow, status text, home model, starfield, dither, strings, manifest |
 
 Pure logic lives in plain classes with injected clocks and fakes, so it is unit-tested on the
 JVM; Android glue stays thin. Keep it that way: new behaviour gets a pure core and a test.
@@ -62,6 +62,12 @@ JVM; Android glue stays thin. Keep it that way: new behaviour gets a pure core a
 - Do use `TransportLog`/`AppLog` (`event key=value`), tags `T2M/<module>`.
 - Don't add AndroidX or other dependencies without a reason worth its size.
 - Don't touch `mac/`, `protocol/` or `config/` (report instead), and don't commit unless asked.
+- UI: the product is **Ginga** on screen, Tab2Mac only internally. Never rename the accessory
+  strings (`res/xml/accessory_filter.xml`), `_tab2mac._tcp`, `CN=Tab2Mac tablet`,
+  `DeviceCapabilities.APP_NAME` or log tags. Colours, radii, spacing and durations come from
+  `design/ginga-design/tokens.json` (`?attr/ginga*`, `ginga_dimens.xml`, `Motion`); nothing
+  animates off screen or with the system's animations off. Every string goes in both
+  `values/` and `values-pt-rBR/`.
 - Don't change tablet system settings, grant permissions from the shell, or enter the PIN.
 
 ## Device
@@ -75,5 +81,6 @@ JVM; Android glue stays thin. Keep it that way: new behaviour gets a pure core a
   said the tablet is free (not while someone is streaming or measuring).
 - Logs: `adb logcat -s 'T2M/app:*' 'T2M/session:*' 'T2M/transport:*' 'T2M/decoder:*'`.
 - Debug builds take scripted commands (see `MainActivity.handleAutomation`): `--ez connect true`,
-  `--ez disconnect true`, `--ez directTest true [--ez directHotspot true]`, `--ez directCancel true`.
+  `--ez disconnect true`, `--ez directTest true [--ez directHotspot true]`, `--ez directCancel true`,
+  `--es appearance system|light|dark|space` (screenshots of each theme).
 - Measure energy off the charger: on AC at its charge limit the battery current means nothing.

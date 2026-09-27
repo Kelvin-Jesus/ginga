@@ -1,4 +1,7 @@
-# Tab2Mac — Android receiver
+# Tab2Mac — Android receiver (the Ginga app)
+
+The product is called **Ginga** on screen; Tab2Mac stays the internal name (package, classes,
+logs, the USB accessory strings, the Bonjour type, the certificate subject, HELLO `app.name`).
 
 Turns a Galaxy Tab S11 into an extended display of a Mac: receives the HEVC/H.264 stream,
 decodes it straight into a `SurfaceView`, and sends touch and S Pen input back. The wire protocol
@@ -22,7 +25,7 @@ Android's prompt or compare the pairing code.
 | `:renderer` | Android lib | `VideoSurfaceLayout` (SurfaceView, aspect fit), `LatestFramePresenter` (latest frame wins, `releaseOutputBuffer(i, System.nanoTime())`, end-to-end latency), `SurfaceFrameRate`. |
 | `:input` | Android lib | `InputMapper` (pure: MotionEvent samples → INPUT, normalised to the video rect), `Tilt`, `InputCapture` (Android glue). |
 | `:discovery` | Android lib | `MacDiscovery` + `NsdMacDiscovery` (`_tab2mac._tcp`, `registerServiceInfoCallback` on API 34+, serialized `resolveService` before), `TxtRecord`/`DiscoveredMac`. |
-| `:app` | Application | `Session` (pure state machine, pairing included), `ReceiverController` (transports, discovery, WifiLock), `TabletIdentity` (AndroidKeyStore P-256 key and certificate), `KeystorePinStore` (AES-GCM sealed pins), `VideoPipeline`, `StreamStats`, `DeviceCapabilities` (HELLO from the real device), `AccessoryActivity` (invisible target of the accessory intent), `MainActivity` (connection screen, Mac list, pairing prompt), `StreamActivity` (fullscreen stream + diagnostics overlay). |
+| `:app` | Application | `Session` (pure state machine, pairing included), `ReceiverController` (transports, discovery, WifiLock), `TabletIdentity` (AndroidKeyStore P-256 key and certificate), `KeystorePinStore` (AES-GCM sealed pins), `VideoPipeline`, `StreamStats`, `DeviceCapabilities` (HELLO from the real device), `AccessoryActivity` (invisible target of the accessory intent), `MainActivity` (home by states: `HomeModel`), `SettingsActivity`, `StreamActivity` (fullscreen stream, waiting sky, first-frame toast, diagnostics overlay), `ui/widget` (Ginga components). |
 
 ```text
 :app ──► :transport ──► :protocol
@@ -69,22 +72,55 @@ adb reverse tcp:47800 tcp:47800            # the Mac app / t2m does this for you
 mac/.build/debug/t2m serve --synthetic     # or the Mac app; a test pattern without Screen Recording
 ```
 
-Open Tab2Mac on the tablet and tap **Connect**; the display opens full screen once the Mac
-answers. Debug builds also take scripted commands:
+Open Ginga on the tablet, choose **Cabo USB** and tap **Conectar pelo cabo**; the display opens
+full screen once the Mac answers. Debug builds also take scripted commands:
 
 ```sh
 adb shell am start -n dev.tab2mac.receiver/.ui.MainActivity --ez connect true
 adb shell am start --activity-clear-top -n dev.tab2mac.receiver/.ui.MainActivity --ez disconnect true
+adb shell am start -n dev.tab2mac.receiver/.ui.MainActivity --es appearance space   # system|light|dark|space
 ```
 
-Connection screen: status (including the Mac's last ERROR), Connect/Disconnect over USB (direct
-or ADB, chosen automatically), the Macs found on the Wi‑Fi network with Connect / Pair again,
-automatic reconnection, preferred refresh rate ("Mac
-decides" by default; 60 or 120 Hz is sent as a preference the Mac may ignore), faster decoding,
-and the diagnostics overlay (off by default; fps, bitrate, decode and end-to-end p50/p95, drops,
-input count, panel refresh rate and frame-rate vote, battery current, RTT, clock offset). The
-display opens by itself only when a stream *starts* while the connection screen is shown; Back
-from the display never reopens it.
+## UI (Ginga design system)
+
+The UI follows `design/ginga-design/` (flows.md, "Tablet (Android)"): Views XML, no AndroidX.
+
+- **Home** (`MainActivity`): one StatusOrbit pill at the top and one panel for where the
+  connection is, computed by the pure `HomeModel.of(state, macs, chosenMethod)`: Procurando (radar),
+  Mac encontrado (DeviceRows: Conectar / Reconectar / Parear de novo; touch and hold to forget),
+  Cabo USB, Sem roteador (the §6b direct link), Pareando (the six digits in two groups;
+  Parear / Não parear, then "Confirme no Mac"), Conectando, Conectado/Pausado (Mostrar tela,
+  Desconectar). Chips pick Wi‑Fi · Cabo USB · Sem roteador while nothing is connected (USB is
+  preselected when the Mac's accessory is attached). The technical line (`StatusText`: codec,
+  ports, adb, the last session) is collapsed in **Diagnóstico**. The display opens by itself only
+  when a stream *starts* while home is shown; Back from the display never reopens it.
+- **Ajustes** (`SettingsActivity`): Reconectar automaticamente, Taxa preferida (Segmented: Mac
+  decide / 60 Hz / 120 Hz, sent as a preference the Mac may ignore), Decodificação rápida,
+  Aparência (Sistema / Claro / Escuro / Black espacial), Mostrar diagnóstico na tela (the overlay:
+  fps, bitrate, decode and end-to-end p50/p95, drops, input count, panel refresh rate and
+  frame-rate vote, battery current, RTT, clock offset), Avançado (adb instructions).
+- **Stream** (`StreamActivity`): before the first frame, the sky (`cosmos`, `#000` in Black
+  espacial) with `StarfieldView` (warp for 1.4 s, then twinkle at ~30 fps) and "Transmitindo de
+  <Mac>"; the sky is GONE as soon as video shows, then a StatusOrbit toast "Conectado · 60 Hz ·
+  Wi‑Fi" for 3 s. The video SurfaceView, the cursor view and input capture are unchanged.
+- **Themes**: `Theme.Ginga.Light|Dark|Space` (framework Material parents) and
+  `Theme.Ginga.System` (Light, Dark in `values-night`), colour attributes `?attr/ginga*` pointing
+  at `values/ginga_colors.xml` (copied from the design). Stored as `ReceiverSettings.appearance`;
+  changing it recreates the screen. Black espacial: every area `#000000`, cards only by a 1px
+  `line` outline, a static star dust in each group's corner, a dithered pixel galaxy behind the
+  home header and a black hole on the stream's waiting sky (`DitherField`, pure; `DitherView`,
+  ~10 fps, only while shown).
+- **Motion** (`Motion`): press 0.97 in 120 ms (`res/animator/g_press.xml`), `ease-ginga`
+  (`res/interpolator/ease_ginga.xml`), orbit/pulse only while visible, rows rising 120 ms apart,
+  pairing digits 60 ms apart, a 7-star spark when a switch turns on or a primary action is
+  confirmed. Only transform and opacity, plus the two Canvas views. With the system's animations
+  off (animator duration scale 0) nothing moves: static equivalents with the same text.
+- **Type**: `TextAppearance.Ginga.*` in `values/styles.xml`. The three families are set in
+  `TextAppearance.Ginga.FontDisplay|FontSans|FontSansMedium|FontMono` (platform sans-serif,
+  sans-serif-medium, monospace today); drop Unbounded, Figtree and IBM Plex Mono into `res/font/`
+  and change only those.
+- **Languages**: `values-pt-rBR` (Portuguese, first) and `values` (English); `StringsTest` keeps
+  them in step. `res/xml/locales_config.xml` enables Android's per-app language setting.
 
 ### adb loopback token
 
@@ -105,8 +141,9 @@ adb -s SERIAL shell 'read t; am broadcast -f 32 -a dev.tab2mac.action.LOOPBACK_T
   token the tablet connects anyway, and the Mac refuses.
 - The Mac answers a missing or wrong token with ERROR `unauthorized` and GOODBYE `error`. That is
   retryable: the usual backoff continues, and a token arriving meanwhile retries at once
-  (`Transport.retryNow`). The status reads *"Waiting for the Mac to authorize this USB
-  connection. Is Tab2Mac running on the Mac?"*.
+  (`Transport.retryNow`). Home reads *"Aguardando o Mac autorizar · O Ginga está aberto no
+  Mac?"* (Diagnóstico: *"Waiting for the Mac to authorize this USB connection. Is Ginga running
+  on the Mac?"*).
 
 ## Direct USB (Android Open Accessory, M6)
 
@@ -118,8 +155,8 @@ and the protocol runs over the accessory's two bulk endpoints, framed exactly as
    version `1`, empty URI, serial `1` — then START. The tablet comes back as `18D1:2D00`
    (`2D01` when USB debugging is on, and adb keeps working next to the accessory).
 2. **Prompt.** Android matches `res/xml/accessory_filter.xml` (manufacturer and model, exactly)
-   and asks *"Open Tab2Mac to handle Second display for your Mac?"*, with a checkbox *"Always open
-   Tab2Mac when Second display for your Mac is connected"* (AOSP wording; One UI may phrase it a
+   and asks *"Open Ginga to handle Second display for your Mac?"* (the app label), with a
+   checkbox *"Always open Ginga when Second display for your Mac is connected"* (AOSP wording; One UI may phrase it a
    little differently). OK grants access to the accessory. With **Always** ticked, later
    plug-ins open the app straight away, with no prompt.
 3. **Connect.** `AccessoryActivity` (shows nothing) receives `USB_ACCESSORY_ATTACHED` and brings
@@ -134,8 +171,8 @@ and the protocol runs over the accessory's two bulk endpoints, framed exactly as
    read failing, whichever comes first. The app returns to *Not connected*: no retries, and no
    fallback to ADB. Plugging in again repeats 1–3.
 
-If the prompt was dismissed, opening Tab2Mac while the Mac's accessory is attached (or tapping
-**Connect**) shows *"Allow Tab2Mac to access Second display for your Mac?"* and connects once
+If the prompt was dismissed, opening Ginga while the Mac's accessory is attached (or tapping
+**Conectar pelo cabo**) shows *"Allow Ginga to access Second display for your Mac?"* and connects once
 allowed. **Connect** always prefers the accessory when it is attached, and uses ADB otherwise.
 
 - **Reconnecting by itself.** Android sends `USB_ACCESSORY_ATTACHED` only on a real attach, so a
