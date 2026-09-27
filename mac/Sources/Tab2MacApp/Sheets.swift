@@ -118,8 +118,8 @@ struct DirectSheet: View {
         .padding(GingaSpace.s6)
         .frame(width: 440)
         .background(alignment: .topTrailing) {
-            // Only in the title's band: the text below stays on plain black.
-            GingaDitherScene(scene: .blackHole).frame(width: 240, height: 84).opacity(0.8)
+            // The galaxy (DitherSpace: no-router), only in the title's band: the text stays on plain black.
+            GingaDitherScene(scene: .galaxy).frame(width: 220, height: 96).opacity(0.85)
                 .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
         }
         .background(palette.bg)

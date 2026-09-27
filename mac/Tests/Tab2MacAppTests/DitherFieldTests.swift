@@ -3,36 +3,57 @@ import Testing
 
 @Suite("DitherField")
 struct DitherFieldTests {
-    /// Every pixel is transparent (the black shows) or one of the palette's colors: dithering
-    /// picks levels, it never blends.
+    static let allowed: Set<UInt32> = Set(DitherField.palette.dropFirst().map { r, g, b in
+        0xFF00_0000 | UInt32(b) << 16 | UInt32(g) << 8 | UInt32(r)
+    } + [0])
+
+    /// Every pixel is transparent (the darkest level, cosmos) or one of the five other brand
+    /// colours: dithering picks levels, it never blends.
     @Test func pixelsAreFromThePalette() {
-        let allowed = Set((DitherField.blues.dropFirst() + [DitherField.gold]).map { rgb -> UInt32 in
-            0xFF00_0000 | ((rgb & 0xFF) << 16) | (((rgb >> 8) & 0xFF) << 8) | ((rgb >> 16) & 0xFF)
-        } + [0])
         for scene in [DitherField.Scene.galaxy, .blackHole] {
             var pixels: [UInt32] = []
-            DitherField(width: 80, height: 40, scene: scene).render(time: 12, into: &pixels)
-            #expect(pixels.count == 80 * 40)
-            #expect(pixels.allSatisfy(allowed.contains))
-            #expect(pixels.filter { $0 != 0 }.count > 80)  // something is drawn
-            #expect(pixels.filter { $0 != 0 }.count < 80 * 40 / 2)  // mostly black: it's scenery
+            DitherField(width: 190, height: 122, scene: scene).render(time: 12, into: &pixels)
+            #expect(pixels.count == 190 * 122)
+            #expect(pixels.allSatisfy(Self.allowed.contains))
+            let lit = pixels.filter { $0 != 0 }.count
+            #expect(lit > 500 && lit < 190 * 122 * 2 / 3)  // a scene on a mostly dark sky
         }
     }
 
-    /// Ordered dithering: a flat mid intensity becomes a pattern of the two nearest levels.
-    @Test func midTonesDither() {
-        let colors = Set((0..<4).flatMap { y in (0..<4).map { x in DitherField.color(intensity: 0.5, hot: false, x: x, y: y) } })
-        #expect(colors.count == 2)
-        #expect(DitherField.color(intensity: 0, hot: false, x: 0, y: 0) == 0)
+    /// The hottest level is gold (star): the galaxy's core, the disk's approaching side.
+    @Test func theHottestLevelIsGold() {
+        let (r, g, b) = DitherField.palette[5]
+        let gold = 0xFF00_0000 | UInt32(b) << 16 | UInt32(g) << 8 | UInt32(r)
+        var pixels: [UInt32] = []
+        DitherField(width: 120, height: 80, scene: .galaxy).render(time: 0, into: &pixels)
+        #expect(pixels[40 * 120 + 60] == gold)  // the core
     }
 
-    /// The galaxy turns slowly: one turn takes `galaxyTurn` seconds.
-    @Test func theGalaxyTurnsSlowly() {
+    /// Ordered dithering: a flat value between two levels becomes a pattern of exactly those two.
+    @Test func midTonesDither() {
+        let colors = Set((0..<4).flatMap { y in (0..<4).map { x in DitherField.color(0.5, x: x, y: y) } })
+        #expect(colors.count == 2)
+        #expect(DitherField.color(0, x: 0, y: 0) == 0)
+    }
+
+    /// The particles are seeded: two fields render the same frames.
+    @Test func deterministic() {
         var a: [UInt32] = [], b: [UInt32] = []
-        let field = DitherField(width: 60, height: 30, scene: .galaxy)
-        field.render(time: 0, into: &a)
-        field.render(time: DitherField.galaxyTurn / 2, into: &b)  // half a turn: two arms map onto each other
-        let same = zip(a, b).filter { $0 == $1 }.count
-        #expect(Double(same) / Double(a.count) > 0.9)
+        let one = DitherField(width: 90, height: 60, scene: .blackHole), two = DitherField(width: 90, height: 60, scene: .blackHole)
+        for t in [0.0, 0.042, 0.084] {
+            one.render(time: t, into: &a)
+            two.render(time: t, into: &b)
+        }
+        #expect(a == b)
+    }
+
+    /// Inside the horizon only the disk's near side shows; the far side is hidden by the hole.
+    @Test func theHorizonIsDark() {
+        var pixels: [UInt32] = []
+        let field = DitherField(width: 190, height: 122, scene: .blackHole)
+        field.render(time: 3, into: &pixels)
+        let cx = 95, cy = Int(122 * 0.52)
+        let above = (cy - 12..<cy - 4).flatMap { y in (cx - 4..<cx + 4).map { pixels[y * 190 + $0] } }
+        #expect(above.filter { $0 != 0 }.count <= 2)
     }
 }

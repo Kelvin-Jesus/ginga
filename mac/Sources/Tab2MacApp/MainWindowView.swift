@@ -25,14 +25,13 @@ struct MainWindowView: View {
                 diagnostics
             }
             .padding(GingaSpace.s8)
-            // Black espacial: the dithered galaxy behind the header (nothing in the other themes).
-            .background(alignment: .topTrailing) {
-                GingaDitherScene(scene: .galaxy)
-                    .frame(width: 300, height: 180)
-                    .opacity(0.8)
-                    .mask(LinearGradient(colors: [.black, .black, .clear], startPoint: .top, endPoint: .bottom))
-                    .offset(x: 70, y: -95)  // the core in the title bar's corner, clear of the status
-            }
+        }
+        // Black espacial: the dithered galaxy in the window's empty bottom-right corner, behind
+        // the scrolling content (never behind text); nothing in the other themes.
+        .background(alignment: .bottomTrailing) {
+            GingaDitherScene(scene: .galaxy, framesPerSecond: 12)
+                .frame(width: 260, height: 170)
+                .opacity(0.9)
         }
         .frame(minWidth: 460, idealWidth: 480, minHeight: 560)
         .sheet(isPresented: $showsDirectSheet) { DirectSheet(model: model) }
