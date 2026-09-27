@@ -58,16 +58,15 @@ export default class NotFound extends React.Component {
      cresce enquanto a página racha; um estalo por ladrilho que se solta, no lado da tela onde ele está; um vento
      que sobe de tom com a velocidade da órbita e gira entre os canais junto com os pedaços; um tom grave que
      desce conforme a página some; batidinhas no horizonte e, quando o último pedaço cai, corte seco e o "gole".
-     Só toca com o áudio liberado pelo navegador (clique em "Ver de novo", ou já ter interagido com o site).
-     Um AudioContext criado sem gesto fica bloqueado de vez em alguns navegadores (Firefox, Zen), então um
-     contexto que não está tocando é trocado por um novo, criado dentro do clique. Ao terminar ele é suspenso,
+     Só toca com o áudio liberado pelo navegador: ele é criado ao abrir (toca de primeira se o navegador deixar)
+     e, se nascer bloqueado, é liberado (resume) no primeiro gesto. No Firefox ele nasce "suspended" e passa a
+     "running" um instante depois mesmo quando permitido, por isso nunca é recriado. Ao terminar é suspenso,
      para não manter o áudio do sistema acordado. */
   sfx() {
     var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
     var s = this._sfx;
     clearTimeout(this._sfxSleep);
-    if (s && s.ctx.state === "running") return s;
-    if (s) s.ctx.close().catch(function () {});
+    if (s) { if (s.ctx.state !== "running") s.ctx.resume().catch(function () {}); return s; }
     var ctx = new AC(), n = ctx.sampleRate, noise = ctx.createBuffer(1, n, n), d = noise.getChannelData(0);
     for (var i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
     var master = ctx.createGain(), comp = ctx.createDynamicsCompressor();
@@ -76,10 +75,15 @@ export default class NotFound extends React.Component {
     if (ctx.state === "suspended") ctx.resume().catch(function () {});
     return s;
   }
+  /* Só estes eventos contam como gesto para liberar áudio: numa tela de toque é o fim do toque (pointerup,
+     touchend, click), não o começo; com mouse, o pointerdown. Os ouvintes saem quando o som está tocando. */
   sfxUnlock(on) {
     var self = this;
-    if (!this._unlock) this._unlock = function () { self.sfxUnlock(false); self.sfx(); };
-    ["pointerdown", "keydown"].forEach(function (e) { (on ? window.addEventListener : window.removeEventListener).call(window, e, self._unlock, true); });
+    if (!this._unlock) this._unlock = function () {
+      var s = self.sfx(); /* resume() precisa ser chamado aqui, dentro do gesto */
+      if (s) s.ctx.resume().then(function () { if (s.ctx.state === "running") self.sfxUnlock(false); }).catch(function () {});
+    };
+    ["pointerdown", "pointerup", "touchend", "click", "keydown"].forEach(function (e) { (on ? window.addEventListener : window.removeEventListener).call(window, e, self._unlock, true); });
   }
   sfxOk() { var s = this._sfx; return s && s.ctx.state === "running" && document.visibilityState === "visible" ? s : null; }
   sfxSrc(s, rate) { var n = s.ctx.createBufferSource(); n.buffer = s.noise; n.loop = true; n.playbackRate.value = rate; return n; }
