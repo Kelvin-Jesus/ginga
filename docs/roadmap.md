@@ -6,7 +6,7 @@ Ordered by value for the reference setup (Mac + Tab S11 over a Thunderbolt/USBâ€
 
 - [ ] **Verify on the device:** keyboard cover (KEY), scroll inertia, touch "gestures" mode, the no-router mode end to end (latency/fps vs normal Wiâ€‘Fi, return to the previous network, tablet energy).
 - [ ] **Other devices:** try the Tab S9 FE+ (90 Hz LCD, Exynos 1380) and the S25 Ultra (phone, 3120Ã—1440) on every link; record them in status.md and performance.md.
-- [ ] **Headless footprint:** measure `t2m run` against the app (memory, CPU, energy) and document.
+- [ ] **Headless footprint:** measure `ginga run` against the app (memory, CPU, energy) and document.
 - [ ] **Idle refinement:** after sustained motion stops, re-encode the last frame once at higher quality. Measure the visual gain before shipping (it costs one encode per stop).
 
 ## Later
@@ -19,7 +19,7 @@ Ordered by value for the reference setup (Mac + Tab S11 over a Thunderbolt/USBâ€
 
 ## TODO: Linux hosts
 
-Tab2Mac is macOS-only today. A Linux host needs the same five layers with Linux pieces; the protocol, the tablet app and the golden vectors stay as they are.
+Ginga is macOS-only today. A Linux host needs the same five layers with Linux pieces; the protocol, the tablet app and the golden vectors stay as they are.
 
 | Layer | macOS today | Linux plan |
 |---|---|---|

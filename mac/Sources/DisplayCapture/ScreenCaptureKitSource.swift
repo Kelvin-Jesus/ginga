@@ -3,7 +3,7 @@ import CoreMedia
 import Foundation
 import os
 @preconcurrency import ScreenCaptureKit
-import Tab2MacCore
+import GingaCore
 
 public enum CaptureError: Error, Hashable, Sendable, CustomStringConvertible {
     case permissionDenied
@@ -51,7 +51,7 @@ public protocol DisplayCaptureSource: AnyObject, Sendable {
 public actor ScreenCaptureKitSource: DisplayCaptureSource {
     public nonisolated let recorder = CaptureStatisticsRecorder()
     private let displayDiscoveryTimeout: Duration
-    private let sampleQueue = DispatchQueue(label: "dev.tab2mac.capture.frames", qos: .userInteractive)
+    private let sampleQueue = DispatchQueue(label: "dev.ginga.capture.frames", qos: .userInteractive)
     private var stream: SCStream?
     /// Bumped by every start and stop, so a start suspended at an await knows it was superseded.
     private var generation: UInt64 = 0

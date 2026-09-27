@@ -27,7 +27,7 @@ public struct DecodedPicture: @unchecked Sendable {
 }
 
 /// VideoToolbox decoder for Annex‑B access units — the Mac-side loopback of what the tablet
-/// does with MediaCodec (encoder self-tests, `t2m receive`, the "encoded" preview).
+/// does with MediaCodec (encoder self-tests, `ginga receive`, the "encoded" preview).
 public final class VideoToolboxDecoder: @unchecked Sendable {  // immutable; the decompression session is thread-safe
     public let codec: VideoCodec
     private let format: CMVideoFormatDescription

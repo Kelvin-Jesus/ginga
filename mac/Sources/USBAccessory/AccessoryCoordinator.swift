@@ -1,6 +1,6 @@
 import Foundation
 import os
-import Tab2MacCore
+import GingaCore
 import Transport
 
 /// Plug-and-play over USB (M6). Android devices the user approved are switched to accessory mode
@@ -36,7 +36,7 @@ public final class AccessoryCoordinator {
     private var started = false
     /// Vendor requests block for up to a second each: they run here, never on the main thread or
     /// Swift concurrency's cooperative pool.
-    private let switchQueue = DispatchQueue(label: "dev.tab2mac.usb.switch", qos: .userInitiated)
+    private let switchQueue = DispatchQueue(label: "dev.ginga.usb.switch", qos: .userInitiated)
 
     public init(
         isEnabled: Bool,

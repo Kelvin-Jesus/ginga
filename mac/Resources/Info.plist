@@ -12,11 +12,11 @@
 	<key>CFBundleDisplayName</key>
 	<string>Ginga</string>
 	<key>CFBundleExecutable</key>
-	<string>Tab2Mac</string>
+	<string>GingaApp</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>dev.tab2mac.Tab2Mac</string>
+	<string>dev.ginga.Ginga</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -45,7 +45,7 @@
 	<string>Ginga shows its display on your paired tablets over your local Wi‑Fi network.</string>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_tab2mac._tcp</string>
+		<string>_ginga._tcp</string>
 	</array>
 	<key>ATSApplicationFontsPath</key>
 	<string>Fonts</string>

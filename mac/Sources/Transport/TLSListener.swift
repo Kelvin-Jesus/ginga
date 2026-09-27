@@ -2,7 +2,7 @@ import Foundation
 import Network
 import os
 import Security
-import Tab2MacProtocol
+import GingaProtocol
 
 /// The Wi‑Fi listener (M7): TLS 1.3 with this Mac's identity, a client certificate required from
 /// every tablet, advertised over Bonjour. Certificates aren't validated against a chain: the
@@ -20,7 +20,7 @@ public final class TLSListener: @unchecked Sendable {  // NWListener is thread-s
         public var type: String
         public var txt: [String: String]
 
-        public init(name: String, type: String = "_tab2mac._tcp", txt: [String: String]) {
+        public init(name: String, type: String = "_ginga._tcp", txt: [String: String]) {
             self.name = name
             self.type = type
             self.txt = txt
@@ -28,7 +28,7 @@ public final class TLSListener: @unchecked Sendable {  // NWListener is thread-s
     }
 
     private let listener: NWListener
-    private let queue = DispatchQueue(label: "dev.tab2mac.transport.tls-listener", qos: .userInitiated)
+    private let queue = DispatchQueue(label: "dev.ginga.transport.tls-listener", qos: .userInitiated)
 
     /// `loopbackOnly` is for tests (no LAN exposure, no firewall prompt).
     public init(identity: SecIdentity, port: UInt16 = 0, advertisement: Advertisement?, loopbackOnly: Bool = false) throws {
@@ -83,7 +83,7 @@ public final class TLSListener: @unchecked Sendable {  // NWListener is thread-s
         return tls
     }
 
-    /// A TLS client (tests and `t2m receive --tls`): presents `identity`, accepts any server
+    /// A TLS client (tests and `ginga receive --tls`): presents `identity`, accepts any server
     /// certificate (the caller pins it via `peerCertificate()`).
     public static func connect(host: String, port: UInt16, identity: SecIdentity) -> (MessageConnection, NetworkByteTransport) {
         let tls = NWProtocolTLS.Options()

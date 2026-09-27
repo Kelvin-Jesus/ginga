@@ -1,6 +1,6 @@
 # Architecture
 
-Tab2Mac makes a Galaxy Tab S11 a **real extended display** of a Mac. macOS creates and owns a virtual display, WindowServer renders the desktop onto it, and Tab2Mac captures, encodes and streams those pixels to the tablet, which only acts as the remote display surface. Input flows back the other way.
+Ginga makes a Galaxy Tab S11 a **real extended display** of a Mac. macOS creates and owns a virtual display, WindowServer renders the desktop onto it, and Ginga captures, encodes and streams those pixels to the tablet, which only acts as the remote display surface. Input flows back the other way.
 
 This document describes the architecture as built, and where it is headed. The code implements M1–M4 and the power work; M5–M7 (input, direct USB, Wi‑Fi) are implemented on both sides and await on-device verification. See [milestones.md](milestones.md). The constraints behind every decision are in [research.md](research.md).
 
@@ -27,7 +27,7 @@ flowchart LR
     TXA --> DEC --> REN
     INP --> TXA
   end
-  TXM <== "Tab2Mac protocol v1" ==> TXA
+  TXM <== "Ginga protocol v1" ==> TXA
 ```
 
 ## 1. Goals and non-goals
@@ -61,25 +61,25 @@ The brief mandates five layers. Each is a separate SwiftPM target (or Android mo
 | 1 | **Virtual Display Provider** | `VirtualDisplay` (+ `CGVirtualDisplayBackend`, `CGVirtualDisplayShim`) | Create and destroy the display; define its modes, HiDPI, refresh rate and physical size; select a mode; arrange it; watch for mode, mirror and removal changes; expose the `CGDirectDisplayID` | Networking, encoding, Android logic, UI |
 | 2 | **Display Capture** | `DisplayCapture` | Capture frames of *one* `CGDirectDisplayID` as timestamped, encoder-ready IOSurfaces; report capture statistics | Any knowledge of how the display was made |
 | 3 | **Video Pipeline** | `VideoPipeline` | Pixel format handling, hardware encoding, pacing, keyframes, bitrate/quality control | Display creation, transport specifics |
-| 4 | **Transport** | `Transport` + `Tab2MacProtocol` | Move encoded frames, control and input messages over USB or Wi‑Fi; framing, clock sync, reconnection | Display, capture or codec internals |
+| 4 | **Transport** | `Transport` + `GingaProtocol` | Move encoded frames, control and input messages over USB or Wi‑Fi; framing, clock sync, reconnection | Display, capture or codec internals |
 | 5 | **Android receiver** | `:protocol`, `:transport`, `:decoder`, `:renderer`, `:input`, `:discovery`, `:app` | Receive, decode, render; report capabilities; capture and send input | macOS concerns |
 
 Two further pieces sit alongside the layers:
 
-- **`Tab2MacSession`** wires the layers together. It holds configuration, the M1 verifier and the benchmarks, and it depends only on abstractions.
-- **Composition roots** (`Tab2MacApp`, `t2m`) are the *only* code that picks a concrete `VirtualDisplayBackend`.
+- **`GingaSession`** wires the layers together. It holds configuration, the M1 verifier and the benchmarks, and it depends only on abstractions.
+- **Composition roots** (`GingaApp`, `ginga`) are the *only* code that picks a concrete `VirtualDisplayBackend`.
 
 ```text
-Tab2MacApp, t2m ─► Tab2MacStreaming ─► Tab2MacSession ─► VirtualDisplay, DisplayCapture
-      │                  ├─► VideoPipeline, Tab2MacProtocol, Transport, Tab2MacSecurity
+GingaApp, ginga ─► GingaStreaming ─► GingaSession ─► VirtualDisplay, DisplayCapture
+      │                  ├─► VideoPipeline, GingaProtocol, Transport, GingaSecurity
       ├─► USBAccessory ─► USBAccessoryShim (Obj‑C, IOUSBHost), Transport
       ├─► InputInjection
       ├─► CGVirtualDisplayBackend ─► CGVirtualDisplayShim (Obj‑C, the private API)
-      └─► EnergyMeter (t2m only)
-                               everything ─► Tab2MacCore (clock, geometry, logging, statistics, metrics)
+      └─► EnergyMeter (ginga only)
+                               everything ─► GingaCore (clock, geometry, logging, statistics, metrics)
 ```
 
-`DisplayCapture` doesn't import `VirtualDisplay` at all: the only thing it knows is a `CGDirectDisplayID`. The private API lives in exactly one Objective‑C file, `T2MPrivateVirtualDisplay.m`.
+`DisplayCapture` doesn't import `VirtualDisplay` at all: the only thing it knows is a `CGDirectDisplayID`. The private API lives in exactly one Objective‑C file, `GingaPrivateVirtualDisplay.m`.
 
 ### 2.1 Layer 1 — the `VirtualDisplayBackend` boundary
 
@@ -171,7 +171,7 @@ protocol DatagramChannel     // unreliable: video fragments on Wi-Fi UDP (M8)
 |---|---|---|---|
 | USB, AOA 2 (primary, M6) | `AccessoryCoordinator`:<br>• IOKit notifications report Android devices.<br>• Only serials the user approved get the handshake (GET_PROTOCOL 51, SEND_STRING 52 ×6, START 53).<br>• An approved accessory-mode device (18D1:2D00/2D01) becomes a connection over its FF/FF interface's bulk pipes; revoking it, or turning direct USB off, ends the session.<br>• Vendor requests block for up to a second each, so they run on a dedicated queue.<br>• The Objective‑C shim `USBAccessoryShim` is the only IOUSBHost caller; devices are opened without capture or seize, so adb keeps working. | reliable stream | No developer mode. A ZLP follows writes that end on a packet boundary. **Verified:** GET_PROTOCOL = 2 on the Tab S11 with adb running. **Gate:** host→device throughput must be ≥ 3× the target bitrate, or ADB becomes the primary |
 | USB, ADB reverse (fallback, M4) | `adb reverse tcp:…` using the user's adb; Mac listens on localhost | reliable stream (TCP) | Needs USB debugging. Reuses the TCP code path |
-| Wi‑Fi TCP (M7) | Bonjour `_tab2mac._tcp`, TLS 1.3 | reliable stream | `TCP_NODELAY`, small send buffer, latest-frame-wins |
+| Wi‑Fi TCP (M7) | Bonjour `_ginga._tcp`, TLS 1.3 | reliable stream | `TCP_NODELAY`, small send buffer, latest-frame-wins |
 | Wi‑Fi UDP (M8) | Control over TLS; video over UDP with AES‑GCM keys exported from TLS | datagrams + Reed–Solomon FEC (10–20%) + NACK within a ~10 ms deadline, then LTR or IDR recovery | Packets ≤ 1200 bytes |
 
 **Connection lifecycle:**
@@ -200,7 +200,7 @@ protocol DatagramChannel     // unreliable: video fragments on Wi-Fi UDP (M8)
 
 ### 2.5b Wi‑Fi sessions and pairing (M7)
 
-- **Discovery.** `WiFiService` advertises `_tab2mac._tcp` over Bonjour. TXT records `pv`, `id`, `name`; no secrets.
+- **Discovery.** `WiFiService` advertises `_ginga._tcp` over Bonjour. TXT records `pv`, `id`, `name`; no secrets.
 - **Transport.** `TLSListener`: TLS 1.3 with this Mac's identity, and a tablet certificate required on every connection. Certificates are not chain-validated.
 - **Mac identity.** A self-signed P‑256 certificate. `SelfSignedCertificate` builds it in DER, because macOS has no public API for that. It is kept in the login keychain.
 - **Pinning.** The stream session pins certificates: `PeerTrust.tls` with `KeychainPinStore`.
@@ -254,7 +254,7 @@ Nothing stays pressed when things go wrong: a receiver that goes away mid-gestur
 | Context | Work |
 |---|---|
 | Main actor | Display provider, CoreGraphics configuration, UI, session orchestration |
-| `dev.tab2mac.capture.frames` (user-interactive) | ScreenCaptureKit callbacks, statistics, fan-out to sinks (preview, encoder) — must never block |
+| `dev.ginga.capture.frames` (user-interactive) | ScreenCaptureKit callbacks, statistics, fan-out to sinks (preview, encoder) — must never block |
 | VideoToolbox callback threads (M2) | Encoded output into the transport queue |
 | Network / USB queues (M3+) | Framing, send and receive, clock sync |
 
@@ -295,15 +295,15 @@ The full draft is in [protocol/PROTOCOL.md](../protocol/PROTOCOL.md).
   - **UDP video** is encrypted with AES‑GCM keys from the TLS exporter.
   - Input is only accepted on an authenticated session.
 - **Discovery:** Bonjour TXT records contain no secrets (protocol version, an instance ID taken from the Mac's certificate fingerprint, the Mac's name).
-- **The adb path is authenticated with a token.** Over `adb reverse`, the tablet's connection reaches the Mac as a loopback connection from the adb server. Any process on the Mac could open the same port, and any app on the tablet could reach it through the reverse forward; either would receive the screen through Tab2Mac's Screen Recording grant and inject input through its Accessibility grant. So the Mac hands the Tab2Mac app a random token per run over adb (a broadcast to a receiver that requires `DUMP`, which only `adb shell` holds, with the token on stdin so it never appears in a process list) and requires it in HELLO (ADR‑21). Debug builds of the tablet app are `run-as`-readable over adb, so only release builds keep the token from someone who already controls adb.
+- **The adb path is authenticated with a token.** Over `adb reverse`, the tablet's connection reaches the Mac as a loopback connection from the adb server. Any process on the Mac could open the same port, and any app on the tablet could reach it through the reverse forward; either would receive the screen through Ginga's Screen Recording grant and inject input through its Accessibility grant. So the Mac hands the Ginga app a random token per run over adb (a broadcast to a receiver that requires `DUMP`, which only `adb shell` holds, with the token on stdin so it never appears in a process list) and requires it in HELLO (ADR‑21). Debug builds of the tablet app are `run-as`-readable over adb, so only release builds keep the token from someone who already controls adb.
 
 ## 6. Configuration and diagnostics
 
-- **Configuration file:** `~/Library/Application Support/Tab2Mac/config.json`. It is versioned, and every section decodes with defaults, so files only contain what they change. Examples are in [`config/examples/`](../config/examples); a test keeps them valid.
-- **Logging:** unified logging, subsystem `dev.tab2mac`, one category per layer, messages as `event.name key=value …`:
+- **Configuration file:** `~/Library/Application Support/Ginga/config.json`. It is versioned, and every section decodes with defaults, so files only contain what they change. Examples are in [`config/examples/`](../config/examples); a test keeps them valid.
+- **Logging:** unified logging, subsystem `dev.ginga`, one category per layer, messages as `event.name key=value …`:
 
   ```sh
-  /usr/bin/log stream --level debug --predicate 'subsystem == "dev.tab2mac"'
+  /usr/bin/log stream --level debug --predicate 'subsystem == "dev.ginga"'
   ```
 
 - **Diagnostic mode** (preview overlay and control panel):
@@ -312,7 +312,7 @@ The full draft is in [protocol/PROTOCOL.md](../protocol/PROTOCOL.md).
   - output size and format;
   - process CPU and memory, and system GPU utilisation (IORegistry `PerformanceStatistics`).
   - the stream: codec and size, sent fps and bitrate, skipped frames, encode p50/p95, and the tablet's end-to-end and decode latency and dropped frames.
-- **Reports:** `t2m verify`, `Tab2Mac --self-test` and `--benchmark-capture` write JSON reports that include host information.
+- **Reports:** `ginga verify`, `Ginga --self-test` and `--benchmark-capture` write JSON reports that include host information.
 
 ## 7. Language choice: Swift, not Rust
 
@@ -340,14 +340,14 @@ Swift was chosen for the whole macOS side:
 | ~~ADR‑11~~ | *Superseded by ADR‑14.* Virtual display at 120 Hz by default, stream capped at 60 | The "60 Hz composes at 6–22 fps" measurement was an artifact: the load window was created with `NSWindow(contentRect:screen:)`, which reads the rect relative to that screen, so it landed on another display. Fixed; 60 Hz streams 60.0 fps with a regular cadence **[M]** | — |
 | ADR‑12 | Backpressure *before* encoding (skip capture frames while ≥2 frames are queued in the socket); encoded frames are never dropped | Every P-frame depends on its predecessor; dropping after encode corrupts the stream until the next IDR | UDP profile with LTR (M8) |
 | ADR‑13 | Input delivered to the main queue (FIFO), not per-event Tasks | Unstructured Tasks don't guarantee order; down/move/up must never reorder | — |
-| ADR‑14 | **Power first:** virtual display at 60 Hz by default and stream rate = display rate; 120 Hz is an opt-in "performance" setting. Surplus frames, when a cap applies, are dropped in-process by `FrameCadence` on capture timestamps | Streaming a continuously animated window costs +229 mW at 60 Hz → 60 fps. It costs +672 mW at 120 Hz → 60 fps with a regular cadence, and about 0.8 W more than 60 Hz at 120 Hz → 120 fps (`t2m bench-power`) **[M]**. Apps on the display also render half as often. ScreenCaptureKit's own `minimumFrameInterval` dropping is lossy with 120 Hz → 60 (50 fps, p95 interval 33 ms), while in-process cadence gives exactly 60.0 fps (p95 16.7 ms) **[M]** | — (done: `power.batteryRefreshRate`, 60 by default, switches a 120 Hz display to 60 Hz on battery, live) |
-| ADR‑15 | **Nothing runs when nothing changes:**<br>• Capture runs only while a consumer (stream, preview) needs it, and a tablet whose app is in the background pauses the stream (CONFIGURE `paused`, feature `pause`).<br>• A static screen is never re-sent: keyframes needed by a new receiver, a keyframe request or a resume come from re-encoding the latest frame.<br>• The adb bridge is event-driven (`adb track-devices`).<br>• Diagnostics sample only while a window showing them is visible.<br>• A latency-critical activity (no App Nap, no idle sleep) is held only while a tablet is connected. | Static desktop while streaming: Tab2Mac 0.1 % CPU, 0 mW, 0 wake-ups/s **[M]**. The control panel alone cost ~8 % CPU when it re-rendered every 0.5 s | — |
+| ADR‑14 | **Power first:** virtual display at 60 Hz by default and stream rate = display rate; 120 Hz is an opt-in "performance" setting. Surplus frames, when a cap applies, are dropped in-process by `FrameCadence` on capture timestamps | Streaming a continuously animated window costs +229 mW at 60 Hz → 60 fps. It costs +672 mW at 120 Hz → 60 fps with a regular cadence, and about 0.8 W more than 60 Hz at 120 Hz → 120 fps (`ginga bench-power`) **[M]**. Apps on the display also render half as often. ScreenCaptureKit's own `minimumFrameInterval` dropping is lossy with 120 Hz → 60 (50 fps, p95 interval 33 ms), while in-process cadence gives exactly 60.0 fps (p95 16.7 ms) **[M]** | — (done: `power.batteryRefreshRate`, 60 by default, switches a 120 Hz display to 60 Hz on battery, live) |
+| ADR‑15 | **Nothing runs when nothing changes:**<br>• Capture runs only while a consumer (stream, preview) needs it, and a tablet whose app is in the background pauses the stream (CONFIGURE `paused`, feature `pause`).<br>• A static screen is never re-sent: keyframes needed by a new receiver, a keyframe request or a resume come from re-encoding the latest frame.<br>• The adb bridge is event-driven (`adb track-devices`).<br>• Diagnostics sample only while a window showing them is visible.<br>• A latency-critical activity (no App Nap, no idle sleep) is held only while a tablet is connected. | Static desktop while streaming: Ginga 0.1 % CPU, 0 mW, 0 wake-ups/s **[M]**. The control panel alone cost ~8 % CPU when it re-rendered every 0.5 s | — |
 | ADR‑16 | Energy is measured with IOReport's "Energy Model" channels (no root) in the developer CLI only; the app never links IOReport | Needed to judge changes by energy (the reference is Sidecar); IOReport is private, so it is resolved at runtime with every symbol checked, like the display shim | A public energy API |
 | ADR‑17 | Keyframes only on demand (new receiver, KEYFRAME_REQUEST, resume, encoder change), never periodic; up to 2 frames in the encoder | IDRs at 2560×1600 take up to 31 ms (> 8.3 ms at 120 Hz) and spike the bitrate. All links are reliable, and the tablet asks on any gap. Result: 120 Hz with 0.06 % single-frame skips and a 14 ms worst case **[M]** | A lossy UDP profile (M8) needs periodic refresh or LTR |
 | ADR‑18 | Display operations are serialized in `DisplaySession` (start, apply, stop, power switch each await the previous); `ensureDisplay(owner:)` decides "create or reuse" when its turn comes | The provider suspends while WindowServer catches up (up to its online timeout). Interleaved, a tablet reconnecting just as the linger expired reused a display that was being removed and streamed nothing (a regression test covers it) | — |
 | ADR‑19 | Receivers: a pending set for connections that haven't authenticated, one current receiver, a `StreamLease` per receiver | Anyone who can reach the port can open a connection; it must not evict the tablet in use, hold the Mac awake, or strand a display by leaving during setup (a regression test covers it) | Multiple tablets |
 | ADR‑20 | Wi‑Fi pairing by numeric comparison with a commitment to the tablet's nonce (as in Bluetooth LE Secure Connections) | Without nonces, a man in the middle can search certificate serials offline until both 6-digit codes match (~10⁶ hashes); with them it gets one guess per attempt | A pairing standard on both platforms (e.g. passkeys) |
-| ADR‑21 | adb connections authenticated by a per-run token handed to the app over adb (DUMP-protected receiver, token on stdin) and required in HELLO | A loopback port is open to every local process on the Mac and, through `adb reverse`, to every app on the tablet; either would get the screen and input through Tab2Mac's grants | A transport with its own peer identity |
+| ADR‑21 | adb connections authenticated by a per-run token handed to the app over adb (DUMP-protected receiver, token on stdin) and required in HELLO | A loopback port is open to every local process on the Mac and, through `adb reverse`, to every app on the tablet; either would get the screen and input through Ginga's grants | A transport with its own peer identity |
 | ADR‑22 | The pointer as a side channel (CURSOR/CURSOR_SHAPE) when the tablet draws it; capture leaves it out | Pointer motion over a still screen otherwise costs a captured, encoded and decoded frame per refresh (up to 120/s); now a 24-byte message. Verified on the device: the overlay draws it at the exact position | ScreenCaptureKit offering the pointer as metadata |
 | ADR‑23 | Liveness on both sides (receivers PING at 1 Hz; the Mac drops 5 s of silence, the tablet 4–5 s), a HELLO on a live link restarts the session, GOODBYE `shutdown` on quit | A USB accessory link reports neither a dead tablet app nor a quit Mac; without this, both sides waited forever. Verified on the device: kill the tablet app, or quit the Mac app, and the stream comes back by itself | — |
 | ADR‑24 | The S Pen is a pen tablet to macOS (proximity events, tablet points with pressure and tilt, eraser pointer) | That is what drawing apps read, and how Sidecar presents the Apple Pencil; verified with the real pen (pressure 0–0.89, tilt, proximity in/out) | — |

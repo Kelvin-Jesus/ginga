@@ -1,10 +1,10 @@
 import Darwin
 import Foundation
-import Tab2MacCore
+import GingaCore
 
 /// Cumulative CPU time, energy and wake-ups of one process.
 ///
-/// `proc_pid_rusage` (public) covers processes of the same user, which includes Tab2Mac and
+/// `proc_pid_rusage` (public) covers processes of the same user, which includes Ginga and
 /// replayd (ScreenCaptureKit's capture daemon). Other users' processes, such as WindowServer,
 /// only expose CPU time, which is read through `ps`.
 public struct ProcessUsage: Codable, Sendable, Equatable {

@@ -1,8 +1,8 @@
 import CoreGraphics
 import Foundation
 import os
-import Tab2MacCore
-import Tab2MacProtocol
+import GingaCore
+import GingaProtocol
 
 extension Log {
     public static let input = Logger(subsystem: subsystem, category: "input")
@@ -75,7 +75,7 @@ public final class CGEventInjector: @unchecked Sendable {  // `lastClick` is gua
     /// Identifies the S Pen as a pen tablet's pointer, the way a Wacom driver (or Sidecar's Apple
     /// Pencil) does: the same device ID ties the tablet points that follow to this pen.
     static let penDeviceID: Int64 = 0x7432
-    private static let penVendorID: Int64 = 0x5022  // Tab2Mac's display vendor ID
+    private static let penVendorID: Int64 = 0x5022  // Ginga's display vendor ID
     /// Device ID, absolute X/Y, buttons, tilt X/Y and pressure (NX_TABLET_CAPABILITY_* bits).
     private static let penCapabilities: Int64 = 0x0001 | 0x0002 | 0x0004 | 0x0040 | 0x0080 | 0x0100 | 0x0400
 
@@ -142,7 +142,7 @@ public final class CGEventInjector: @unchecked Sendable {  // `lastClick` is gua
 
     // MARK: Inertia
 
-    private let momentumQueue = DispatchQueue(label: "dev.tab2mac.input.momentum", qos: .userInteractive)
+    private let momentumQueue = DispatchQueue(label: "dev.ginga.input.momentum", qos: .userInteractive)
     private var momentumTimer: DispatchSourceTimer?  // guarded by `lock`
 
     /// Keeps scrolling after a flick and slows down like a trackpad (momentum phases, so apps

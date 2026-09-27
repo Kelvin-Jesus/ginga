@@ -12,6 +12,6 @@
   },
   "decodeOnly" : false,
   "description" : "Keyframe (KEYFRAME flag) with a tiny Annex-B access unit",
-  "hex" : "54320110000200010000001d0012000000010000011f71fb04cb0000157c000000012601af06b863ef",
+  "hex" : "474e0110000200010000001d0012000000010000011f71fb04cb0000157c000000012601af06b863ef",
   "name" : "video-frame-keyframe"
 }

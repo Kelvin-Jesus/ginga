@@ -11,7 +11,7 @@
     android:background="?attr/gingaBg"
     android:fitsSystemWindows="true">
 
-    <dev.tab2mac.receiver.ui.widget.ColumnLayout
+    <dev.ginga.receiver.ui.widget.ColumnLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <dev.tab2mac.receiver.ui.widget.SwitchRow
+            <dev.ginga.receiver.ui.widget.SwitchRow
                 android:id="@+id/auto_reconnect"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,14 +90,14 @@
                     android:labelFor="@id/refresh"
                     android:text="@string/preferred_refresh" />
 
-                <dev.tab2mac.receiver.ui.widget.SegmentedControl
+                <dev.ginga.receiver.ui.widget.SegmentedControl
                     android:id="@+id/refresh"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/ginga_space_3" />
             </LinearLayout>
 
-            <dev.tab2mac.receiver.ui.widget.SwitchRow
+            <dev.ginga.receiver.ui.widget.SwitchRow
                 android:id="@+id/fast_decoder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,7 +132,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <dev.tab2mac.receiver.ui.widget.SegmentedControl
+                <dev.ginga.receiver.ui.widget.SegmentedControl
                     android:id="@+id/appearance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -162,7 +162,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <dev.tab2mac.receiver.ui.widget.SwitchRow
+            <dev.ginga.receiver.ui.widget.SwitchRow
                 android:id="@+id/show_diagnostics"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -220,5 +220,5 @@
                     android:text="@string/adb_instructions_after" />
             </LinearLayout>
         </LinearLayout>
-    </dev.tab2mac.receiver.ui.widget.ColumnLayout>
+    </dev.ginga.receiver.ui.widget.ColumnLayout>
 </ScrollView>

@@ -2,7 +2,7 @@ import CoreMedia
 import CoreVideo
 import Foundation
 import ScreenCaptureKit
-import Tab2MacCore
+import GingaCore
 import Testing
 @testable import DisplayCapture
 

@@ -1,6 +1,6 @@
 import Foundation
 import os
-import Tab2MacCore
+import GingaCore
 import Transport
 import USBAccessoryShim
 
@@ -8,7 +8,7 @@ import USBAccessoryShim
 /// `MessageConnection` framing, backpressure and HELLO/WELCOME run on top, exactly as over TCP.
 public final class AccessoryByteTransport: ByteTransport, @unchecked Sendable {  // the link serialises on `queue`; `pending` is locked
     public let endpointDescription: String
-    private let link: T2MAccessoryLink
+    private let link: GingaAccessoryLink
     private let queue: DispatchQueue
     private struct Pending {
         var writes = 0
@@ -18,9 +18,9 @@ public final class AccessoryByteTransport: ByteTransport, @unchecked Sendable { 
 
     /// Opens the accessory interface of the device with this IORegistry entry ID.
     public init(deviceEntryID: UInt64, description: String) throws {
-        let queue = DispatchQueue(label: "dev.tab2mac.usb.accessory", qos: .userInteractive)
+        let queue = DispatchQueue(label: "dev.ginga.usb.accessory", qos: .userInteractive)
         do {
-            link = try T2MAccessoryLink.open(withDeviceRegistryEntryID: deviceEntryID, queue: queue)
+            link = try GingaAccessoryLink.open(withDeviceRegistryEntryID: deviceEntryID, queue: queue)
         } catch {
             throw AccessoryError.usb(error.localizedDescription)
         }

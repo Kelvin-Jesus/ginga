@@ -1,4 +1,4 @@
-import Tab2MacCore
+import GingaCore
 import Testing
 @testable import DisplayCapture
 

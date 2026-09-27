@@ -7,22 +7,22 @@ drops about 1.7 % of frames at 120 Hz. Wi‑Fi (3c) is for when there's no cable
 
 ## 1. On the Mac
 
-1. **Build or install Tab2Mac.** From source:
+1. **Build or install Ginga.** From source:
 
    ```sh
    cd mac
    scripts/create-dev-signing-identity.sh   # once: a stable identity keeps permissions across rebuilds
-   scripts/build-app.sh                     # → mac/build/Tab2Mac.app and mac/build/t2m
+   scripts/build-app.sh                     # → mac/build/Ginga.app and mac/build/ginga
    ```
 
-2. **Install adb.** Tab2Mac uses your adb and never bundles Google's:
+2. **Install adb.** Ginga uses your adb and never bundles Google's:
 
    ```sh
    brew install android-platform-tools
    ```
 
-3. **Open Tab2Mac.** It lives in the menu bar and opens its control panel on first launch.
-4. **Grant Screen & System Audio Recording** when asked, or use Control Panel › Status › Grant…. Tab2Mac captures **only its own virtual display**. Quit and reopen the app after granting.
+3. **Open Ginga.** It lives in the menu bar and opens its control panel on first launch.
+4. **Grant Screen & System Audio Recording** when asked, or use Control Panel › Status › Grant…. Ginga captures **only its own virtual display**. Quit and reopen the app after granting.
 5. **Optional: grant Accessibility** for touch and S Pen control (Control Panel › Tablet › "Touch & S Pen control: Grant…"). Without it the tablet is display-only.
 
 ## 2. On the Tab S11
@@ -31,7 +31,7 @@ drops about 1.7 % of frames at 120 Hz. Wi‑Fi (3c) is for when there's no cable
    - Settings › About tablet › Software information › tap **Build number** 7 times.
    - Then Settings › Developer options › **USB debugging**.
    - Samsung *Auto Blocker* blocks USB commands. If it is on, turn it off for the setup (Settings › Security and privacy › Auto Blocker).
-2. **Install the Tab2Mac app.** Either build it yourself (`cd android && ./gradlew assembleDebug`, see [android/README.md](../android/README.md)) or use the APK you were given:
+2. **Install the Ginga app.** Either build it yourself (`cd android && ./gradlew assembleDebug`, see [android/README.md](../android/README.md)) or use the APK you were given:
 
    ```sh
    adb install -r android/app/build/outputs/apk/debug/app-debug.apk
@@ -41,27 +41,27 @@ drops about 1.7 % of frames at 120 Hz. Wi‑Fi (3c) is for when there's no cable
 
 ## 3. Connect
 
-1. In Tab2Mac on the Mac, turn on **Accept the tablet over USB** (Control Panel › Tablet). It then keeps `adb reverse` in place automatically, including after replugging.
-2. On the tablet, open **Tab2Mac** and tap **Connect**.
+1. In Ginga on the Mac, turn on **Accept the tablet over USB** (Control Panel › Tablet). It then keeps `adb reverse` in place automatically, including after replugging.
+2. On the tablet, open **Ginga** and tap **Connect**.
 3. A "Galaxy Tab S11" display appears on the Mac, and the tablet shows it. Drag windows onto it, or arrange it in System Settings › Displays.
 
 When the tablet disconnects, the display disappears after 15 s and macOS moves its windows back, as with Sidecar. Reconnect within those 15 s and nothing moves.
 
 ## 3b. Direct USB, no developer mode (beta, M6)
 
-With direct USB, the tablet needs neither USB debugging nor adb. Tab2Mac asks Android to switch the USB connection into *accessory mode*, and Android opens Tab2Mac by itself.
+With direct USB, the tablet needs neither USB debugging nor adb. Ginga asks Android to switch the USB connection into *accessory mode*, and Android opens Ginga by itself.
 
 1. Control Panel › Tablet › **Direct USB — no developer mode** is on by default.
 2. Your tablet appears in the list below it. Click **Use this tablet**. Only tablets you approve are ever switched.
-3. On the tablet, Android asks *"Open Tab2Mac when this USB accessory is connected?"*. Tick **Always** and tap OK. The display starts on its own.
+3. On the tablet, Android asks *"Open Ginga when this USB accessory is connected?"*. Tick **Always** and tap OK. The display starts on its own.
 
-From then on, plugging in the tablet is enough. To leave accessory mode, unplug the cable. `mac/build/t2m usb` lists Android devices and whether they support accessory mode, without changing anything.
+From then on, plugging in the tablet is enough. To leave accessory mode, unplug the cable. `mac/build/ginga usb` lists Android devices and whether they support accessory mode, without changing anything.
 
 ## 3c. Wi‑Fi (beta, M7)
 
 1. Control Panel › Tablet (Wi‑Fi, beta) › turn on **Accept paired tablets over Wi‑Fi**. macOS asks once for Local Network access; allow it.
-2. On the tablet, in Tab2Mac's Wi‑Fi list, pick the Mac (both on the same network) and tap **Connect**.
-3. The first time, both screens show a 6-digit code. Check that they match, then confirm on both. Tab2Mac never asks you to type a code, and a code that differs means something is between the devices: decline.
+2. On the tablet, in Ginga's Wi‑Fi list, pick the Mac (both on the same network) and tap **Connect**.
+3. The first time, both screens show a 6-digit code. Check that they match, then confirm on both. Ginga never asks you to type a code, and a code that differs means something is between the devices: decline.
 
 Paired tablets are listed in the control panel; **Forget** ends a tablet's session and makes it pair again. The stream is encrypted (TLS 1.3), and each side pins the other's certificate.
 
@@ -99,8 +99,8 @@ Any USB‑C cable with data works. A Thunderbolt 4 or USB 3 cable has far more b
 
 ## 6. Battery tips
 
-- **Over the cable, the tablet charges from the Mac.** That draws far more than Tab2Mac itself. Samsung's "Protect battery" (charges to 80–85 %) limits it, or plug the Mac into power.
-- **A still screen costs nothing.** Tab2Mac sends frames only when something changes. When the tablet's app is in the background or its screen is off, the Mac stops capturing.
+- **Over the cable, the tablet charges from the Mac.** That draws far more than Ginga itself. Samsung's "Protect battery" (charges to 80–85 %) limits it, or plug the Mac into power.
+- **A still screen costs nothing.** Ginga sends frames only when something changes. When the tablet's app is in the background or its screen is off, the Mac stops capturing.
 - **External monitors.** Adding the tablet's display can make macOS switch another external monitor to a different mode. macOS stores one configuration per set of displays; HiDPI modes of the other monitor may be unavailable while a HiDPI tablet display exists. Pick the mode you want in System Settings › Displays while the tablet is connected, and macOS remembers it for that combination.
 
 Problems? See [troubleshooting.md](troubleshooting.md).

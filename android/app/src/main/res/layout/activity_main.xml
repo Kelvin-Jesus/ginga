@@ -14,7 +14,7 @@
         Black espacial only: the dithered galaxy (DitherSpace) behind the header, faint so the text
         stays readable; GONE in the other themes.
     -->
-    <dev.tab2mac.receiver.ui.widget.DitherSpaceView
+    <dev.ginga.receiver.ui.widget.DitherSpaceView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
@@ -32,7 +32,7 @@
         android:fillViewport="true"
         android:fitsSystemWindows="true">
 
-        <dev.tab2mac.receiver.ui.widget.ColumnLayout
+        <dev.ginga.receiver.ui.widget.ColumnLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -64,7 +64,7 @@
                     android:accessibilityHeading="true"
                     android:text="@string/app_name" />
 
-                <dev.tab2mac.receiver.ui.widget.StatusOrbitView
+                <dev.ginga.receiver.ui.widget.StatusOrbitView
                     android:id="@+id/status_orbit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
@@ -118,7 +118,7 @@
                             android:text="@string/home_searching_sub" />
                     </LinearLayout>
 
-                    <dev.tab2mac.receiver.ui.widget.RadarView
+                    <dev.ginga.receiver.ui.widget.RadarView
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:layout_marginStart="@dimen/ginga_space_6"
@@ -264,7 +264,7 @@
                         android:accessibilityHeading="true"
                         android:gravity="center" />
 
-                    <dev.tab2mac.receiver.ui.widget.PairingCodeView
+                    <dev.ginga.receiver.ui.widget.PairingCodeView
                         android:id="@+id/pairing_code"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -471,7 +471,7 @@
                 android:padding="@dimen/ginga_space_4"
                 android:textIsSelectable="true"
                 android:visibility="gone" />
-        </dev.tab2mac.receiver.ui.widget.ColumnLayout>
+        </dev.ginga.receiver.ui.widget.ColumnLayout>
     </ScrollView>
 
     <!--
@@ -487,7 +487,7 @@
         android:focusable="false"
         android:visibility="gone">
 
-        <dev.tab2mac.receiver.ui.widget.DitherSpaceView
+        <dev.ginga.receiver.ui.widget.DitherSpaceView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|end"

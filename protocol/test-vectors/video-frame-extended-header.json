@@ -12,6 +12,6 @@
   },
   "decodeOnly" : true,
   "description" : "Newer sender appended 4 header bytes; skip to headerLength",
-  "hex" : "54320110000000010000001c0016000000030000011f71fb870100001388deadbeef000000010201",
+  "hex" : "474e0110000000010000001c0016000000030000011f71fb870100001388deadbeef000000010201",
   "name" : "video-frame-extended-header"
 }

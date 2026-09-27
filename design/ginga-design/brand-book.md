@@ -1,6 +1,6 @@
 Ginga transforma um Galaxy Tab em segunda tela do Mac. O nome carrega as duas leituras da marca: 銀河, *galáxia* em japonês, e a *ginga* da capoeira. A interface inteira segue essa ideia: um céu calmo e escuro, um tablet levemente inclinado fora do eixo, e movimentos que passam um pouco do ponto e voltam, como um balanço.
 
-**Tab2Mac** continua sendo o nome interno (módulos, `t2m`, logs, bundle id). Nenhuma tela mostra “Tab2Mac”.
+**Ginga** é também o nome do código: módulos, a ferramenta de linha de comando `ginga`, logs e bundle id.
 
 ## Conteúdo e voz
 

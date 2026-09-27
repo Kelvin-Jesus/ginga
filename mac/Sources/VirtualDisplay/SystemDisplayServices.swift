@@ -1,5 +1,5 @@
 import CoreGraphics
-import Tab2MacCore
+import GingaCore
 
 /// Public CoreGraphics display APIs the provider needs, behind a protocol so the provider's
 /// state machine can be tested without touching WindowServer.

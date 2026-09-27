@@ -1,6 +1,6 @@
-# Tab2Mac — Android receiver (the Ginga app)
+# Ginga — Android receiver (the Ginga app)
 
-The product is called **Ginga** on screen; Tab2Mac stays the internal name (package, classes,
+The product is called **Ginga** on screen; Ginga stays the internal name (package, classes,
 logs, the USB accessory strings, the Bonjour type, the certificate subject, HELLO `app.name`).
 
 Turns a Galaxy Tab S11 into an extended display of a Mac: receives the HEVC/H.264 stream,
@@ -24,7 +24,7 @@ Android's prompt or compare the pairing code.
 | `:decoder` | Android lib | `DecoderConfigPlanner` (pure: codec choice + `MediaFormat` keys), `CodecCatalog` (MediaCodecList → candidates, HELLO capabilities), `VideoDecoder` (async MediaCodec into a Surface, decode latency, error recovery). |
 | `:renderer` | Android lib | `VideoSurfaceLayout` (SurfaceView, aspect fit), `LatestFramePresenter` (latest frame wins, `releaseOutputBuffer(i, System.nanoTime())`, end-to-end latency), `SurfaceFrameRate`. |
 | `:input` | Android lib | `InputMapper` (pure: MotionEvent samples → INPUT, normalised to the video rect), `Tilt`, `InputCapture` (Android glue). |
-| `:discovery` | Android lib | `MacDiscovery` + `NsdMacDiscovery` (`_tab2mac._tcp`, `registerServiceInfoCallback` on API 34+, serialized `resolveService` before), `TxtRecord`/`DiscoveredMac`. |
+| `:discovery` | Android lib | `MacDiscovery` + `NsdMacDiscovery` (`_ginga._tcp`, `registerServiceInfoCallback` on API 34+, serialized `resolveService` before), `TxtRecord`/`DiscoveredMac`. |
 | `:app` | Application | `Session` (pure state machine, pairing included), `ReceiverController` (transports, discovery, WifiLock), `TabletIdentity` (AndroidKeyStore P-256 key and certificate), `KeystorePinStore` (AES-GCM sealed pins), `VideoPipeline`, `StreamStats`, `DeviceCapabilities` (HELLO from the real device), `AccessoryActivity` (invisible target of the accessory intent), `MainActivity` (home by states: `HomeModel`), `SettingsActivity`, `StreamActivity` (fullscreen stream, waiting sky, first-frame toast, diagnostics overlay), `ui/widget` (Ginga components). |
 
 ```text
@@ -34,11 +34,11 @@ Android's prompt or compare the pairing code.
   └────► :discovery
 ```
 
-Logging: `android.util.Log`, tags `T2M/<module>` (`T2M/app`, `T2M/session`, `T2M/transport`,
-`T2M/decoder`, `T2M/renderer`, `T2M/input`, `T2M/discovery`), messages `event key=value …`:
+Logging: `android.util.Log`, tags `Ginga/<module>` (`Ginga/app`, `Ginga/session`, `Ginga/transport`,
+`Ginga/decoder`, `Ginga/renderer`, `Ginga/input`, `Ginga/discovery`), messages `event key=value …`:
 
 ```sh
-adb logcat -s 'T2M/app:*' 'T2M/session:*' 'T2M/transport:*' 'T2M/decoder:*' 'T2M/renderer:*' 'T2M/input:*'
+adb logcat -s 'Ginga/app:*' 'Ginga/session:*' 'Ginga/transport:*' 'Ginga/decoder:*' 'Ginga/renderer:*' 'Ginga/input:*'
 ```
 
 ## Build and test
@@ -68,17 +68,17 @@ failed, when the directory is missing.
 
 ```sh
 adb install -r app/build/outputs/apk/debug/app-debug.apk
-adb reverse tcp:47800 tcp:47800            # the Mac app / t2m does this for you
-mac/.build/debug/t2m serve --synthetic     # or the Mac app; a test pattern without Screen Recording
+adb reverse tcp:47800 tcp:47800            # the Mac app / ginga does this for you
+mac/.build/debug/ginga serve --synthetic     # or the Mac app; a test pattern without Screen Recording
 ```
 
 Open Ginga on the tablet, choose **Cabo USB** and tap **Conectar pelo cabo**; the display opens
 full screen once the Mac answers. Debug builds also take scripted commands:
 
 ```sh
-adb shell am start -n dev.tab2mac.receiver/.ui.MainActivity --ez connect true
-adb shell am start --activity-clear-top -n dev.tab2mac.receiver/.ui.MainActivity --ez disconnect true
-adb shell am start -n dev.tab2mac.receiver/.ui.MainActivity --es appearance space   # system|light|dark|space
+adb shell am start -n dev.ginga.receiver/.ui.MainActivity --ez connect true
+adb shell am start --activity-clear-top -n dev.ginga.receiver/.ui.MainActivity --ez disconnect true
+adb shell am start -n dev.ginga.receiver/.ui.MainActivity --es appearance space   # system|light|dark|space
 ```
 
 ## UI (Ginga design system)
@@ -144,8 +144,8 @@ would reach the Mac through `adb reverse`. So the Mac authorizes adb connections
 (32 random bytes, new on every Mac app start), delivered over adb right after `adb reverse`:
 
 ```sh
-adb -s SERIAL shell 'read t; am broadcast -f 32 -a dev.tab2mac.action.LOOPBACK_TOKEN \
-  -n dev.tab2mac.receiver/dev.tab2mac.receiver.adb.LoopbackTokenReceiver --es token "$t"'   # token on stdin
+adb -s SERIAL shell 'read t; am broadcast -f 32 -a dev.ginga.action.LOOPBACK_TOKEN \
+  -n dev.ginga.receiver/dev.ginga.receiver.adb.LoopbackTokenReceiver --es token "$t"'   # token on stdin
 ```
 
 - `LoopbackTokenReceiver` is exported but guarded by `android.permission.DUMP`, which only the adb
@@ -162,11 +162,11 @@ adb -s SERIAL shell 'read t; am broadcast -f 32 -a dev.tab2mac.action.LOOPBACK_T
 
 ## Direct USB (Android Open Accessory, M6)
 
-No developer options, adb or network: Tab2Mac on the Mac switches the tablet into accessory mode,
+No developer options, adb or network: Ginga on the Mac switches the tablet into accessory mode,
 and the protocol runs over the accessory's two bulk endpoints, framed exactly as over TCP.
 
 1. **Plug in.** The Mac (direct USB enabled, this tablet approved) sends the AOA strings —
-   manufacturer `Tab2Mac`, model `Tab2Mac Receiver`, description `Second display for your Mac`,
+   manufacturer `Ginga`, model `Ginga Receiver`, description `Second display for your Mac`,
    version `1`, empty URI, serial `1` — then START. The tablet comes back as `18D1:2D00`
    (`2D01` when USB debugging is on, and adb keeps working next to the accessory).
 2. **Prompt.** Android matches `res/xml/accessory_filter.xml` (manufacturer and model, exactly)
@@ -203,7 +203,7 @@ allowed. **Connect** always prefers the accessory when it is attached, and uses 
   With it off, a transport serves one link (`SINGLE_LINK_OPTIONS`) and **Connect** starts a new
   one. A busy device node (the previous descriptor still being released) is retried.
 - **No handshake timeout.** Like the Mac on this link, the tablet waits for WELCOME as long as
-  the link lasts: the Mac reads HELLO whenever Tab2Mac opens its side, even if it starts later.
+  the link lasts: the Mac reads HELLO whenever Ginga opens its side, even if it starts later.
 - **Liveness.** Nothing signals a Mac that went away over USB: no FIN or RST, the pending read
   never returns and writes stop completing. Each link has a watchdog thread that never does I/O
   (`LinkOptions.silenceTimeoutMs`, 4 s here): on a streaming link (PING at 1 Hz, the Mac answers
@@ -269,10 +269,10 @@ USB or Wi‑Fi session (kept per Mac in a Keystore-sealed file, never logged); t
 permissions (Bluetooth advertise/connect, nearby Wi‑Fi devices) are asked through the system
 dialog.
 
-1. **Network.** A Wi‑Fi Direct autonomous group (`DIRECT-T2-<first 4 hex of keyId>`, a random
+1. **Network.** A Wi‑Fi Direct autonomous group (`DIRECT-Ginga-<first 4 hex of keyId>`, a random
    24-character passphrase per link, not persistent), on the channel of the tablet's own 5 GHz
    Wi‑Fi when it has one, else any 5 GHz channel; a local-only hotspot if that fails.
-2. **Bluetooth LE.** A GATT service (`5432D1EC-…0001`, advertised, balanced mode): the
+2. **Bluetooth LE.** A GATT service (`474ED1EC-…0001`, advertised, balanced mode): the
    credentials characteristic serves `{ssid, psk, session, expires}` sealed with AES-256-GCM (HKDF
    subkey, AAD = keyId), with a fresh nonce and a 5-minute expiry on every read; the address
    characteristic takes the Mac's sealed `{host, port, session}`. Refused: another key or
@@ -289,7 +289,7 @@ Measured on the Tab S11 (tablet side only, no Mac yet):
 |---|---|---|
 | Up in | ≈ 0.1 s | ≈ 0.2 s |
 | Band / channel | 5 GHz, on the tablet's own Wi‑Fi channel (5805 MHz here) | 2.4 GHz, 20 MHz (2412 MHz): this region allows 5 GHz SoftAP only on channel 149 |
-| Name, passphrase | ours (`DIRECT-T2-0102`, per link) | the system's (`AndroidShare_…`) |
+| Name, passphrase | ours (`DIRECT-Ginga-0102`, per link) | the system's (`AndroidShare_…`) |
 | Normal Wi‑Fi | stays connected | stays connected |
 | Idle limit | none | the system stops it after 10 min without clients |
 
@@ -303,15 +303,15 @@ off the charger.
 
 ## Wi‑Fi (M7)
 
-Chosen explicitly: the connection screen lists the Macs advertising `_tab2mac._tcp` on the
+Chosen explicitly: the connection screen lists the Macs advertising `_ginga._tcp` on the
 network (TXT `pv`, `id`, `name`), and **Connect** on a row starts a Wi‑Fi session. USB keeps
 priority: attaching the Mac's accessory replaces a Wi‑Fi session. Discovery (`NsdManager`) runs
 only while the connection screen is visible. The Mac's port is chosen by the system each time
-Tab2Mac starts, so its service is resolved again (`NsdMacResolver`, one mDNS query) before every
+Ginga starts, so its service is resolved again (`NsdMacResolver`, one mDNS query) before every
 connection attempt, reconnections included.
 
 - **Tablet identity.** A P-256 key generated in the AndroidKeyStore (it never leaves the secure
-  hardware) with the self-signed certificate the KeyStore issues for it (`CN=Tab2Mac tablet`,
+  hardware) with the self-signed certificate the KeyStore issues for it (`CN=Ginga tablet`,
   ECDSA-SHA256, 20 years). Its fingerprint — SHA-256 of the certificate's DER — is what the Mac
   pins. The key allows digest `NONE` besides SHA-256, because TLS signs the handshake digest it
   computed itself. Clearing the app's data deletes the identity: the tablet then pairs again.
@@ -415,7 +415,7 @@ Minimum battery use at the best latency the tablet allows. Each rule, and where 
 Measured before the review fixes (pause, smaller buffers, age-limited backlog, sampling); those
 still need a run on the tablet.
 
-`t2m serve --synthetic` (2560×1600 HEVC test pattern, very low bitrate) over USB/`adb reverse`,
+`ginga serve --synthetic` (2560×1600 HEVC test pattern, very low bitrate) over USB/`adb reverse`,
 decoder `c2.mtk.hevc.decoder.lowlatency`; RECEIVER_REPORT figures as printed by the Mac:
 
 | Configuration | fps | decode p50 | end-to-end p50 / p95 |

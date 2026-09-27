@@ -1,5 +1,5 @@
 import Foundation
-import Tab2MacCore
+import GingaCore
 
 public enum DisplayOrientation: String, Codable, Sendable, CaseIterable {
     case landscape
@@ -19,7 +19,7 @@ public struct DisplayIdentity: Hashable, Sendable, Codable {
     }
 
     /// 0x5022 is the packed EDID manufacturer code "TAB"; no macOS display override exists for it.
-    public static let tab2macVendorID: UInt32 = 0x5022
+    public static let gingaVendorID: UInt32 = 0x5022
 }
 
 /// Where the display sits relative to the main display, in the same sense as System Settings › Displays.

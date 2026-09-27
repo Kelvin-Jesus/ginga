@@ -1,7 +1,7 @@
 import CoreFoundation
 import Darwin
 import Foundation
-import Tab2MacCore
+import GingaCore
 
 /// System-wide SoC energy from IOReport's "Energy Model" channels (the counters behind
 /// `powermetrics`), readable without root.

@@ -10,8 +10,8 @@ struct AOATests {
         #expect(steps.count == 7)
         #expect(steps.prefix(6).map(\.request) == Array(repeating: 52, count: 6))
         #expect(steps.prefix(6).map(\.index) == [0, 1, 2, 3, 4, 5])
-        #expect(steps[0].data == Data("Tab2Mac".utf8) + [0])
-        #expect(steps[1].data == Data("Tab2Mac Receiver".utf8) + [0])  // must match the tablet's accessory filter
+        #expect(steps[0].data == Data("Ginga".utf8) + [0])
+        #expect(steps[1].data == Data("Ginga Receiver".utf8) + [0])  // must match the tablet's accessory filter
         #expect(steps[4].data == Data([0]))  // empty URI is still sent
         #expect(steps[6] == VendorRequest(request: 53, index: 0, data: Data()))
     }

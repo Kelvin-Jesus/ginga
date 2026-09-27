@@ -1,24 +1,24 @@
 import CGVirtualDisplayShim
 import CoreGraphics
 import Foundation
-import Tab2MacCore
+import GingaCore
 import VirtualDisplay
 
 /// Path A — the private CoreGraphics `CGVirtualDisplay` API.
 ///
-/// Every private call goes through `T2MPrivateVirtualDisplay` (Objective-C), which verifies the
+/// Every private call goes through `GingaPrivateVirtualDisplay` (Objective-C), which verifies the
 /// runtime interface first and turns exceptions into errors. This type only translates between
 /// the backend protocol's value types and the shim. Not suitable for the Mac App Store.
 @MainActor
 public final class CGVirtualDisplayBackend: VirtualDisplayBackend {
     public let identifier = "cgvirtualdisplay-private"
 
-    private let classResolver: T2MClassResolver?
-    private var display: T2MPrivateVirtualDisplay?
+    private let classResolver: GingaClassResolver?
+    private var display: GingaPrivateVirtualDisplay?
 
     /// - Parameter classResolver: test hook to substitute the private classes; nil resolves the
     ///   real ones by name at runtime.
-    public init(classResolver: T2MClassResolver? = nil) {
+    public init(classResolver: GingaClassResolver? = nil) {
         self.classResolver = classResolver
     }
 
@@ -35,9 +35,9 @@ public final class CGVirtualDisplayBackend: VirtualDisplayBackend {
         return .available(summary: summary)
     }
 
-    /// Full verification report (for `t2m probe` and diagnostics).
-    public func privateAPIReport() -> T2MPrivateAPIReport {
-        classResolver.map { T2MPrivateAPIChecker.check(classResolver: $0) } ?? T2MPrivateAPIChecker.checkRuntime()
+    /// Full verification report (for `ginga probe` and diagnostics).
+    public func privateAPIReport() -> GingaPrivateAPIReport {
+        classResolver.map { GingaPrivateAPIChecker.check(classResolver: $0) } ?? GingaPrivateAPIChecker.checkRuntime()
     }
 
     public var displayID: CGDirectDisplayID? {
@@ -52,7 +52,7 @@ public final class CGVirtualDisplayBackend: VirtualDisplayBackend {
     ) throws -> CGDirectDisplayID {
         guard display == nil else { throw VirtualDisplayBackendError.alreadyCreated }
 
-        let spec = T2MVirtualDisplaySpec()
+        let spec = GingaVirtualDisplaySpec()
         spec.name = descriptor.name
         spec.vendorID = descriptor.identity.vendorID
         spec.productID = descriptor.identity.productID
@@ -74,14 +74,14 @@ public final class CGVirtualDisplayBackend: VirtualDisplayBackend {
         }
 
         do {
-            let created: T2MPrivateVirtualDisplay
+            let created: GingaPrivateVirtualDisplay
             if let classResolver {
-                created = try T2MPrivateVirtualDisplay(
+                created = try GingaPrivateVirtualDisplay(
                     spec: spec, modes: Self.shimModes(modes), hiDPI: modes.hiDPI,
                     terminationHandler: terminationHandler, classResolver: classResolver
                 )
             } else {
-                created = try T2MPrivateVirtualDisplay(
+                created = try GingaPrivateVirtualDisplay(
                     spec: spec, modes: Self.shimModes(modes), hiDPI: modes.hiDPI,
                     terminationHandler: terminationHandler
                 )
@@ -107,14 +107,14 @@ public final class CGVirtualDisplayBackend: VirtualDisplayBackend {
         display = nil
     }
 
-    private static func shimModes(_ modes: VirtualDisplayModeSet) -> [T2MVirtualDisplayModeSpec] {
+    private static func shimModes(_ modes: VirtualDisplayModeSet) -> [GingaVirtualDisplayModeSpec] {
         modes.modes.map {
-            T2MVirtualDisplayModeSpec(width: UInt32(clamping: $0.size.width), height: UInt32(clamping: $0.size.height), refreshRate: $0.refreshRate)
+            GingaVirtualDisplayModeSpec(width: UInt32(clamping: $0.size.width), height: UInt32(clamping: $0.size.height), refreshRate: $0.refreshRate)
         }
     }
 
     private static func map(_ error: any Error, applyingSettings: Bool) -> VirtualDisplayBackendError {
-        guard let error = error as? T2MPrivateDisplayError else {
+        guard let error = error as? GingaPrivateDisplayError else {
             return applyingSettings ? .settingsRejected(error.localizedDescription) : .creationFailed(error.localizedDescription)
         }
         let message = error.localizedDescription

@@ -1,6 +1,6 @@
 import Foundation
 import Testing
-import Tab2MacCore
+import GingaCore
 @testable import VirtualDisplay
 
 @Suite("DeviceProfile")

@@ -4,9 +4,9 @@ import Foundation
 /// The tablet's GATT service (PROTOCOL.md §6b), read and written with CoreBluetooth.
 public enum DirectLinkUUIDs {
     // Computed: CBUUID isn't Sendable, so no shared instances.
-    public static var service: CBUUID { CBUUID(string: "5432D1EC-7D1A-4F5B-9A6E-0E2A6D3C0001") }
-    public static var credentials: CBUUID { CBUUID(string: "5432D1EC-7D1A-4F5B-9A6E-0E2A6D3C0002") }
-    public static var address: CBUUID { CBUUID(string: "5432D1EC-7D1A-4F5B-9A6E-0E2A6D3C0003") }
+    public static var service: CBUUID { CBUUID(string: "474ED1EC-7D1A-4F5B-9A6E-0E2A6D3C0001") }
+    public static var credentials: CBUUID { CBUUID(string: "474ED1EC-7D1A-4F5B-9A6E-0E2A6D3C0002") }
+    public static var address: CBUUID { CBUUID(string: "474ED1EC-7D1A-4F5B-9A6E-0E2A6D3C0003") }
 }
 
 /// Scans only while asked (the user clicked), connects to the first tablet offering the service,
@@ -25,7 +25,7 @@ public final class BluetoothCredentialChannel: NSObject, DirectCredentialChannel
         }
     }
 
-    private let queue = DispatchQueue(label: "dev.tab2mac.direct-link.bluetooth")
+    private let queue = DispatchQueue(label: "dev.ginga.direct-link.bluetooth")
     private var central: CBCentralManager?
     private var peripheral: CBPeripheral?
     private var credentials: CBCharacteristic?

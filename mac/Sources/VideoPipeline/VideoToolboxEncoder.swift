@@ -2,7 +2,7 @@
 @preconcurrency import CoreVideo
 import Foundation
 import os
-import Tab2MacCore
+import GingaCore
 @preconcurrency import VideoToolbox
 
 public struct EncoderConfiguration: Hashable, Sendable, Codable {

@@ -28,7 +28,7 @@ dependencies {
 tasks.test {
     // protocol/test-vectors lives next to android/ in the repository.
     val vectors = rootProject.layout.projectDirectory.dir("../protocol/test-vectors").asFile.canonicalFile
-    systemProperty("t2m.testVectorsDir", vectors.absolutePath)
+    systemProperty("ginga.testVectorsDir", vectors.absolutePath)
     inputs.files(fileTree(vectors))
         .withPropertyName("goldenVectors")
         .withPathSensitivity(PathSensitivity.RELATIVE)

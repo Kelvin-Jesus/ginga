@@ -25,11 +25,11 @@ extension PrivateAPIFakeSuites {
 @Suite("PrivateVirtualDisplayShim")
 struct PrivateVirtualDisplayShimTests {
     init() {
-        T2MFakeVirtualDisplay.reset()
+        GingaFakeVirtualDisplay.reset()
     }
 
-    private func spec() -> T2MVirtualDisplaySpec {
-        let spec = T2MVirtualDisplaySpec()
+    private func spec() -> GingaVirtualDisplaySpec {
+        let spec = GingaVirtualDisplaySpec()
         spec.name = "Test Display"
         spec.vendorID = 0x5022
         spec.productID = 0x5311
@@ -46,15 +46,15 @@ struct PrivateVirtualDisplayShimTests {
     }
 
     private let modes = [
-        T2MVirtualDisplayModeSpec(width: 1280, height: 800, refreshRate: 60),
-        T2MVirtualDisplayModeSpec(width: 1440, height: 900, refreshRate: 60),
+        GingaVirtualDisplayModeSpec(width: 1280, height: 800, refreshRate: 60),
+        GingaVirtualDisplayModeSpec(width: 1440, height: 900, refreshRate: 60),
     ]
 
     private func makeDisplay(
-        resolver: @escaping T2MClassResolver = fakeResolver(),
+        resolver: @escaping GingaClassResolver = fakeResolver(),
         onTermination: @escaping () -> Void = {}
-    ) throws -> T2MPrivateVirtualDisplay {
-        try T2MPrivateVirtualDisplay(spec: spec(), modes: modes, hiDPI: true, terminationHandler: onTermination, classResolver: resolver)
+    ) throws -> GingaPrivateVirtualDisplay {
+        try GingaPrivateVirtualDisplay(spec: spec(), modes: modes, hiDPI: true, terminationHandler: onTermination, classResolver: resolver)
     }
 
     @Test func createsTheDisplayFromTheSpec() throws {
@@ -62,8 +62,8 @@ struct PrivateVirtualDisplayShimTests {
         #expect(display.displayID == 42)
         #expect(display.isValid)
 
-        let fake = try #require(T2MFakeVirtualDisplay.lastInstance)
-        let descriptor = try #require(fake.descriptor as? T2MFakeVirtualDisplayDescriptor)
+        let fake = try #require(GingaFakeVirtualDisplay.lastInstance)
+        let descriptor = try #require(fake.descriptor as? GingaFakeVirtualDisplayDescriptor)
         #expect(descriptor.name == "Test Display")
         #expect(descriptor.vendorID == 0x5022)
         #expect(descriptor.productID == 0x5311)
@@ -76,17 +76,17 @@ struct PrivateVirtualDisplayShimTests {
         #expect(descriptor.queue === DispatchQueue.main)
         #expect(descriptor.terminationHandler != nil)
 
-        let settings = try #require(fake.appliedSettings.last as? T2MFakeVirtualDisplaySettings)
+        let settings = try #require(fake.appliedSettings.last as? GingaFakeVirtualDisplaySettings)
         #expect(settings.hiDPI == 1)
-        let privateModes = try #require(settings.modes as? [T2MFakeVirtualDisplayMode])
+        let privateModes = try #require(settings.modes as? [GingaFakeVirtualDisplayMode])
         #expect(privateModes.map(\.width) == [1280, 1440])
         #expect(privateModes.map(\.height) == [800, 900])
         #expect(privateModes.allSatisfy { $0.refreshRate == 60 })
     }
 
     @Test func legacyDescriptorSelectorsAreUsed() throws {
-        let display = try makeDisplay(resolver: fakeResolver(overriding: ["CGVirtualDisplayDescriptor": T2MFakeLegacyDescriptor.self]))
-        let descriptor = try #require(T2MFakeVirtualDisplay.lastInstance?.descriptor as? T2MFakeLegacyDescriptor)
+        let display = try makeDisplay(resolver: fakeResolver(overriding: ["CGVirtualDisplayDescriptor": GingaFakeLegacyDescriptor.self]))
+        let descriptor = try #require(GingaFakeVirtualDisplay.lastInstance?.descriptor as? GingaFakeLegacyDescriptor)
         #expect(descriptor.serialNum == 7)
         #expect(descriptor.dispatchQueue === DispatchQueue.main)
         #expect(display.isValid)
@@ -96,55 +96,55 @@ struct PrivateVirtualDisplayShimTests {
         #expect {
             try makeDisplay(resolver: fakeResolver(overriding: ["CGVirtualDisplay": nil]))
         } throws: { error in
-            (error as? T2MPrivateDisplayError)?.code == .unavailable
+            (error as? GingaPrivateDisplayError)?.code == .unavailable
         }
-        #expect(T2MFakeVirtualDisplay.instancesCreated == 0)
+        #expect(GingaFakeVirtualDisplay.instancesCreated == 0)
     }
 
     @Test func zeroDisplayIDIsACreationFailure() {
-        T2MFakeVirtualDisplay.nextDisplayID = 0
+        GingaFakeVirtualDisplay.nextDisplayID = 0
         #expect {
             try makeDisplay()
         } throws: { error in
-            (error as? T2MPrivateDisplayError)?.code == .creationFailed
+            (error as? GingaPrivateDisplayError)?.code == .creationFailed
         }
     }
 
     @Test func exceptionDuringCreationBecomesAnError() {
-        T2MFakeVirtualDisplay.raiseOnInit = true
+        GingaFakeVirtualDisplay.raiseOnInit = true
         #expect {
             try makeDisplay()
         } throws: { error in
-            guard let error = error as? T2MPrivateDisplayError else { return false }
+            guard let error = error as? GingaPrivateDisplayError else { return false }
             return error.code == .exception && error.localizedDescription.contains("NSInternalInconsistencyException")
         }
     }
 
     @Test func exceptionDuringApplyReleasesTheDisplay() {
-        T2MFakeVirtualDisplay.raiseOnApply = true
-        let before = T2MFakeVirtualDisplay.liveInstances
+        GingaFakeVirtualDisplay.raiseOnApply = true
+        let before = GingaFakeVirtualDisplay.liveInstances
         #expect {
             try makeDisplay()
         } throws: { error in
-            (error as? T2MPrivateDisplayError)?.code == .exception
+            (error as? GingaPrivateDisplayError)?.code == .exception
         }
-        #expect(T2MFakeVirtualDisplay.liveInstances == before)
+        #expect(GingaFakeVirtualDisplay.liveInstances == before)
     }
 
     @Test func rejectedSettingsAreAnError() {
-        T2MFakeVirtualDisplay.applyResult = false
+        GingaFakeVirtualDisplay.applyResult = false
         #expect {
             try makeDisplay()
         } throws: { error in
-            (error as? T2MPrivateDisplayError)?.code == .settingsRejected
+            (error as? GingaPrivateDisplayError)?.code == .settingsRejected
         }
     }
 
     @Test func modesCanBeReplacedOnTheLiveDisplay() throws {
         let display = try makeDisplay()
-        try display.applyModes([T2MVirtualDisplayModeSpec(width: 800, height: 1280, refreshRate: 120)], hiDPI: true)
-        let settings = try #require(T2MFakeVirtualDisplay.lastInstance?.appliedSettings.last as? T2MFakeVirtualDisplaySettings)
-        let mode = try #require((settings.modes as? [T2MFakeVirtualDisplayMode])?.first)
+        try display.applyModes([GingaVirtualDisplayModeSpec(width: 800, height: 1280, refreshRate: 120)], hiDPI: true)
+        let settings = try #require(GingaFakeVirtualDisplay.lastInstance?.appliedSettings.last as? GingaFakeVirtualDisplaySettings)
+        let mode = try #require((settings.modes as? [GingaFakeVirtualDisplayMode])?.first)
         #expect(mode.width == 800 && mode.height == 1280 && mode.refreshRate == 120)
     }
 
@@ -153,21 +153,21 @@ struct PrivateVirtualDisplayShimTests {
         #expect {
             try display.applyModes([], hiDPI: true)
         } throws: { error in
-            (error as? T2MPrivateDisplayError)?.code == .settingsRejected
+            (error as? GingaPrivateDisplayError)?.code == .settingsRejected
         }
     }
 
     @Test func invalidateReleasesThePrivateDisplay() throws {
-        let before = T2MFakeVirtualDisplay.liveInstances
+        let before = GingaFakeVirtualDisplay.liveInstances
         let display = try makeDisplay()
-        #expect(T2MFakeVirtualDisplay.liveInstances == before + 1)
+        #expect(GingaFakeVirtualDisplay.liveInstances == before + 1)
         display.invalidate()
-        #expect(T2MFakeVirtualDisplay.liveInstances == before)
+        #expect(GingaFakeVirtualDisplay.liveInstances == before)
         #expect(!display.isValid)
         #expect {
             try display.applyModes(modes, hiDPI: true)
         } throws: { error in
-            (error as? T2MPrivateDisplayError)?.code == .invalidated
+            (error as? GingaPrivateDisplayError)?.code == .invalidated
         }
         display.invalidate()  // idempotent
     }
@@ -175,7 +175,7 @@ struct PrivateVirtualDisplayShimTests {
     @Test func terminationHandlerIsForwarded() async throws {
         let flag = Flag()
         let display = try makeDisplay(onTermination: { MainActor.assumeIsolated { flag.isSet = true } })
-        T2MFakeVirtualDisplay.lastInstance?.simulateTermination()
+        GingaFakeVirtualDisplay.lastInstance?.simulateTermination()
         await waitFor { flag.isSet }
         #expect(flag.isSet)
         withExtendedLifetime(display) {}

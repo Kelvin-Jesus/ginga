@@ -25,7 +25,7 @@ RUN mkdir -p "$ANDROID_HOME/cmdline-tools" \
 
 # Builds a copy of android/ and protocol/ (never the mounted tree: its build outputs,
 # .gradle/ and local.properties belong to the host).
-RUN cat > /usr/local/bin/tab2mac-android-check <<'SCRIPT' && chmod +x /usr/local/bin/tab2mac-android-check
+RUN cat > /usr/local/bin/ginga-android-check <<'SCRIPT' && chmod +x /usr/local/bin/ginga-android-check
 #!/bin/bash
 set -euo pipefail
 mkdir -p /work
@@ -36,4 +36,4 @@ cd /work/android
 SCRIPT
 
 WORKDIR /work
-ENTRYPOINT ["/usr/local/bin/tab2mac-android-check"]
+ENTRYPOINT ["/usr/local/bin/ginga-android-check"]

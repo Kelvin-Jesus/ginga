@@ -1,6 +1,6 @@
 # Android receiver: guide for agents
 
-The tablet side of Tab2Mac (Kotlin, Gradle, no AndroidX). Read the repository's `CLAUDE.md` first,
+The tablet side of Ginga (Kotlin, Gradle, no AndroidX). Read the repository's `CLAUDE.md` first,
 then this file, then `README.md` here for the details of each feature.
 
 ## Commands
@@ -19,7 +19,7 @@ export JAVA_HOME=/opt/homebrew/opt/openjdk@17        # no system Java on this Ma
 
 `local.properties` (gitignored) holds `sdk.dir=/opt/homebrew/share/android-commandlinetools`.
 Test results: `*/build/test-results/**/TEST-*.xml`; the golden-vector count is printed in
-`protocol/build/test-results/test/TEST-dev.tab2mac.protocol.GoldenVectorTest.xml`.
+`protocol/build/test-results/test/TEST-dev.ginga.protocol.GoldenVectorTest.xml`.
 
 ## Modules
 
@@ -39,7 +39,7 @@ JVM; Android glue stays thin. Keep it that way: new behaviour gets a pure core a
 ## Invariants
 
 - **The protocol is the contract.** `protocol/PROTOCOL.md` and `protocol/test-vectors/` belong to
-  the Mac side and are generated there (`t2m protocol-vectors`). Never edit them from here: if the
+  the Mac side and are generated there (`ginga protocol-vectors`). Never edit them from here: if the
   spec is wrong or unclear, report it with the section. `GoldenVectorTest` must pass with every
   committed vector, byte-exact for binary messages.
 - **Power first.** No polling: blocking readers, deadline timers (`Session.nanosUntilNextTick`),
@@ -52,18 +52,18 @@ JVM; Android glue stays thin. Keep it that way: new behaviour gets a pure core a
   link down; nothing may depend on a blocked read returning.
 - **Secrets are never logged**: loopback token, direct-link key, passphrases, pairing nonces.
   `toString()` of such types leaves them out.
-- **Threads.** The session and controller run on `t2m-session`; input and key sends are
+- **Threads.** The session and controller run on `ginga-session`; input and key sends are
   thread-safe; UI state goes through `ReceiverController.state`.
 
 ## Do / don't
 
 - Do run `./gradlew test assembleDebug` before saying something is done, with no warnings.
 - Do add a test for every protocol change (codec + golden vector) and every state-machine change.
-- Do use `TransportLog`/`AppLog` (`event key=value`), tags `T2M/<module>`.
+- Do use `TransportLog`/`AppLog` (`event key=value`), tags `Ginga/<module>`.
 - Don't add AndroidX or other dependencies without a reason worth its size.
 - Don't touch `mac/`, `protocol/` or `config/` (report instead), and don't commit unless asked.
-- UI: the product is **Ginga** on screen, Tab2Mac only internally. Never rename the accessory
-  strings (`res/xml/accessory_filter.xml`), `_tab2mac._tcp`, `CN=Tab2Mac tablet`,
+- UI: the product is **Ginga** on screen, Ginga only internally. Never rename the accessory
+  strings (`res/xml/accessory_filter.xml`), `_ginga._tcp`, `CN=Ginga tablet`,
   `DeviceCapabilities.APP_NAME` or log tags. Colours, radii, spacing and durations come from
   `design/ginga-design/tokens.json` (`?attr/ginga*`, `ginga_dimens.xml`, `Motion`); nothing
   animates off screen or with the system's animations off. Every string goes in both
@@ -79,7 +79,7 @@ JVM; Android glue stays thin. Keep it that way: new behaviour gets a pure core a
   and never enter the PIN.
 - `adb install -r app/build/outputs/apk/debug/app-debug.apk` only when the user or coordinator
   said the tablet is free (not while someone is streaming or measuring).
-- Logs: `adb logcat -s 'T2M/app:*' 'T2M/session:*' 'T2M/transport:*' 'T2M/decoder:*'`.
+- Logs: `adb logcat -s 'Ginga/app:*' 'Ginga/session:*' 'Ginga/transport:*' 'Ginga/decoder:*'`.
 - Debug builds take scripted commands (see `MainActivity.handleAutomation`): `--ez connect true`,
   `--ez disconnect true`, `--ez directTest true [--ez directHotspot true]`, `--ez directCancel true`,
   `--es appearance system|light|dark|space` (screenshots of each theme).

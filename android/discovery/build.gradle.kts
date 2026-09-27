@@ -1,10 +1,10 @@
-// Bonjour discovery of Macs (`_tab2mac._tcp`) for the Wi‑Fi transport (M7).
+// Bonjour discovery of Macs (`_ginga._tcp`) for the Wi‑Fi transport (M7).
 plugins {
     alias(libs.plugins.android.library)
 }
 
 android {
-    namespace = "dev.tab2mac.discovery"
+    namespace = "dev.ginga.discovery"
     compileSdk = 36
 
     defaultConfig {

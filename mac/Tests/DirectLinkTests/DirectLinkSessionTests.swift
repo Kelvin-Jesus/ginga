@@ -1,5 +1,5 @@
 import Foundation
-import Tab2MacSecurity
+import GingaSecurity
 import Testing
 @testable import DirectLink
 

@@ -1,5 +1,5 @@
 import CoreGraphics
-import Tab2MacProtocol
+import GingaProtocol
 import Testing
 @testable import InputInjection
 

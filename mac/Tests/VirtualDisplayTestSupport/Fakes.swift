@@ -1,8 +1,8 @@
 import CoreGraphics
-import Tab2MacCore
+import GingaCore
 import VirtualDisplay
 
-/// Test doubles shared by VirtualDisplayTests and Tab2MacSessionTests.
+/// Test doubles shared by VirtualDisplayTests and GingaSessionTests.
 
 /// Simulates WindowServer's view of displays: online list, modes, bounds, arrangement.
 @MainActor

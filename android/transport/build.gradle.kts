@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.tab2mac.transport"
+    namespace = "dev.ginga.transport"
     compileSdk = 36
 
     defaultConfig {

@@ -1,0 +1,23 @@
+{
+  "name": "ginga-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "preview:comet": "remotion render CometPreview-pt out/preview-cometa-pt.mp4",
+    "render:hero": "remotion render GingaHero-pt out/ginga-hero-pt.mp4 && remotion render GingaHero-en out/ginga-hero-en.mp4",
+    "render:vertical": "remotion render GingaVertical-pt out/ginga-vertical-pt.mp4 && remotion render GingaVertical-en out/ginga-vertical-en.mp4",
+    "render:loop": "remotion render GingaLoop-pt out/ginga-loop.webm --codec=vp9 --crf=40 && remotion render GingaLoop-pt out/ginga-loop.mp4 --crf=28"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.529",
+    "@remotion/google-fonts": "^4.0.529",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.529"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}

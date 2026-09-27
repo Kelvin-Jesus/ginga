@@ -1,8 +1,8 @@
 import Foundation
 import Network
 import os
-import Tab2MacCore
-import Tab2MacProtocol
+import GingaCore
+import GingaProtocol
 
 extension Log {
     public static let transport = Logger(subsystem: subsystem, category: "transport")
@@ -44,7 +44,7 @@ public protocol ByteTransport: AnyObject, Sendable {
 public final class NetworkByteTransport: ByteTransport, @unchecked Sendable {  // NWConnection is thread-safe
     public let endpointDescription: String
     private let connection: NWConnection
-    private let queue = DispatchQueue(label: "dev.tab2mac.transport.connection", qos: .userInteractive)
+    private let queue = DispatchQueue(label: "dev.ginga.transport.connection", qos: .userInteractive)
 
     public init(connection: NWConnection) {
         self.connection = connection
@@ -135,7 +135,7 @@ public final class MessageConnection: @unchecked Sendable {
     public let maxVideoInFlight: Int
     public var endpointDescription: String { transport.endpointDescription }
     private let transport: any ByteTransport
-    private let timers = DispatchQueue(label: "dev.tab2mac.transport.connection-timers", qos: .utility)
+    private let timers = DispatchQueue(label: "dev.ginga.transport.connection-timers", qos: .utility)
     private let state = OSAllocatedUnfairLock(uncheckedState: State())
     /// Touched only by the receive path, so parsing never holds the lock that `send` and
     /// `canAcceptVideo` take for every video frame.
@@ -150,7 +150,7 @@ public final class MessageConnection: @unchecked Sendable {
         self.init(transport: NetworkByteTransport(connection: connection), maxVideoInFlight: maxVideoInFlight)
     }
 
-    /// Opens a client connection (used by `t2m receive` and the tests).
+    /// Opens a client connection (used by `ginga receive` and the tests).
     public static func connect(host: String, port: UInt16, maxVideoInFlight: Int = 2) -> MessageConnection {
         let parameters = NWParameters.tcp
         if let tcp = parameters.defaultProtocolStack.transportProtocol as? NWProtocolTCP.Options { tcp.noDelay = true }

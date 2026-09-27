@@ -25,6 +25,6 @@
   },
   "decodeOnly" : true,
   "description" : "Newer sender appended header and record fields; skip to headerLength/recordLength",
-  "hex" : "54320111000000020000002b001400000009000000e5f4d3ccc001020102030401001600010000800040000000000000000000cafebabe",
+  "hex" : "474e0111000000020000002b001400000009000000e5f4d3ccc001020102030401001600010000800040000000000000000000cafebabe",
   "name" : "input-extended-record"
 }

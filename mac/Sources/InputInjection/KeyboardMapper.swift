@@ -1,5 +1,5 @@
 import CoreGraphics
-import Tab2MacProtocol
+import GingaProtocol
 
 /// Maps the tablet's keyboard (USB HID usages, PROTOCOL.md §3.3c) to macOS virtual key codes and
 /// modifier flags. Pure, so the whole table is unit-tested. The Mac's own keyboard layout then

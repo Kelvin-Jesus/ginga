@@ -1,14 +1,14 @@
 #!/bin/bash
-# Creates a self-signed code-signing identity ("Tab2Mac Development") in your login keychain.
+# Creates a self-signed code-signing identity ("Ginga Development") in your login keychain.
 #
 # Why: macOS records privacy permissions (Screen Recording, later Post Event / Local Network)
 # against the app's designated code requirement. Ad-hoc signatures are tied to one exact build,
 # so every rebuild loses the permission. A stable certificate keeps it across rebuilds.
 #
 # This modifies your login keychain — read it before running. Remove the identity later with
-# Keychain Access (search "Tab2Mac Development") or `security delete-identity -c "Tab2Mac Development"`.
+# Keychain Access (search "Ginga Development") or `security delete-identity -c "Ginga Development"`.
 set -euo pipefail
-name="${1:-Tab2Mac Development}"
+name="${1:-Ginga Development}"
 
 if security find-identity -p codesigning | grep -q "\"$name\""; then
     echo "identity '$name' already exists"

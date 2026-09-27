@@ -1,6 +1,6 @@
 import Foundation
 import os
-import Tab2MacCore
+import GingaCore
 
 public struct AdbDevice: Hashable, Sendable {
     public var serial: String
@@ -20,13 +20,13 @@ public struct AdbDevice: Hashable, Sendable {
 /// no process is spawned while nothing changes.
 public final class AdbBridge: @unchecked Sendable {  // mutable state is guarded by `lock`
     public let executable: URL
-    private let queue = DispatchQueue(label: "dev.tab2mac.transport.adb", qos: .utility)
+    private let queue = DispatchQueue(label: "dev.ginga.transport.adb", qos: .utility)
     private let lock = NSLock()
     private var tracker: Process?
     private var isMaintaining = false
     private var reversed: Set<String> = []
     private var lastDevices: [AdbDevice] = []
-    /// Handed to the Tab2Mac app on every device after `adb reverse` (see `deliverToken`).
+    /// Handed to the Ginga app on every device after `adb reverse` (see `deliverToken`).
     private var token: String?
     private var lastRedelivery: MediaTime?
 
@@ -75,10 +75,10 @@ public final class AdbBridge: @unchecked Sendable {  // mutable state is guarded
         _ = try run(["-s", serial, "reverse", "tcp:\(port)", "tcp:\(port)"])
     }
 
-    /// The broadcast that hands the Tab2Mac app its loopback token. Its receiver requires the
+    /// The broadcast that hands the Ginga app its loopback token. Its receiver requires the
     /// `DUMP` permission, which only the adb shell holds, so no other app can plant a token.
     /// The token itself goes through stdin, never on a command line.
-    static let tokenCommand = "read t; am broadcast -f 32 -a dev.tab2mac.action.LOOPBACK_TOKEN -n dev.tab2mac.receiver/dev.tab2mac.receiver.adb.LoopbackTokenReceiver --es token \"$t\""
+    static let tokenCommand = "read t; am broadcast -f 32 -a dev.ginga.action.LOOPBACK_TOKEN -n dev.ginga.receiver/dev.ginga.receiver.adb.LoopbackTokenReceiver --es token \"$t\""
 
     public func deliverToken(_ token: String, serial: String) throws {
         _ = try run(["-s", serial, "shell", Self.tokenCommand], input: Data((token + "\n").utf8))
@@ -110,7 +110,7 @@ public final class AdbBridge: @unchecked Sendable {  // mutable state is guarded
 
     /// Keeps the reverse port forward in place for every authorised device, re-establishing it
     /// when a device reconnects or the adb server restarts (which drops all forwards).
-    /// - Parameter token: handed to the Tab2Mac app on each device after the reverse (nil: none).
+    /// - Parameter token: handed to the Ginga app on each device after the reverse (nil: none).
     public func startMaintainingReverse(port: UInt16, token: String? = nil, onChange: @escaping @Sendable ([AdbDevice]) -> Void) {
         stop()
         lock.withLock {

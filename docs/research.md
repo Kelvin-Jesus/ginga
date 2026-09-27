@@ -1,13 +1,13 @@
 # Platform research: constraints and capabilities
 
-Research done on 2026‑09‑25 for **Tab2Mac**, a project that makes a Samsung Galaxy Tab S11 a true extended display for an Apple Silicon Mac. There are two kinds of evidence here:
+Research done on 2026‑09‑25 for **Ginga**, a project that makes a Samsung Galaxy Tab S11 a true extended display for an Apple Silicon Mac. There are two kinds of evidence here:
 
 - **Measured on the development Mac** — marked **[M]**. That machine is a **Mac16,1 (MacBook Pro 14″, M4, 16 GB)** on **macOS 26.6.2 (25G83)**. It has the Command Line Tools with the 26.5 SDK and Swift 6.3.3, but no Xcode. The target MacBook Air M4 has the same SoC and media engine.
 - **From primary sources** — numbered `[n]`, listed at the end.
 
 Anything unconfirmed is marked **(unconfirmed)**.
 
-> macOS 27 shipped on 2026‑09‑14 [2]. Nothing in this project has been tested on it yet. The private-API canary test and `t2m probe` exist so a re-test takes minutes.
+> macOS 27 shipped on 2026‑09‑14 [2]. Nothing in this project has been tested on it yet. The private-API canary test and `ginga probe` exist so a re-test takes minutes.
 
 ---
 
@@ -28,9 +28,9 @@ CoreGraphics' `CoreGraphics.tbd` exports four Objective‑C classes, `CGVirtualD
 
 They are what Chromium's display tests, DeskPad, BetterDisplay, OpenDisplay, SideScreen and, reportedly, commercial products use [7][9][10][12][25].
 
-**Interface dumped from the Objective‑C runtime on 26.6.2 [M]** (full dump: `t2m probe`):
+**Interface dumped from the Objective‑C runtime on 26.6.2 [M]** (full dump: `ginga probe`):
 
-| Class | Members used by Tab2Mac (normalized type encodings) | Also present |
+| Class | Members used by Ginga (normalized type encodings) | Also present |
 |---|---|---|
 | `CGVirtualDisplayDescriptor` | `init` `@@:` · `setName:` `v@:@` · `setMaxPixelsWide:`/`High:` `v@:I` · `setSizeInMillimeters:` `v@:{CGSize=dd}` · `setVendorID:`/`setProductID:` `v@:I` · `setSerialNumber:` (alias `setSerialNum:`) `v@:I` · `setQueue:` (alias `setDispatchQueue:`) `v@:@` · `setTerminationHandler:` `v@:@?` · `setRed/Green/BluePrimary:`, `setWhitePoint:` `v@:{CGPoint=dd}` | `displayInfo`, `setDisplayInfoValue:forKey:` |
 | `CGVirtualDisplayMode` | `initWithWidth:height:refreshRate:` **`@@:IId`** (width/height are `uint32`, not `NSUInteger` as in community headers) | `initWithWidth:height:refreshRate:transferFunction:` (`uint32`) |
@@ -53,12 +53,12 @@ They are what Chromium's display tests, DeskPad, BetterDisplay, OpenDisplay, Sid
   - **Portrait therefore works by re-applying settings with width and height swapped.** This works live (same display ID, about 370 ms), as long as `maxPixels` is square.
   - OpenDisplay does the same, and DeskPad's rotation PR remains open [9][13].
 - **Removal.** Releasing the `CGVirtualDisplay` object removes the display in about 355 ms, and process exit removes it too. Windows move back to the remaining displays.
-- **Run loop requirement.** Without AppKit event processing, `CGDisplayCopyAllDisplayModes` returns 0 modes and `NSScreen` never sees the display. Tools must run `NSApplication`'s event loop; `t2m` does.
+- **Run loop requirement.** Without AppKit event processing, `CGDisplayCopyAllDisplayModes` returns 0 modes and `NSScreen` never sees the display. Tools must run `NSApplication`'s event loop; `ginga` does.
 - **Window test.** A window created on the built-in display (ID 1) and moved onto the virtual display ended up on that display, confirmed by both `NSWindow.screen` and WindowServer's `CGWindowList` bounds.
 
 **Community and field reports to design for:**
 
-- macOS 14+ returns nil unless `vendorID` ≠ 0 and the identity (vendor/product/serial) is unique [8]. Tab2Mac uses vendor `0x5022` (the packed EDID code "TAB"), for which no macOS override exists **[M]**.
+- macOS 14+ returns nil unless `vendorID` ≠ 0 and the identity (vendor/product/serial) is unique [8]. Ginga uses vendor `0x5022` (the packed EDID code "TAB"), for which no macOS override exists **[M]**.
 - On 26.x, a virtual display misclassified as a TV can be **auto-mirrored** and disappears from `SCShareableContent` [16]. The provider detects mirroring after creation and forces an extended desktop.
 - **Every display identity leaves a root-owned ICC profile** in `/Library/ColorSync/Profiles/Displays/` [18][19]. Observed: `Galaxy Tab S11-7B6E…icc` **[M]**. Never mint a new identity per run.
 - A second virtual display with the same vendor+product can be refused on 26.6 [18] (single source). The multi-tablet design will need distinct product IDs.
@@ -96,7 +96,7 @@ They are what Chromium's display tests, DeskPad, BetterDisplay, OpenDisplay, Sid
   - `queueDepth` defaults to **8**, although the docs say 3.
   - `minimumFrameInterval` defaults to 1/60, and `pixelFormat` to `420v`.
   - **Reading the unset `colorMatrix` or `colorSpaceName` crashes (SIGSEGV) [M].** Only ever set them.
-- **Pacing quirk.** Requesting exactly 1/60 s on a 60 Hz virtual display yields about 51 fps [30]. Tab2Mac requests 1/(2×refresh).
+- **Pacing quirk.** Requesting exactly 1/60 s on a 60 Hz virtual display yields about 51 fps [30]. Ginga requests 1/(2×refresh).
 - **Pixel format.** Use `420v` (NV12, BT.709 video range). The hardware encoder consumes it natively (BGRA costs about 2 ms more per frame [M]), and some Android decoders mishandle full range [12].
 - **Frame delivery.**
   - Frames arrive **only when content changes**. `SCFrameStatus.idle` frames carry no buffer [29], so idle desktops cost almost nothing.
@@ -180,7 +180,7 @@ Sources: [1][2][3][4] in the agent report, VTCompressionProperties.h (26.5 SDK);
 
 ### 5.3 Discovery
 
-- **Mac advertises, Android discovers.** The Mac advertises Bonjour `_tab2mac._tcp` via `NWListener.service`. Android discovers with `NsdManager`: `registerServiceInfoCallback` (API 34) and `DiscoveryRequest` (API 35); no multicast lock needed on 14+ [55][56].
+- **Mac advertises, Android discovers.** The Mac advertises Bonjour `_ginga._tcp` via `NWListener.service`. Android discovers with `NsdManager`: `registerServiceInfoCallback` (API 34) and `DiscoveryRequest` (API 35); no multicast lock needed on 14+ [55][56].
 - **Mac permissions.** macOS Local Network privacy applies to non-sandboxed apps. They need `NSLocalNetworkUsageDescription` + `NSBonjourServices`, and a stable signing identity; the grant can't be reset [39][58].
 - **Android permissions.** Android 17 (targetSdk 37) adds the runtime `ACCESS_LOCAL_NETWORK` permission, and advertising always needs it — hence the Mac advertises [57].
 
@@ -206,7 +206,7 @@ Sources: [1][2][3][4] in the agent report, VTCompressionProperties.h (26.5 SDK);
 | macOS | USB: no entitlement unless sandboxed; no DEXT/kext | M6 AOA |
 | macOS | **No** kernel extensions, **no** SIP changes, **no** WindowServer patching | — |
 | macOS | Distribution: Developer ID + notarization; **not** Mac App Store (private API) | release |
-| Android | AOA: user accepts "Open Tab2Mac for this accessory?" (can tick "always") | M6 |
+| Android | AOA: user accepts "Open Ginga for this accessory?" (can tick "always") | M6 |
 | Android | ADB fallback: Developer options + USB debugging | M4 |
 | Android | `INTERNET`, `ACCESS_NETWORK_STATE`, `ACCESS_WIFI_STATE`, `WAKE_LOCK` (low-latency lock); `ACCESS_LOCAL_NETWORK` if targeting SDK 37 | M4/M7 |
 
@@ -215,7 +215,7 @@ Sources: [1][2][3][4] in the agent report, VTCompressionProperties.h (26.5 SDK);
 - Protected content (DRM video) captures black.
 - Nothing is captured at the lock screen.
 - macOS shows its screen-recording indicator while streaming.
-- The private API may break with any macOS update; the canary test and `t2m probe` detect this.
+- The private API may break with any macOS update; the canary test and `ginga probe` detect this.
 
 ---
 

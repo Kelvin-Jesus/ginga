@@ -1,5 +1,5 @@
 import CoreGraphics
-import Tab2MacCore
+import GingaCore
 
 public enum DisplayArrangementPlanner {
     /// Origin in global display coordinates (top-left origin, y grows downward — the

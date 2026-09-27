@@ -4,7 +4,7 @@
 #
 #   scripts/test.sh                         # unit tests
 #   scripts/test.sh --filter VirtualDisplay # subset
-#   T2M_INTEGRATION=1 scripts/test.sh       # also create a real virtual display (changes your display layout briefly)
+#   GINGA_INTEGRATION=1 scripts/test.sh       # also create a real virtual display (changes your display layout briefly)
 set -euo pipefail
 cd "$(dirname "$0")/.."
 

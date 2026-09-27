@@ -1,6 +1,6 @@
 # Ginga: handoff do design system para implementação
 
-Este pasta é a fonte de verdade da nova UI do Ginga (nome interno Tab2Mac). Leia nesta ordem antes de mudar qualquer código:
+Este pasta é a fonte de verdade da nova UI do Ginga. Leia nesta ordem antes de mudar qualquer código:
 
 1. `brand-book.md`: voz, cores, tipo, temas, movimento, iconografia. Regras obrigatórias.
 2. `flows.md`: a nova estrutura de telas do Mac e do Android, estado por estado.
@@ -12,7 +12,7 @@ Este pasta é a fonte de verdade da nova UI do Ginga (nome interno Tab2Mac). Lei
 
 | Arquivo | Destino sugerido |
 |---|---|
-| `platform/apple/GingaTheme.swift` | `mac/Sources/Tab2MacApp/Design/` |
+| `platform/apple/GingaTheme.swift` | `mac/Sources/GingaApp/Design/` |
 | `platform/android/values/ginga_colors.xml`, `ginga_dimens.xml` | `android/app/src/main/res/values/` |
 | `logos/ginga-app-icon.png` e demais | ícone do app já existe via `brand/`; use `ginga-monogram*.png` no cabeçalho das telas (ou os SVGs de `brand/`, preferíveis) |
 
@@ -52,4 +52,4 @@ Unbounded (600/800) só em títulos e marca; Figtree no texto; IBM Plex Mono em 
 4. Microinterações, animações de conexão e as telas em dithering (espera do stream, sem roteador).
 5. Textos em pt‑BR (strings em recursos, com inglês como segunda língua).
 
-Não altere protocolo, pareamento TLS, captura, codificação ou nomes internos (`t2m`, bundle id): isto é só a camada de UI. Mostre o plano antes de mudanças grandes e faça em commits pequenos por etapa.
+Não altere protocolo, pareamento TLS, captura, codificação ou identificadores internos (CLI `ginga`, bundle id): isto é só a camada de UI. Mostre o plano antes de mudanças grandes e faça em commits pequenos por etapa.

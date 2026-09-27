@@ -10,6 +10,6 @@
   },
   "decodeOnly" : false,
   "description" : "Unknown type 0x7D without IGNORABLE: decoded as unknown; the session answers ERROR unsupported and keeps the connection",
-  "hex" : "5432017d00000000000000027b7d",
+  "hex" : "474e017d00000000000000027b7d",
   "name" : "unknown-required"
 }

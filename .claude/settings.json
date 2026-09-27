@@ -17,8 +17,8 @@
       "Bash(./scripts/build-app.sh:*)",
       "Bash(networksetup:*)",
       "Bash(git push:*)",
-      "Edit(~/Library/Application Support/Tab2Mac/config.json)",
-      "Write(~/Library/Application Support/Tab2Mac/config.json)"
+      "Edit(~/Library/Application Support/Ginga/config.json)",
+      "Write(~/Library/Application Support/Ginga/config.json)"
     ]
   }
 }

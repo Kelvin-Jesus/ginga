@@ -3,7 +3,7 @@ import CoreVideo
 import Foundation
 import os
 @preconcurrency import ScreenCaptureKit
-import Tab2MacCore
+import GingaCore
 
 public enum CaptureFrameStatus: String, Codable, Sendable {
     /// New content.

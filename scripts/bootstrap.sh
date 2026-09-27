@@ -1,5 +1,5 @@
 #!/bin/bash
-# Checks (and with --install, sets up through Homebrew) what Tab2Mac development needs.
+# Checks (and with --install, sets up through Homebrew) what Ginga development needs.
 # Never changes system settings; never uses sudo.
 set -uo pipefail
 install=0; [[ "${1:-}" == "--install" ]] && install=1
@@ -29,7 +29,7 @@ fi
 
 echo "Optional"
 command -v docker >/dev/null && ok "docker (for scripts/docker-android.sh; start OrbStack/Docker first)" || echo "  - docker not found (only needed for container builds)"
-security find-identity -p codesigning 2>/dev/null | grep -q '"Tab2Mac Development"' && ok "Tab2Mac Development signing identity" \
-    || echo "  - no 'Tab2Mac Development' identity: permissions reset on every rebuild (mac/scripts/create-dev-signing-identity.sh; read it first)"
+security find-identity -p codesigning 2>/dev/null | grep -q '"Ginga Development"' && ok "Ginga Development signing identity" \
+    || echo "  - no 'Ginga Development' identity: permissions reset on every rebuild (mac/scripts/create-dev-signing-identity.sh; read it first)"
 
 (( missing == 0 )) && echo "Ready." || { echo "$missing missing."; exit 1; }

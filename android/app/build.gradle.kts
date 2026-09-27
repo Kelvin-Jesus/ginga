@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "dev.tab2mac.receiver"
+    namespace = "dev.ginga.receiver"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "dev.tab2mac.receiver"
+        applicationId = "dev.ginga.receiver"
         minSdk = 31
         targetSdk = 36
         versionCode = 1
@@ -39,7 +39,7 @@ tasks.withType<Test>().configureEach {
     // AccessoryFilterTest checks the manifest and res/xml/accessory_filter.xml against the
     // accessory identity the Mac sends; StringsTest checks the translations.
     val main = layout.projectDirectory.dir("src/main").asFile
-    systemProperty("t2m.appMainDir", main.absolutePath)
+    systemProperty("ginga.appMainDir", main.absolutePath)
     inputs.files(fileTree(main) { include("AndroidManifest.xml", "res/xml/**", "res/values*/strings.xml") })
         .withPropertyName("manifestAndXmlResources")
         .withPathSensitivity(PathSensitivity.RELATIVE)

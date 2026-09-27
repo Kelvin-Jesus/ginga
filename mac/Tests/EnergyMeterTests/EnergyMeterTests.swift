@@ -1,6 +1,6 @@
 import Darwin
 import Foundation
-import Tab2MacCore
+import GingaCore
 import Testing
 @testable import EnergyMeter
 

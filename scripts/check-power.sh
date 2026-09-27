@@ -1,5 +1,5 @@
 #!/bin/bash
-# Opt-in power gate (invariant 2): runs `t2m bench-power` on this Mac and compares each scenario's SoC
+# Opt-in power gate (invariant 2): runs `ginga bench-power` on this Mac and compares each scenario's SoC
 # power above the idle baseline (cpu+gpu+encoder+decoder, mW) with docs/power-baseline.json.
 # Needs mac/build (scripts/build-app.sh, signed, with the Screen Recording grant) and ~1 min/scenario.
 # Not part of check-all/CI: it needs real hardware and nothing else running.
@@ -11,9 +11,9 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 update=0; [[ "${1:-}" == "--update" ]] && { update=1; shift; }
 baseline=docs/power-baseline.json
-[[ -x mac/build/t2m && -d mac/build/Tab2Mac.app ]] || { echo "mac/build is missing: run mac/scripts/build-app.sh (with someone at the keychain prompt)" >&2; exit 2; }
-report="$(mktemp -t t2m-power).json"
-mac/build/t2m bench-power --app mac/build/Tab2Mac.app --report "$report" "$@"
+[[ -x mac/build/ginga && -d mac/build/Ginga.app ]] || { echo "mac/build is missing: run mac/scripts/build-app.sh (with someone at the keychain prompt)" >&2; exit 2; }
+report="$(mktemp -t ginga-power).json"
+mac/build/ginga bench-power --app mac/build/Ginga.app --report "$report" "$@"
 python3 - "$report" "$baseline" "$update" "${TOLERANCE:-0.15}" <<'PY'
 import json, sys
 report, baseline, update, tolerance = sys.argv[1], sys.argv[2], sys.argv[3] == "1", float(sys.argv[4])

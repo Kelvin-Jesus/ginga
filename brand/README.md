@@ -1,6 +1,6 @@
 # Ginga brand
 
-Ginga is the product name; Tab2Mac stays the internal name (modules, `t2m`, logs, bundle id).
+Ginga is the product's name and the code's: modules, the `ginga` command-line tool, logs and the bundle id (`dev.ginga.Ginga`).
 *Ginga* means galaxy in Japanese (銀河) and the sway of capoeira in Brazilian Portuguese: a Galaxy tablet that gives the Mac some swing.
 
 Every mark shares one idea: the tablet sits tilted, off-axis, next to the Mac screen.

@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.tab2mac.input"
+    namespace = "dev.ginga.input"
     compileSdk = 36
 
     defaultConfig {

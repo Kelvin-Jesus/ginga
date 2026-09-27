@@ -1,7 +1,7 @@
 import CoreGraphics
 import CoreVideo
 import Foundation
-import Tab2MacCore
+import GingaCore
 import Testing
 @testable import DisplayCapture
 
@@ -9,7 +9,7 @@ import Testing
 /// running the tests, so it only runs when explicitly enabled *and* permission is present.
 @Suite(
     "ScreenCaptureIntegration",
-    .enabled(if: ProcessInfo.processInfo.environment["T2M_INTEGRATION"] == "1" && ScreenCapturePermission.isGranted)
+    .enabled(if: ProcessInfo.processInfo.environment["GINGA_INTEGRATION"] == "1" && ScreenCapturePermission.isGranted)
 )
 struct ScreenCaptureIntegrationTests {
     @Test func deliversEncoderReadyFramesFromADisplay() async throws {

@@ -3,7 +3,7 @@
     English, the second language. Portuguese (Brazil), the first, is in values-pt-rBR.
     Voice (design/ginga-design/brand-book.md): short sentences, active voice, buttons are verbs,
     states say what is happening rather than the mechanism, numbers and specs in mono, "×" not "x".
-    "Tab2Mac" is the internal name only: no string here shows it.
+    "Ginga" is the internal name only: no string here shows it.
 -->
 <resources>
     <string name="app_name">Ginga</string>

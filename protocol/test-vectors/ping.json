@@ -10,6 +10,6 @@
   },
   "decodeOnly" : false,
   "description" : "Clock-sync request",
-  "hex" : "54320120000000000000000c0000002a00000000000f4240",
+  "hex" : "474e0120000000000000000c0000002a00000000000f4240",
   "name" : "ping"
 }

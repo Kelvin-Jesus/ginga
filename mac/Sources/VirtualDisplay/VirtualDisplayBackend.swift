@@ -1,5 +1,5 @@
 import CoreGraphics
-import Tab2MacCore
+import GingaCore
 
 // MARK: - The abstraction the rest of the application depends on
 

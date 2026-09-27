@@ -45,14 +45,14 @@ public enum AOA {
     }
 
     public static func needsZeroLengthPacket(length: Int, maxPacketSize: Int) -> Bool {
-        T2MNeedsZeroLengthPacket(UInt(length), UInt(maxPacketSize))
+        GingaNeedsZeroLengthPacket(UInt(length), UInt(maxPacketSize))
     }
 }
 
 /// What the tablet app's accessory filter matches (android/app/src/main/res/xml/accessory_filter.xml).
 public struct AccessoryIdentity: Hashable, Sendable {
-    public var manufacturer = "Tab2Mac"
-    public var model = "Tab2Mac Receiver"
+    public var manufacturer = "Ginga"
+    public var model = "Ginga Receiver"
     public var description = "Second display for your Mac"
     public var version = "1"
     /// Shown by Android when no app handles the accessory.
@@ -88,9 +88,9 @@ public enum AccessorySwitch {
     /// back as 18D1:2D00/2D01. Returns the AOA protocol version.
     @discardableResult
     public static func switchToAccessoryMode(entryID: UInt64, identity: AccessoryIdentity = AccessoryIdentity()) throws -> Int {
-        let device: T2MUSBDevice
+        let device: GingaUSBDevice
         do {
-            device = try T2MUSBDevice.open(withRegistryEntryID: entryID)
+            device = try GingaUSBDevice.open(withRegistryEntryID: entryID)
         } catch {
             throw AccessoryError.usb(error.localizedDescription)
         }
@@ -113,7 +113,7 @@ public enum AccessorySwitch {
     /// GET_PROTOCOL only: reports AOA support without changing anything on the device.
     public static func protocolVersion(entryID: UInt64) throws -> Int {
         do {
-            let device = try T2MUSBDevice.open(withRegistryEntryID: entryID)
+            let device = try GingaUSBDevice.open(withRegistryEntryID: entryID)
             defer { device.close() }
             return AOA.protocolVersion(fromReply: try device.vendorRequestIn(withRequest: AOA.getProtocolRequest, value: 0, index: 0, length: 2))
         } catch {

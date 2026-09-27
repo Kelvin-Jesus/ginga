@@ -1,6 +1,6 @@
 import CoreGraphics
 import Testing
-import Tab2MacCore
+import GingaCore
 @testable import VirtualDisplay
 import VirtualDisplayTestSupport
 
@@ -70,7 +70,7 @@ struct VirtualDisplayProviderTests {
 
     /// Adding a display makes macOS apply the configuration saved for the new set of displays
     /// (measured: an HDMI monitor switching from 2048×864@2x 60 Hz to 2560×1080 100 Hz). That
-    /// per-set choice is the user's: Tab2Mac reports it and never touches other displays.
+    /// per-set choice is the user's: Ginga reports it and never touches other displays.
     @Test func otherDisplaysAreNeverReconfigured() async throws {
         let monitor = addExternalMonitor()
         system.modeChangesWhenDisplayAdded = [2: monitor.hundred]

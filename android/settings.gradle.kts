@@ -20,7 +20,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "tab2mac-android"
+rootProject.name = "ginga-android"
 
 include(
     ":protocol",

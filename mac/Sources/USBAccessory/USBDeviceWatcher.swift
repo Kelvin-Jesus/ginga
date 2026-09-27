@@ -1,7 +1,7 @@
 import Foundation
 import IOKit
 import os
-import Tab2MacCore
+import GingaCore
 
 extension Log {
     public static let usb = Logger(subsystem: subsystem, category: "usb")
@@ -46,7 +46,7 @@ public protocol USBEventSource: AnyObject, Sendable {
 public final class USBDeviceWatcher: USBEventSource, @unchecked Sendable {  // IOKit state is only touched on `queue`
     public typealias Event = USBDeviceEvent
 
-    private let queue = DispatchQueue(label: "dev.tab2mac.usb.watcher", qos: .utility)
+    private let queue = DispatchQueue(label: "dev.ginga.usb.watcher", qos: .utility)
     private var port: IONotificationPortRef?
     private var iterators: [io_iterator_t] = []
     private var handler: (@Sendable (Event) -> Void)?

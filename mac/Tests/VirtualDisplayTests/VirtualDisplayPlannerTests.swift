@@ -1,5 +1,5 @@
 import Testing
-import Tab2MacCore
+import GingaCore
 @testable import VirtualDisplay
 
 @Suite("VirtualDisplayPlanner")

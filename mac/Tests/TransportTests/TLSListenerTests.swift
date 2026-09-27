@@ -1,7 +1,7 @@
 import Foundation
 import Security
-import Tab2MacProtocol
-import Tab2MacSecurity
+import GingaProtocol
+import GingaSecurity
 import Testing
 @testable import Transport
 
@@ -12,8 +12,8 @@ final class ThrowawayIdentity {
     private let keychain: SecKeychain
 
     init(commonName: String) throws {
-        let path = FileManager.default.temporaryDirectory.appendingPathComponent("t2m-test-\(UUID().uuidString).keychain-db").path
-        let password = "t2m-test"
+        let path = FileManager.default.temporaryDirectory.appendingPathComponent("ginga-test-\(UUID().uuidString).keychain-db").path
+        let password = "ginga-test"
         var created: SecKeychain?
         let status = SecKeychainCreate(path, UInt32(password.utf8.count), password, false, nil, &created)
         keychain = try #require(created, "SecKeychainCreate failed: \(status)")
@@ -58,8 +58,8 @@ struct TLSListenerTests {
     /// Mutual TLS 1.3 with self-signed identities: each side can read the other's certificate
     /// (what pairing pins), and messages flow.
     @Test func mutualTLSExchangesCertificatesAndMessages() async throws {
-        let mac = try ThrowawayIdentity(commonName: "Tab2Mac test Mac")
-        let tablet = try ThrowawayIdentity(commonName: "Tab2Mac test tablet")
+        let mac = try ThrowawayIdentity(commonName: "Ginga test Mac")
+        let tablet = try ThrowawayIdentity(commonName: "Ginga test tablet")
         let listener = try TLSListener(identity: mac.identity, advertisement: nil, loopbackOnly: true)
         let port = Box<UInt16>()
         let accepted = Box<NetworkByteTransport>()

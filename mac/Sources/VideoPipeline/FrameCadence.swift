@@ -1,4 +1,4 @@
-import Tab2MacCore
+import GingaCore
 
 /// Caps a stream at `frameRate` from capture timestamps, dropping (never delaying) frames.
 ///

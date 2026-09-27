@@ -35,19 +35,19 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-  App[Tab2MacApp] --> Runtime[Tab2MacRuntime]
-  CLI[t2m] --> Runtime
-  Runtime --> Streaming[Tab2MacStreaming]
+  App[GingaApp] --> Runtime[GingaRuntime]
+  CLI[ginga] --> Runtime
+  Runtime --> Streaming[GingaStreaming]
   Runtime --> USB[USBAccessory] --> Shim2[USBAccessoryShim · Obj‑C]
   Runtime --> Direct[DirectLink]
   Runtime --> Input[InputInjection]
   Runtime --> Backend[CGVirtualDisplayBackend] --> Shim[CGVirtualDisplayShim · Obj‑C · private API]
-  Streaming --> Session[Tab2MacSession] --> VD[VirtualDisplay]
+  Streaming --> Session[GingaSession] --> VD[VirtualDisplay]
   Session --> Capture[DisplayCapture]
   Streaming --> Pipeline[VideoPipeline]
-  Streaming --> Protocol[Tab2MacProtocol]
+  Streaming --> Protocol[GingaProtocol]
   Streaming --> Transport
-  Streaming --> Security[Tab2MacSecurity]
+  Streaming --> Security[GingaSecurity]
   Direct --> Security
   CLI --> Energy[EnergyMeter · IOReport]
 ```

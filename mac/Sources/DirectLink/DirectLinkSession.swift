@@ -1,7 +1,7 @@
 import Foundation
 import os
-import Tab2MacCore
-import Tab2MacSecurity
+import GingaCore
+import GingaSecurity
 
 extension Log {
     public static let directLink = Logger(subsystem: subsystem, category: "direct-link")

@@ -13,6 +13,6 @@
   },
   "decodeOnly" : false,
   "description" : "Shift+A pressed on a keyboard cover: usage 0x04 with left shift held",
-  "hex" : "54320114000100020000001400140000000c00000000004c4ec4000000040002",
+  "hex" : "474e0114000100020000001400140000000c00000000004c4ec4000000040002",
   "name" : "key-down"
 }

@@ -1,4 +1,4 @@
-# Tab2Mac Android receiver — dependency versions.
+# Ginga Android receiver — dependency versions.
 #
 # Compatibility (checked 2026-09-25):
 # - AGP 9.3.x needs Gradle >= 9.5.0 and JDK 17, supports compileSdk up to 37

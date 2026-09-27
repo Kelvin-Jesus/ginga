@@ -1,6 +1,6 @@
 # Configuration reference
 
-Tab2Mac reads `~/Library/Application Support/Tab2Mac/config.json`, and the control panel writes it. A file passed with `--config PATH` (app, or `t2m … --config PATH`) applies to that run only: the control panel's changes then last until quit and are saved nowhere.
+Ginga reads `~/Library/Application Support/Ginga/config.json`, and the control panel writes it. A file passed with `--config PATH` (app, or `ginga … --config PATH`) applies to that run only: the control panel's changes then last until quit and are saved nowhere.
 
 Every section and key is optional. A missing key takes the default below, so a file only needs what it changes, and old files keep working. Examples are in [`config/examples/`](../config/examples); the test suite decodes and validates each one.
 
@@ -15,7 +15,7 @@ Every section and key is optional. A missing key takes the default below, so a f
 
 `version` is the file format, currently 1. A newer version is rejected with a clear error rather than half-read.
 
-**Invalid files are never overwritten.** If `config.json` can't be read (a typo, a value out of range, a newer version), Tab2Mac says so and runs with the defaults. The first change you save keeps the old file next to the new one as `config.unreadable-<date>.json`, so nothing you wrote is lost. Out-of-range values are named by their key, e.g. `streaming.bitrateKbps: 0 is outside 1000...200000`.
+**Invalid files are never overwritten.** If `config.json` can't be read (a typo, a value out of range, a newer version), Ginga says so and runs with the defaults. The first change you save keeps the old file next to the new one as `config.unreadable-<date>.json`, so nothing you wrote is lost. Out-of-range values are named by their key, e.g. `streaming.bitrateKbps: 0 is outside 1000...200000`.
 
 ## `display` — the virtual display
 
@@ -23,7 +23,7 @@ Every section and key is optional. A missing key takes the default below, so a f
 |---|---|---|
 | `profile` | `galaxy-tab-s11` | Device preset that supplies every other `display` default. Values: `galaxy-tab-s11`, `galaxy-tab-s11-ultra`, `generic-1920x1200` |
 | `name` | from profile | Name shown in System Settings › Displays |
-| `identity` | from profile | `{ "vendorID", "productID", "serialNumber" }`. macOS remembers arrangement and mode per identity. Vendor 0x5022 is Tab2Mac's |
+| `identity` | from profile | `{ "vendorID", "productID", "serialNumber" }`. macOS remembers arrangement and mode per identity. Vendor 0x5022 is Ginga's |
 | `panel` | from profile | `{ "nativePixels": {w,h}, "physicalSize": {"widthMillimeters","heightMillimeters"}, "maxRefreshRate" }`. The physical size sets the reported DPI |
 | `resolution` | profile default, 1280×800 for the Tab S11 | "Looks like" size in points, landscape |
 | `extraResolutions` | profile options | Additional sizes offered in System Settings. The largest one sets the display's pixel budget |
@@ -57,7 +57,7 @@ Every section and key is optional. A missing key takes the default below, so a f
 | `displayLingerSeconds` | `15` | A display created because a tablet connected is removed this long after the last tablet leaves, 0–86400. `null` keeps it |
 | `directUSB` | **`true`** | USB accessory mode (M6): no developer mode or adb, and the steadiest link (120 Hz with no dropped frames, where adb's relay drops about 1.7 %). Only tablets in `approvedUSBDevices` are ever switched, so this lists candidates and does nothing else until you approve one |
 | `approvedUSBDevices` | `[]` | Serial numbers allowed to be switched to accessory mode, and the only devices in accessory mode that get a session. The control panel's "Use this tablet" adds them; "Forget" removes one and ends its session |
-| `wifi` | `false` | Accept paired tablets over Wi‑Fi (M7): TLS 1.3, Bonjour `_tab2mac._tcp`, pairing by a 6-digit code. The no-router mode starts the listener for its session even when this is off |
+| `wifi` | `false` | Accept paired tablets over Wi‑Fi (M7): TLS 1.3, Bonjour `_ginga._tcp`, pairing by a 6-digit code. The no-router mode starts the listener for its session even when this is off |
 | `matchTabletDisplay` | `true` | A display created because a tablet connected takes that device's panel: its profile if known (Tab S11, S11 Ultra, S9 FE+, S25 Ultra), otherwise the size, density and refresh rates it reports. The refresh rate is capped at the panel's, the stream at the decoder's. A display you created from the control panel uses `display` as configured |
 
 ## `power`
@@ -85,5 +85,5 @@ Every section and key is optional. A missing key takes the default below, so a f
 Some state lives elsewhere, on purpose:
 
 - **Screen Recording and Accessibility grants** live in macOS (TCC).
-- **This Mac's Wi‑Fi identity** is the key and certificate labelled "Tab2Mac Wi-Fi identity" in the login keychain.
-- **Paired tablets' pins** are generic-password items, service `dev.tab2mac.paired-tablet`, in the login keychain. Forget one in the control panel.
+- **This Mac's Wi‑Fi identity** is the key and certificate labelled "Ginga Wi-Fi identity" in the login keychain.
+- **Paired tablets' pins** are generic-password items, service `dev.ginga.paired-tablet`, in the login keychain. Forget one in the control panel.

@@ -1,4 +1,4 @@
-# Tab2Mac protocol — version 1 (draft)
+# Ginga protocol — version 1 (draft)
 
 | | |
 |---|---|
@@ -30,7 +30,7 @@ All integers are **big-endian**. Times are microseconds on the sender's monotoni
 
 | Field | Size | Meaning |
 |---|---|---|
-| magic | 2 | `0x54 0x32` ("T2"). Used to resynchronise and sanity-check |
+| magic | 2 | `0x47 0x4E` ("GN"). Used to resynchronise and sanity-check |
 | fver | 1 | Framing version = **1**. Changes only for incompatible framing changes |
 | type | 1 | Message type (§3) |
 | flags | 2 | bit 0 `IGNORABLE`; bit 1 `KEYFRAME` (video); bit 2 `DISCARDABLE` (may be dropped under backpressure); bits 3–15 reserved (send 0, ignore on receipt) |
@@ -90,7 +90,7 @@ The protocol version is the highest version within both `[min, max]` ranges. If 
 ```json
 {
   "protocol": { "min": 1, "max": 1 },
-  "app": { "name": "Tab2Mac for Android", "version": "0.1.0" },
+  "app": { "name": "Ginga for Android", "version": "0.1.0" },
   "device": { "manufacturer": "samsung", "model": "SM-X730", "android": "16", "id": "7f0c…" },
   "display": { "widthPx": 2560, "heightPx": 1600, "densityDpi": 274, "refreshRates": [60, 120],
                "rotation": 0, "wideColor": true },
@@ -292,9 +292,9 @@ The initiator records `t4` on receipt. Then:
 
 | Transport | Binding |
 |---|---|
-| ADB (M4) | The Mac listens on **TCP 127.0.0.1:47800**. The Mac runs `adb reverse tcp:47800 tcp:47800`, and the tablet connects to `127.0.0.1:47800`. Loopback only: the stream is never exposed on the LAN without pairing. **Token:** any process on the Mac, and any app on the tablet (through the reverse forward), can open that port, so after each reverse the Mac hands the app a fresh random token (32 bytes, new per Mac app start): `adb -s SERIAL shell 'read t; am broadcast -f 32 -a dev.tab2mac.action.LOOPBACK_TOKEN -n dev.tab2mac.receiver/dev.tab2mac.receiver.adb.LoopbackTokenReceiver --es token "$t"'`, with the token on stdin (never on a command line). The receiver requires the `DUMP` permission, which only the adb shell holds, so no other app can plant or read it. HELLO carries it back (`loopbackToken`, §3.1). A refused connection makes the Mac deliver it again (at most every 5 s). |
-| AOA (M6) | Accessory strings: manufacturer `Tab2Mac`, model `Tab2Mac Receiver` (the tablet's accessory filter matches both), description `Second display for your Mac`, version `1`, URI empty, serial `1`. Messages are framed exactly as over TCP; the host sends a zero-length packet after writes that end on a packet boundary. There is no HELLO timeout on this link (the app starts only after the user answers Android's prompt). When a session ends while the device stays plugged in, the Mac offers a fresh link, so the tablet can say HELLO again without replugging. |
-| Wi‑Fi (M7) | TLS 1.3 over TCP on the port advertised via Bonjour `_tab2mac._tcp`. The system picks the port each time the Mac starts listening, so the tablet resolves the service again before every connection (including reconnects) instead of reusing an address. |
+| ADB (M4) | The Mac listens on **TCP 127.0.0.1:47800**. The Mac runs `adb reverse tcp:47800 tcp:47800`, and the tablet connects to `127.0.0.1:47800`. Loopback only: the stream is never exposed on the LAN without pairing. **Token:** any process on the Mac, and any app on the tablet (through the reverse forward), can open that port, so after each reverse the Mac hands the app a fresh random token (32 bytes, new per Mac app start): `adb -s SERIAL shell 'read t; am broadcast -f 32 -a dev.ginga.action.LOOPBACK_TOKEN -n dev.ginga.receiver/dev.ginga.receiver.adb.LoopbackTokenReceiver --es token "$t"'`, with the token on stdin (never on a command line). The receiver requires the `DUMP` permission, which only the adb shell holds, so no other app can plant or read it. HELLO carries it back (`loopbackToken`, §3.1). A refused connection makes the Mac deliver it again (at most every 5 s). |
+| AOA (M6) | Accessory strings: manufacturer `Ginga`, model `Ginga Receiver` (the tablet's accessory filter matches both), description `Second display for your Mac`, version `1`, URI empty, serial `1`. Messages are framed exactly as over TCP; the host sends a zero-length packet after writes that end on a packet boundary. There is no HELLO timeout on this link (the app starts only after the user answers Android's prompt). When a session ends while the device stays plugged in, the Mac offers a fresh link, so the tablet can say HELLO again without replugging. |
+| Wi‑Fi (M7) | TLS 1.3 over TCP on the port advertised via Bonjour `_ginga._tcp`. The system picks the port each time the Mac starts listening, so the tablet resolves the service again before every connection (including reconnects) instead of reusing an address. |
 
 **Handshake order (all stream transports):**
 
@@ -306,7 +306,7 @@ The initiator records `t4` on receipt. Then:
 
 ## 6. Discovery and security (Wi‑Fi)
 
-- **Bonjour** service type `_tab2mac._tcp`. TXT keys: `pv` (max protocol version), `id` (the first 12 hex digits of the Mac's certificate fingerprint: a stable instance ID, not a secret and not a pin), `name`.
+- **Bonjour** service type `_ginga._tcp`. TXT keys: `pv` (max protocol version), `id` (the first 12 hex digits of the Mac's certificate fingerprint: a stable instance ID, not a secret and not a pin), `name`.
 - **Pairing:**
   - TLS 1.3 with a self-signed identity on each side. Each is a P‑256 key with an X.509 v3 certificate (ECDSA‑SHA256). The tablet presents its certificate as a TLS client certificate. Neither side validates a chain; each pins the other's certificate fingerprint (SHA‑256 of the DER).
   - **Numeric comparison with a commitment**, as in Bluetooth LE Secure Connections. The 6-digit code covers both certificates and a fresh 32-byte random nonce from each side. The tablet commits to its nonce before it learns the Mac's and reveals it only afterwards. A man in the middle must commit toward the Mac before any nonce is known, so it gets one guess at the code per attempt (1 in 10⁶) instead of searching offline for certificates whose codes collide.
@@ -352,17 +352,17 @@ For a hotel, a train or anywhere without a usable network: the tablet creates it
 
   | UUID | What |
   |---|---|
-  | `5432D1EC-7D1A-4F5B-9A6E-0E2A6D3C0001` | service (advertised) |
-  | `5432D1EC-7D1A-4F5B-9A6E-0E2A6D3C0002` | credentials, read: `keyId (8) ‖ nonce (12) ‖ AES-256-GCM ciphertext ‖ tag (16)` |
-  | `5432D1EC-7D1A-4F5B-9A6E-0E2A6D3C0003` | Mac address, write: same layout |
+  | `474ED1EC-7D1A-4F5B-9A6E-0E2A6D3C0001` | service (advertised) |
+  | `474ED1EC-7D1A-4F5B-9A6E-0E2A6D3C0002` | credentials, read: `keyId (8) ‖ nonce (12) ‖ AES-256-GCM ciphertext ‖ tag (16)` |
+  | `474ED1EC-7D1A-4F5B-9A6E-0E2A6D3C0003` | Mac address, write: same layout |
 
-  - Keys: `HKDF-SHA256(ikm = direct key, salt = "tab2mac-direct-v1", info = "credentials" | "address", 32 bytes)`. The AAD is the 8-byte keyId. Nonces are random.
+  - Keys: `HKDF-SHA256(ikm = direct key, salt = "ginga-direct-v1", info = "credentials" | "address", 32 bytes)`. The AAD is the 8-byte keyId. Nonces are random.
   - Credentials plaintext: `{"ssid": "…", "psk": "…", "session": "<32 hex>", "expires": <unix seconds>}`. The Mac refuses expired credentials.
   - Address plaintext: `{"host": "<the Mac's IP on the tablet's network>", "port": <Wi‑Fi listener port>, "session": "<same>"}`. The tablet refuses another session's address, then connects to it as over any Wi‑Fi (TLS, pinning, pairing if needed).
   - Nothing here is ever logged or put on a command line.
 - **Vector** (direct key 32 × `0x55`, keyId `0102030405060708`, nonce 12 × `0x09`):
-  - credentials subkey `1709054f28835a41ad5e66c72770770ac6975a9cd592406dfc9cda75d25c6aee`; the plaintext `{"expires":1790000000,"psk":"t2-Example-Passphrase","session":"00112233445566778899aabbccddeeff","ssid":"DIRECT-T2-0102"}` gives `010203040506070809090909090909090909090984d6384c8360ca1c97f2b5354c30f35ccb1961920cd7301c93438ab8d442fa0ef146f13e25ccd8bb856c6f82620c7f286fc3091bbce7a7acf12dadd9b9aada33b652186f7eb733bba102d7161c0f799f9083cb5c446b17383218ddbb49ee77ab900f1192ab614461dd05153f5f693c471f6d512018aabdbd2d09c40454866d37617c9f4aadff1b9c98`;
-  - address subkey `e3d677f129ce82d2b42e4b51f5d936518d28db4520077c583d06567bb2866019`; `{"host":"192.168.49.23","port":55471,"session":"00112233445566778899aabbccddeeff"}` gives `01020304050607080909090909090909090909099af08686334cc0577ef60d441003bab5e2b19fe31652a648ef1bff4c5b8903f0f81fdd6ccc40137e63717bd46e755357f041602a37e66320c9d3bc4000c127ddcc61ce22e75751ba0893ad83a578ce642e6057f5a36678f6eb2cc0955fdcfa66be02`.
+  - credentials subkey `75bc03cb45573842d8a842de4be2e8af48b937dd59f5d8fa3a8f4894b0a94aee`; the plaintext `{"expires":1790000000,"psk":"gn-Example-Passphrase","session":"00112233445566778899aabbccddeeff","ssid":"DIRECT-Ginga-0102"}` gives `01020304050607080909090909090909090909099f2fa452568ca28a265f8f20a285763f7681dcb148c12a085ae117d046ae61bcb27831e6ebea98d66170f2e14d9ced2dbf867fa7668ca1cbb75dc180323f700b276345f79d8e5fcfbe22eacba5221bf34d743879225aeb1e6022a12b24f2753566f99f9413d38173182cc6c39505376f99ae5c66985a096006fdff5857755fb50029c8a9e706f8f0c9da5beb`;
+  - address subkey `ab1e4ff1ce626425d6a274df7b484e86ee138a2e44b5085952d184dabc27948b`; `{"host":"192.168.49.23","port":55471,"session":"00112233445566778899aabbccddeeff"}` gives `0102030405060708090909090909090909090909923619aa87d7eb78090f3d480e07fb8aa350dbc7ac692467bc86d1d5f174cc5a8bc58d94045ddc34b17c4a1f956830bb6bfcddbbb3051fe54a47db3099df512b1dc54407012e375f7edd330268bac91be8335a2c4959b014548f3eebeb781cd44faf`.
 - **The Mac's side.** On its user's click: scan for the service, read and decrypt the credentials, remember the current Wi‑Fi network, join the tablet's with CoreWLAN, write its address, accept the session. When the session ends (or the user ends it), leave the tablet's network and return to the previous one.
 - **Wi‑Fi Aware (NAN)** would make this simpler (no router, no network switch on the Mac), and the Tab S11 supports it (`android.hardware.wifi.aware`). But the macOS 26 SDK's `WiFiAware.framework` marks every symbol `@available(macOS, unavailable)`: it is iOS/iPadOS 26 only. It would enter as one more `ByteTransport` when Apple opens it on macOS (architecture ADR‑25).
 
@@ -381,7 +381,7 @@ For a hotel, a train or anywhere without a usable network: the tablet creates it
 Control stays on TLS/TCP. Video moves to UDP packets of ≤ 1200 bytes:
 
 ```text
-u16 magic 'T2' · u8 fver · u8 type (0x40 VIDEO_FRAGMENT · 0x41 FEC_PARITY · 0x42 NACK)
+u16 magic 'GN' · u8 fver · u8 type (0x40 VIDEO_FRAGMENT · 0x41 FEC_PARITY · 0x42 NACK)
 u32 frameId · u16 fragmentIndex · u16 fragmentCount · u8 fecDataCount · u8 fecParityCount
 … payload … · AES‑GCM tag (16) — key from the TLS exporter, nonce = frameId‖fragmentIndex
 ```
@@ -392,10 +392,10 @@ u32 frameId · u16 fragmentIndex · u16 fragmentCount · u8 fecDataCount · u8 f
 
 ## 9. Golden test vectors (M3)
 
-`protocol/test-vectors/<name>.json`, generated by the Swift implementation (`t2m protocol-vectors`):
+`protocol/test-vectors/<name>.json`, generated by the Swift implementation (`ginga protocol-vectors`):
 
 ```json
-{ "name": "input-stylus-hover", "description": "…", "hex": "54320111…",
+{ "name": "input-stylus-hover", "description": "…", "hex": "474E0111…",
   "decoded": { "type": "INPUT", "flags": 0, "stream": 2, "fields": { "sequence": 7, "kind": 2, "action": 5, "pointers": [ … ] } } }
 ```
 

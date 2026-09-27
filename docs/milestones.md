@@ -7,10 +7,10 @@ Small milestones, each with a test and benchmark gate. **No milestone starts unt
 | M0 | Research, spike, architecture | ✅ done ([research](research.md), [architecture](architecture.md)) |
 | M1 | Virtual display + capture + local debug preview | ✅ **signed off on hardware**: every acceptance check passes, including capture (see below) |
 | M2 | Video pipeline on the Mac (hardware encode, local decode loopback) | ✅ Mac side: `VideoPipeline`; encode benchmark; loopback decode in tests. The "encoded" preview view is still to do |
-| M3 | Protocol v1 + transport abstraction + Mac loopback receiver | ✅ `Tab2MacProtocol` with golden vectors (32 now), TCP `Transport`, `Tab2MacStreaming`, and end-to-end loopback tests |
+| M3 | Protocol v1 + transport abstraction + Mac loopback receiver | ✅ `GingaProtocol` with golden vectors (32 now), TCP `Transport`, `GingaStreaming`, and end-to-end loopback tests |
 | M4 | Android receiver MVP over USB (ADB reverse) | ✅ **Gate met on the device:** the real virtual display at 60 fps, 0 dropped, end-to-end p50 8–17 ms (gate: ≤ 40 ms). Pause/resume verified ([performance](performance.md)) |
 | M5 | Touch and S Pen input forwarding | ✅ Verified on the device: touch lands exactly; the S Pen is a pen tablet (proximity, pressure, tilt, eraser) |
-| P | Power, cross-cutting (the reference is Sidecar) | ✅ Energy measured per change (`t2m bench-power`, `bench-encode --sweep`): 60 Hz default, capture only on demand, event-driven adb, pause protocol, battery-aware encoder. See [performance](performance.md) |
+| P | Power, cross-cutting (the reference is Sidecar) | ✅ Energy measured per change (`ginga bench-power`, `bench-encode --sweep`): 60 Hz default, capture only on demand, event-driven adb, pause protocol, battery-aware encoder. See [performance](performance.md) |
 | M6 | Direct USB transport (Android Open Accessory) + auto-detect | ✅ Verified on the device and the default link: 120 fps at 120 Hz, 0 dropped, end-to-end p50 ≈ 13 ms (adb: ~1.7 % dropped). Only approved tablets get a session; the tablet reconnects by itself while plugged in. Gate met: the link sustains the full 120 Hz stream |
 | M7 | Wi‑Fi: discovery, pairing, TCP profile, adaptive bitrate, reconnection | ✅ Verified on the device: Bonjour (resolved again before every connection), TLS 1.3, numeric-comparison pairing with commitments (PROTOCOL.md §6), 60 fps with 0 dropped. A tablet that no longer knows the Mac asks to pair again (`pairingRequested`) |
 | M8 | Wi‑Fi UDP profile: FEC, NACK, LTR/IDR recovery | |
@@ -36,15 +36,15 @@ The user asked on 2026‑09‑25 to develop Android in parallel, which lifted th
 - Layer 1: `VirtualDisplay`, `CGVirtualDisplayBackend` and `CGVirtualDisplayShim` (the private API isolated and runtime-verified).
 - Layer 2: `DisplayCapture` (ScreenCaptureKit).
 - The session and configuration.
-- `Tab2Mac.app`: control panel, menu bar item, and a debug preview with a diagnostics overlay.
-- The `t2m` CLI: `probe`, `displays`, `create`, `verify`, `bench-capture`.
+- `Ginga.app`: control panel, menu bar item, and a debug preview with a diagnostics overlay.
+- The `ginga` CLI: `probe`, `displays`, `create`, `verify`, `bench-capture`.
 - The M1 verifier and the capture benchmark.
 - Example configs.
 
 **Automated tests:**
 
 - 145 swift-testing tests in 24 suites: 29 core, 53 virtual-display, 27 backend/shim, 20 capture, 16 session.
-- Two of them are gated: a real-display integration test (`T2M_INTEGRATION=1`) and a real-capture test (which also needs Screen Recording).
+- Two of them are gated: a real-display integration test (`GINGA_INTEGRATION=1`) and a real-capture test (which also needs Screen Recording).
 
 **Acceptance:**
 
@@ -62,7 +62,7 @@ The user asked on 2026‑09‑25 to develop Android in parallel, which lifted th
 **Sign-off steps for you:**
 
 1. Run `mac/scripts/build-app.sh`. Optionally run `create-dev-signing-identity.sh` first, so the grant survives rebuilds.
-2. Open `mac/build/Tab2Mac.app` and click **Grant…** under Screen Recording. Enable Tab2Mac in System Settings › Privacy & Security › Screen & System Audio Recording, then relaunch the app.
+2. Open `mac/build/Ginga.app` and click **Grant…** under Screen Recording. Enable Ginga in System Settings › Privacy & Security › Screen & System Audio Recording, then relaunch the app.
 3. Click **Create Display**, drag a window from the MacBook screen onto "Galaxy Tab S11", and click **Show Debug Preview**. You should see that window in the preview, with live statistics.
 4. Run the headless self-test and capture benchmark (commands in [development.md](development.md#m1-sign-off)) and keep the JSON reports.
 
@@ -105,7 +105,7 @@ The user asked on 2026‑09‑25 to develop Android in parallel, which lifted th
   - framing, the JSON control messages, the binary hot-path messages, and the clock-sync math;
   - **golden vectors** in `protocol/test-vectors/`.
 - A `Transport` module: `MessageChannel`, a TCP implementation (Network.framework), and a connection state machine with reconnection.
-- A `t2m receive` loopback client that decodes and displays, so end-to-end runs work on one Mac.
+- A `ginga receive` loopback client that decodes and displays, so end-to-end runs work on one Mac.
 
 **Tests:**
 
@@ -164,7 +164,7 @@ The user asked on 2026‑09‑25 to develop Android in parallel, which lifted th
 
 **Build:**
 
-- Bonjour advertising (`NWListener.service`, `_tab2mac._tcp`) and `NsdManager` discovery.
+- Bonjour advertising (`NWListener.service`, `_ginga._tcp`) and `NsdManager` discovery.
 - TLS 1.3 pairing with numeric comparison.
 - The TCP profile.
 - Receiver reports and AIMD bitrate control; the low-latency Wi‑Fi lock.
@@ -197,7 +197,7 @@ The user asked on 2026‑09‑25 to develop Android in parallel, which lifted th
 - Idle quality refinement.
 - ~~App Nap and power assertions while streaming~~ (done: a latency-critical activity is held only while a tablet is connected).
 - A cursor overlay for power: pointer motion over static content should cost a small message, not a re-encoded frame.
-- AOA (M6) also saves power: `adb reverse` relays every video byte through the adb server on the Mac and adbd on the tablet. Measure that relay with `t2m energy` during a USB stream.
+- AOA (M6) also saves power: `adb reverse` relays every video byte through the adb server on the Mac and adbd on the tablet. Measure that relay with `ginga energy` during a USB stream.
 - Multiple-tablet identities.
 - Packaging: Developer ID signing, notarization, and optionally applying for the persistent-content-capture entitlement.
 - Documentation updates.

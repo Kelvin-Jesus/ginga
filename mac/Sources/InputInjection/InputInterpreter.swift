@@ -1,6 +1,6 @@
 import CoreGraphics
 import Foundation
-import Tab2MacProtocol
+import GingaProtocol
 
 /// A pointer action to perform on the Mac, in global display coordinates (points, top-left origin).
 public enum SyntheticPointerEvent: Equatable, Sendable {

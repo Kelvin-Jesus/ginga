@@ -10,6 +10,6 @@
   },
   "decodeOnly" : false,
   "description" : "Unknown type 0x7E with IGNORABLE must be skipped",
-  "hex" : "5432017e0001000400000006667574757265",
+  "hex" : "474e017e0001000400000006667574757265",
   "name" : "unknown-ignorable"
 }

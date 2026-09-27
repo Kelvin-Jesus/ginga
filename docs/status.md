@@ -8,9 +8,9 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 
 | Area | State | Evidence |
 |---|---|---|
-| Virtual display (create, modes, orientation, arrangement, removal) | ✅ | `t2m verify`, M1 sign-off |
+| Virtual display (create, modes, orientation, arrangement, removal) | ✅ | `ginga verify`, M1 sign-off |
 | Capture (420v, on demand, restart on reconfiguration) | ✅ | benchmarks in performance.md |
-| HEVC encode (5.9 ms p50 at 2560×1600), keyframes on demand | ✅ | `t2m bench-encode` |
+| HEVC encode (5.9 ms p50 at 2560×1600), keyframes on demand | ✅ | `ginga bench-encode` |
 | USB via adb, with the loopback token | ✅ | 60 fps, 0 dropped; a tokenless local client is refused |
 | **Direct USB (AOA), the default** | ✅ | 120 Hz: 120.2 fps, 0 dropped, e2e p50 ≈ 13 ms; approval required |
 | Auto-reconnect: tablet app killed, Mac quit, app restarted on a live link | ✅ | liveness 5 s, GOODBYE `shutdown`, HELLO restart |
@@ -25,14 +25,14 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 | Decoder stall recovery (MediaTek stops taking input after a stream error) | 🧪 | restart after 1 s without input; seen once on the device (35 s frozen video) |
 | No-router mode (tablet network + BLE handover + CoreWLAN) | ✅ partly | 2026‑09‑26: BLE handover, join and TLS session on the tablet's network, 60 fps. The way back failed (a 28 s scan fought macOS auto-join); rewritten as `NetworkRestore` (8 unit tests) — 🧪 retest, then latency/fps vs normal Wi‑Fi and tablet energy |
 | Other devices (Tab S9 FE+, S25 Ultra, any Android) | 🧪 | profiles + panel from HELLO + decoder cap; not tried on those devices |
-| Headless `t2m run` | ✅ | idle: 28.7 MB vs 61.7 MB for the app, 0 % CPU |
+| Headless `ginga run` | ✅ | idle: 28.7 MB vs 61.7 MB for the app, 0 % CPU |
 | Energy (60 Hz default, pause, battery-aware encoder) | ✅ | performance.md |
 
 ## Ginga UI (design/ginga-design), 2026‑09‑26
 
 | Area | State | Evidence |
 |---|---|---|
-| Name on screen: Ginga (Tab2Mac stays internal) | ✅ Mac, ✅ Android | app name, menus, permission texts (en + pt-BR), messages; USB accessory strings, Bonjour type, bundle id unchanged |
+| Name on screen: Ginga (Ginga stays internal) | ✅ Mac, ✅ Android | app name, menus, permission texts (en + pt-BR), messages; USB accessory strings, Bonjour type, bundle id unchanged |
 | Themes Claro / Escuro / Black espacial / Sistema + Idioma (Português / English / Sistema) | ✅ Mac, ✅ Android | Mac `--render-ui`; Android emulator screenshots (the tablet's screen was off) |
 | Android home by state, Ajustes, stream sky + toast | ✅ Android (🧪 Pareando/Conectado/stream screens on the device) | HomeModelTest, StarfieldMathTest; 322 Android tests |
 | Main window, Ajustes, pairing sheet, Sem roteador sheet, menu bar by state | ✅ Mac (🧪 pairing sheet on the device) | renders; 380 Mac tests |

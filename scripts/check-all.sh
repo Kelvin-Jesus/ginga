@@ -16,11 +16,11 @@ if (( run_mac )); then
     echo "== Swift tests"
     (cd mac && scripts/test.sh)
     echo "== Golden vectors are up to date"
-    (cd mac && swift build --product t2m >/dev/null)
+    (cd mac && swift build --product ginga >/dev/null)
     fresh="$(mktemp -d)"
     trap 'rm -rf "$fresh"' EXIT
-    mac/.build/debug/t2m protocol-vectors --out "$fresh" >/dev/null
-    diff -r "$fresh" protocol/test-vectors >/dev/null || { echo "protocol/test-vectors is stale: run mac/.build/debug/t2m protocol-vectors --out protocol/test-vectors" >&2; exit 1; }
+    mac/.build/debug/ginga protocol-vectors --out "$fresh" >/dev/null
+    diff -r "$fresh" protocol/test-vectors >/dev/null || { echo "protocol/test-vectors is stale: run mac/.build/debug/ginga protocol-vectors --out protocol/test-vectors" >&2; exit 1; }
     echo "== Private API stays in CGVirtualDisplayShim (invariant 5)"
     # Runtime lookups and the private classes only in the shim; dlopen/dlsym only for IOReport (EnergyMeter).
     leaks="$(grep -rnE 'NSClassFromString|objc_getClass|objc_msgSend|CGVirtualDisplay(Descriptor|Settings|Mode)\b' mac/Sources | grep -v '^mac/Sources/CGVirtualDisplayShim/' || true)"

@@ -1,4 +1,4 @@
-import Tab2MacCore
+import GingaCore
 
 /// Adaptive bitrate for lossy links (Wi‑Fi, M7): additive increase, multiplicative decrease,
 /// driven by the receiver's reports (every 250 ms on Wi‑Fi) and the Mac's own backpressure.

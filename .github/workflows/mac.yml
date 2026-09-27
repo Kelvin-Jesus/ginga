@@ -17,6 +17,6 @@ jobs:
         run: swift build -c release
       - name: Golden vectors are up to date
         run: |
-          cd mac && swift build --product t2m && cd ..
-          mac/.build/debug/t2m protocol-vectors --out "$RUNNER_TEMP/vectors"
+          cd mac && swift build --product ginga && cd ..
+          mac/.build/debug/ginga protocol-vectors --out "$RUNNER_TEMP/vectors"
           diff -r "$RUNNER_TEMP/vectors" protocol/test-vectors

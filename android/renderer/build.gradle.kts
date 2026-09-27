@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.tab2mac.renderer"
+    namespace = "dev.ginga.renderer"
     compileSdk = 36
 
     defaultConfig {

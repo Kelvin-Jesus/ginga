@@ -2,7 +2,7 @@
 
 Prints do estado atual dos dois apps. A nova UI deve seguir a marca em `brand/README.md`.
 
-## Mac (SwiftUI, `mac/Sources/Tab2MacApp/ControlPanelView.swift`)
+## Mac (SwiftUI, `ControlPanelView.swift`, replaced by the Ginga main window)
 
 | Arquivo | O que é |
 |---|---|
@@ -10,7 +10,7 @@ Prints do estado atual dos dois apps. A nova UI deve seguir a marca em `brand/RE
 | `mac-02-painel-completo-claro.png`, `mac-03-painel-completo-escuro.png` | O painel inteiro, sem rolagem (renderizado fora da tela, sem sessão ativa). A linha “Settings come from --config” aparece só por causa desse modo de captura |
 
 Não aparecem nos prints:
-- **Menu da barra de menus** (`StatusItemController.swift`), ícone SF Symbol `rectangle.on.rectangle`. Itens: status do display, “Capture: …”, “Tablet: …”, separador, “Accept the Tablet over USB” / “Stop Accepting the Tablet”, “Create Display” ou “Remove Display” + “Show Debug Preview”, “Control Panel…”, “Displays Settings…”, separador, “Quit Tab2Mac”.
+- **Menu da barra de menus** (`StatusItemController.swift`), ícone SF Symbol `rectangle.on.rectangle`. Itens: status do display, “Capture: …”, “Tablet: …”, separador, “Accept the Tablet over USB” / “Stop Accepting the Tablet”, “Create Display” ou “Remove Display” + “Show Debug Preview”, “Control Panel…”, “Displays Settings…”, separador, “Quit” (with the app's former name).
 - **Alerta de pareamento** (`PairingPrompt.swift`, NSAlert): “Pair with “Galaxy Tab S11”?”, código de 6 dígitos em dois grupos (“482 913”), aviso para parear só tablets próprios, botões “Pair” / “Don’t Pair”.
 
 ## Android (Views XML, `android/app/src/main/res/layout/activity_main.xml`, `activity_stream.xml`)
@@ -21,7 +21,7 @@ Não aparecem nos prints:
 | `android-02-inicio-rolado.png` | O resto da tela inicial: Wi‑Fi, conexão direta, configurações |
 | `android-03-stream-aguardando.png` | Tela de stream antes do primeiro quadro (“Streaming from …”) |
 
-O botão flutuante `>_` nos prints do Android é de outro app instalado no tablet. Não faz parte do Tab2Mac.
+O botão flutuante `>_` nos prints do Android é de outro app instalado no tablet. Não faz parte do Ginga.
 
 ## Marca
 

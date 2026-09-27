@@ -1,7 +1,7 @@
 import Foundation
 import Network
 import os
-import Tab2MacCore
+import GingaCore
 
 /// Accepts receiver connections on TCP. Loopback-only by default: over USB the tablet reaches
 /// it through `adb reverse`, and the unencrypted stream is never exposed on the LAN (Wi‑Fi
@@ -16,7 +16,7 @@ public final class TCPServer: @unchecked Sendable {  // NWListener is thread-saf
     public static let defaultPort: UInt16 = 47800
 
     private let listener: NWListener
-    private let queue = DispatchQueue(label: "dev.tab2mac.transport.server", qos: .userInitiated)
+    private let queue = DispatchQueue(label: "dev.ginga.transport.server", qos: .userInitiated)
 
     /// - Parameter port: 0 picks a free port (tests).
     public init(port: UInt16 = TCPServer.defaultPort, loopbackOnly: Bool = true) throws {

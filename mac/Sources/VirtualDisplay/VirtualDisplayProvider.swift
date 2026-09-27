@@ -1,5 +1,5 @@
 import CoreGraphics
-import Tab2MacCore
+import GingaCore
 
 public struct ProviderTiming: Sendable {
     /// How long to wait for a new display to come online.

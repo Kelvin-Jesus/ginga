@@ -2,7 +2,7 @@ import CoreLocation
 import CoreWLAN
 import Foundation
 import os
-import Tab2MacCore
+import GingaCore
 
 /// The Mac's Wi‑Fi through public API: CoreWLAN to join and leave, CoreLocation for the
 /// permission macOS requires to see network names. Changes nothing unless asked.
@@ -79,7 +79,7 @@ public final class CoreWLANWiFi: NSObject, DirectWiFi, CLLocationManagerDelegate
     }
 
     /// CoreWLAN calls block (a scan took 28 s on the device): never on Swift's shared threads.
-    private let radioQueue = DispatchQueue(label: "dev.tab2mac.direct-link.wifi")
+    private let radioQueue = DispatchQueue(label: "dev.ginga.direct-link.wifi")
 
     fileprivate func onRadioQueue<T: Sendable>(_ work: @escaping @Sendable () -> T) async -> T {
         await withCheckedContinuation { continuation in

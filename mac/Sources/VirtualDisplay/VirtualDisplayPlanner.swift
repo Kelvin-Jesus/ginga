@@ -1,4 +1,4 @@
-import Tab2MacCore
+import GingaCore
 
 /// The mode the provider selects after the display exists (oriented, logical size).
 public struct DisplayModeTarget: Hashable, Sendable, Codable, CustomStringConvertible {

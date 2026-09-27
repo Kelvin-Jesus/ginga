@@ -9,6 +9,6 @@
   },
   "decodeOnly" : false,
   "description" : "The user confirmed the codes match",
-  "hex" : "5432010700010000000000157b227374617465223a22636f6e6669726d6564227d",
+  "hex" : "474e010700010000000000157b227374617465223a22636f6e6669726d6564227d",
   "name" : "pairing-confirmed"
 }

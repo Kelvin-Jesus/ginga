@@ -3,7 +3,7 @@ import CoreMedia
 import CoreVideo
 import Foundation
 @preconcurrency import ScreenCaptureKit
-import Tab2MacCore
+import GingaCore
 
 public enum CapturePixelFormat: String, Codable, Sendable, CaseIterable {
     /// NV12, BT.709 video range — consumed directly (zero-copy) by the hardware H.264/HEVC encoder.

@@ -2,7 +2,7 @@ import CoreMedia
 import CoreVideo
 import Foundation
 import os
-import Tab2MacCore
+import GingaCore
 import Testing
 @testable import VideoPipeline
 

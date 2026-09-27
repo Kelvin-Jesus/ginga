@@ -1,4 +1,4 @@
-import Tab2MacCore
+import GingaCore
 
 /// Known receiving devices. A profile supplies panel facts and sensible resolution choices;
 /// every field can still be overridden in `VirtualDisplayConfiguration`.
@@ -138,7 +138,7 @@ public struct DeviceProfile: Hashable, Sendable, Identifiable {
 
     public static let all: [DeviceProfile] = [.galaxyTabS11, .galaxyTabS11Ultra, .galaxyTabS9FEPlus, .galaxyS25Ultra, .generic1920x1200]
 
-    /// The profile for a model number, if Tab2Mac knows the device.
+    /// The profile for a model number, if Ginga knows the device.
     public static func matching(model: String) -> DeviceProfile? {
         all.first { profile in profile.models.contains { model.uppercased().hasPrefix($0) } }
     }
@@ -171,7 +171,7 @@ public struct DeviceProfile: Hashable, Sendable, Identifiable {
 
     /// Defaults to 60 Hz when the panel supports it: WindowServer composes the virtual display (and
     /// apps on it render) at its refresh rate: streaming an animated window costs +229 mW at 60 Hz
-    /// and about 0.8 W more at 120 Hz (`t2m bench-power`). 120 Hz is an opt-in.
+    /// and about 0.8 W more at 120 Hz (`ginga bench-power`). 120 Hz is an opt-in.
     public func configuration(
         resolution: PointSize? = nil,
         orientation: DisplayOrientation = .landscape,
@@ -181,7 +181,7 @@ public struct DeviceProfile: Hashable, Sendable, Identifiable {
         VirtualDisplayConfiguration(
             profileID: id,
             name: displayName,
-            identity: DisplayIdentity(vendorID: DisplayIdentity.tab2macVendorID, productID: productID, serialNumber: 1),
+            identity: DisplayIdentity(vendorID: DisplayIdentity.gingaVendorID, productID: productID, serialNumber: 1),
             panel: panel,
             resolution: resolution ?? defaultResolution,
             hiDPI: hiDPI,

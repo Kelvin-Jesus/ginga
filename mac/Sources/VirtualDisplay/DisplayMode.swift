@@ -1,5 +1,5 @@
 import CoreGraphics
-import Tab2MacCore
+import GingaCore
 
 /// A value snapshot of a `CGDisplayMode`.
 public struct DisplayModeInfo: Hashable, Sendable, Codable, CustomStringConvertible {

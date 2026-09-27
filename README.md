@@ -1,6 +1,6 @@
-# Ginga (internal name: Tab2Mac)
+# Ginga (internal name: Ginga)
 
-Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. The apps show only "Ginga"; Tab2Mac stays the name of the code (modules, `t2m`, logs, bundle id). Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md).
+Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. The apps show only "Ginga"; Ginga stays the name of the code (modules, `ginga`, logs, bundle id). Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md).
 
 macOS gets a genuine extended display:
 
@@ -9,7 +9,7 @@ macOS gets a genuine extended display:
 - windows can be dragged onto it;
 - it has configurable resolution, scaling, refresh rate, orientation and position.
 
-Tab2Mac captures that display (and only that display), hardware-encodes it and streams it to the tablet. Touch and S Pen input go back to the Mac.
+Ginga captures that display (and only that display), hardware-encodes it and streams it to the tablet. Touch and S Pen input go back to the Mac.
 
 ```text
 Mac:     Virtual Display → Capture → Hardware Encode → Transport ─┐
@@ -26,12 +26,12 @@ Android:                    Render ← Hardware Decode ← Transport ←┘ → 
 | M3 Protocol v1 + transport | ✅ Wire protocol with 32 golden vectors shared with Android; TCP transport; streaming server; loopback tests |
 | M4 Android receiver over USB | ✅ The Mac's virtual display streams to the Tab S11 over USB at **60 fps, 0 dropped, end-to-end p50 8–17 ms** (measured on the device); pause/resume when the tablet app is in the background |
 | M5 Touch and S Pen | ✅ Verified on the device: touch clicks and drags land exactly; the S Pen is a pen tablet to macOS (proximity, pressure, tilt, eraser), as Sidecar makes the Apple Pencil |
-| Power | ✅ Measured per change (`t2m bench-power`, IOReport, no root): a 60 Hz display streaming continuous animation adds ~230 mW, and a static desktop adds ~0. See the energy section of [performance](docs/performance.md) |
+| Power | ✅ Measured per change (`ginga bench-power`, IOReport, no root): a 60 Hz display streaming continuous animation adds ~230 mW, and a static desktop adds ~0. See the energy section of [performance](docs/performance.md) |
 | M6 Direct USB (Android Open Accessory) | ✅ Verified on the device and now the default link: **120 fps at 120 Hz with 0 dropped frames, end-to-end p50 ≈ 13 ms**; no developer mode or adb; only approved tablets get a session |
 | M7 Wi‑Fi | ✅ Verified on the device: Bonjour, TLS 1.3 with pinned certificates, numeric-comparison pairing with commitments, 60 fps with 0 dropped frames |
 | M8 Wi‑Fi UDP · M9 Polish | Planned |
 
-**M1 on hardware** (`t2m verify` and `Tab2Mac.app --self-test`):
+**M1 on hardware** (`ginga verify` and `Ginga.app --self-test`):
 
 - A "Galaxy Tab S11" display is created with its own ID, next to the built-in panel and an external monitor, and it extends the desktop.
 - AppKit and System Information both see it, at 1280×800 @2x (2560×1600 px, pixel-exact for the Tab S11).
@@ -46,14 +46,14 @@ Requirements: Apple Silicon Mac with macOS 14+ (tested on 26.6.2), and Swift 6 (
 ```sh
 cd mac
 scripts/test.sh                      # unit tests (swift-testing; works without Xcode)
-scripts/build-app.sh                 # → build/Tab2Mac.app, build/t2m
+scripts/build-app.sh                 # → build/Ginga.app, build/ginga
 
-build/t2m probe                      # is the private virtual-display API usable on this macOS?
-build/t2m verify --no-capture        # M1 acceptance checks (adds a display for ~5 s)
-open build/Tab2Mac.app               # control panel + menu bar: Create Display, Show Debug Preview
+build/ginga probe                      # is the private virtual-display API usable on this macOS?
+build/ginga verify --no-capture        # M1 acceptance checks (adds a display for ~5 s)
+open build/Ginga.app               # control panel + menu bar: Create Display, Show Debug Preview
 ```
 
-**Screen Recording is needed for capture.** Grant it to Tab2Mac under System Settings › Privacy & Security › Screen & System Audio Recording, then relaunch. With ad-hoc signing the grant resets on every rebuild; run `scripts/create-dev-signing-identity.sh` once to avoid that (see [development.md](docs/development.md)).
+**Screen Recording is needed for capture.** Grant it to Ginga under System Settings › Privacy & Security › Screen & System Audio Recording, then relaunch. With ad-hoc signing the grant resets on every rebuild; run `scripts/create-dev-signing-identity.sh` once to avoid that (see [development.md](docs/development.md)).
 
 ## How it works
 
@@ -65,7 +65,7 @@ open build/Tab2Mac.app               # control panel + menu bar: Create Display,
 | 4 · Transport | USB through `adb reverse` (TCP on 127.0.0.1:47800, kept in place automatically) or directly as an Android Open Accessory (no developer mode); Wi‑Fi over TLS with pairing. UDP with FEC comes later. One protocol on every link: [PROTOCOL.md](protocol/PROTOCOL.md) |
 | 5 · Android (M4+) | Kotlin, MediaCodec low-latency decode into a SurfaceView, touch and S Pen capture |
 
-**No public macOS API creates a display.** DriverKit has no display family, including in macOS 27. So Tab2Mac uses a private API, which rules out the Mac App Store; distribute it signed with Developer ID and notarized. Kernel extensions, SIP changes or WindowServer patching are never used.
+**No public macOS API creates a display.** DriverKit has no display family, including in macOS 27. So Ginga uses a private API, which rules out the Mac App Store; distribute it signed with Developer ID and notarized. Kernel extensions, SIP changes or WindowServer patching are never used.
 
 ## Repository
 
@@ -73,10 +73,10 @@ open build/Tab2Mac.app               # control panel + menu bar: Create Display,
 docs/        setup · configuration · research · architecture · milestones · virtual-display-backend · development · troubleshooting · performance
 protocol/    wire protocol v1 + golden test vectors shared by the Swift and Kotlin suites
 config/      example configuration files
-mac/         Swift package: Tab2MacCore, VirtualDisplay, CGVirtualDisplayShim, CGVirtualDisplayBackend,
-             DisplayCapture, VideoPipeline, Tab2MacProtocol, Transport, USBAccessoryShim, USBAccessory,
-             Tab2MacSecurity, DirectLink, Tab2MacStreaming, InputInjection, Tab2MacSession,
-             Tab2MacRuntime, EnergyMeter, Tab2MacApp (app), t2m (CLI, incl. headless `t2m run`), Tests
+mac/         Swift package: GingaCore, VirtualDisplay, CGVirtualDisplayShim, CGVirtualDisplayBackend,
+             DisplayCapture, VideoPipeline, GingaProtocol, Transport, USBAccessoryShim, USBAccessory,
+             GingaSecurity, DirectLink, GingaStreaming, InputInjection, GingaSession,
+             GingaRuntime, EnergyMeter, GingaApp (app), ginga (CLI, incl. headless `ginga run`), Tests
 scripts/     bootstrap.sh (environment), check-all.sh (both suites + vectors), docker-android.sh
 .claude/     slash commands for agents (check-all, protocol-change, device-test); see CLAUDE.md
 brand/       Ginga brand: logos, app-icon source, colours, usage rules
@@ -99,7 +99,7 @@ android/     Kotlin receiver app (Gradle modules: protocol, transport, decoder, 
 
 ## Limitations
 
-- The private API can change with any macOS update. `t2m probe` and the canary test detect it, and the app refuses to proceed rather than crash. Tested on macOS 26.6.2 only so far.
+- The private API can change with any macOS update. `ginga probe` and the canary test detect it, and the app refuses to proceed rather than crash. Tested on macOS 26.6.2 only so far.
 - macOS 15+ asks for monthly re-confirmation of screen capture, unless Apple grants the persistent-content-capture entitlement.
 - DRM-protected content captures black, and nothing is captured at the lock screen.
 

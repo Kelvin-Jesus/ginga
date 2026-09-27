@@ -1,6 +1,6 @@
 import Foundation
 import Network
-import Tab2MacProtocol
+import GingaProtocol
 import Testing
 @testable import Transport
 
@@ -9,7 +9,7 @@ struct AdbBridgeTests {
     /// The token reaches the tablet through adb's stdin, never on a command line (where any
     /// process on the Mac could read it), and only through the DUMP-protected receiver.
     @Test func theTokenTravelsOnStdinToTheProtectedReceiver() throws {
-        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("t2m-fake-adb-\(UUID().uuidString)")
+        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("ginga-fake-adb-\(UUID().uuidString)")
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: directory) }
         let fake = directory.appendingPathComponent("adb")
@@ -25,7 +25,7 @@ struct AdbBridgeTests {
         let argv = try String(contentsOf: directory.appendingPathComponent("argv"), encoding: .utf8)
         #expect(!argv.contains(token))
         #expect(argv.hasPrefix("-s\nR52Y80EE15V\nshell\n"))
-        #expect(argv.contains("dev.tab2mac.receiver/dev.tab2mac.receiver.adb.LoopbackTokenReceiver"))
+        #expect(argv.contains("dev.ginga.receiver/dev.ginga.receiver.adb.LoopbackTokenReceiver"))
         #expect(try String(contentsOf: directory.appendingPathComponent("stdin"), encoding: .utf8) == token + "\n")
     }
 

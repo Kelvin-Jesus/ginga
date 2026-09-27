@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "dev.tab2mac.decoder"
+    namespace = "dev.ginga.decoder"
     compileSdk = 36
 
     defaultConfig {
