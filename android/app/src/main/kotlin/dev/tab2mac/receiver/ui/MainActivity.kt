@@ -30,6 +30,7 @@ import dev.tab2mac.receiver.WifiMac
 import dev.tab2mac.receiver.direct.DirectKey
 import dev.tab2mac.protocol.hexToBytes
 import dev.tab2mac.receiver.session.SessionState
+import dev.tab2mac.receiver.ui.widget.SegmentedControl
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
@@ -62,10 +63,15 @@ class MainActivity : Activity() {
     /** Open the display as soon as a session is active (not only once it streams). */
     private var openStreamWhenActive = false
 
+    /** The appearance this activity was themed with; a different setting recreates it. */
+    private lateinit var appearance: Appearance
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        controller = (application as Tab2MacApplication).controller
+        appearance = controller.settings.appearance
+        appearance.apply(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        controller = (application as Tab2MacApplication).controller
         status = findViewById(R.id.status)
         statusDetail = findViewById(R.id.status_detail)
         connect = findViewById(R.id.connect)
@@ -114,6 +120,14 @@ class MainActivity : Activity() {
             isChecked = settings.showDiagnostics
             setOnCheckedChangeListener { _, checked -> settings.showDiagnostics = checked }
         }
+        findViewById<SegmentedControl>(R.id.appearance).apply {
+            val choices = Appearance.entries
+            setOptions(choices.map { getString(it.labelRes) }, choices.indexOf(settings.appearance))
+            onChange = { index ->
+                settings.appearance = choices[index]
+                recreate()
+            }
+        }
         if (savedInstanceState == null) {
             handleLaunch(intent, fresh = intent.flags and Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY == 0)
         } else {
@@ -130,6 +144,11 @@ class MainActivity : Activity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(STATE_OPEN_STREAM_WHEN_ACTIVE, openStreamWhenActive)
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        if (controller.settings.appearance != appearance) recreate()
     }
 
     override fun onStart() {

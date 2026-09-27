@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- StatusOrbit over the stream: cosmos at 72%, as in the reference. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+    <solid android:color="#B80A0C1C" />
+    <corners android:radius="@dimen/ginga_radius_pill" />
+</shape>

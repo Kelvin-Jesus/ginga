@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- DeviceRow thumbnail: the brand's tilted tablet (cobalt-brand) with the star. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="40dp"
+    android:height="30dp"
+    android:viewportWidth="40"
+    android:viewportHeight="30">
+    <group android:pivotX="20" android:pivotY="16" android:rotation="-8">
+        <path
+            android:fillColor="?attr/gingaCobaltBrand"
+            android:pathData="M9,4 H31 A5,5 0 0 1 36,9 V23 A5,5 0 0 1 31,28 H9 A5,5 0 0 1 4,23 V9 A5,5 0 0 1 9,4 Z" />
+    </group>
+    <path
+        android:fillColor="?attr/gingaStar"
+        android:pathData="M36,0 L36.96,3.04 L40,4 L36.96,4.96 L36,8 L35.04,4.96 L32,4 L35.04,3.04 Z" />
+</vector>

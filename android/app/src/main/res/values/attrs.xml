@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Ginga design tokens as theme attributes (design/ginga-design/tokens.json). Each theme
+        (Theme.Ginga.Light / Dark / Space) points them at ginga_*_light|dark|space, so layouts
+        and drawables use ?attr/gingaX and follow the chosen appearance.
+    -->
+    <attr name="gingaCobalt" format="color" />
+    <attr name="gingaOnCobalt" format="color" />
+    <attr name="gingaCobaltBrand" format="color" />
+    <attr name="gingaCobaltSoft" format="color" />
+    <attr name="gingaBg" format="color" />
+    <attr name="gingaSurface" format="color" />
+    <attr name="gingaSurface2" format="color" />
+    <attr name="gingaInk" format="color" />
+    <attr name="gingaInkMuted" format="color" />
+    <attr name="gingaLine" format="color" />
+    <attr name="gingaStar" format="color" />
+    <attr name="gingaSuccess" format="color" />
+    <attr name="gingaWarning" format="color" />
+    <attr name="gingaDanger" format="color" />
+    <attr name="gingaCosmos" format="color" />
+    <attr name="gingaStardust" format="color" />
+
+    <!-- Per-theme details that are not plain colours. -->
+    <!-- Outline of cards and controls: transparent in Claro/Escuro, `line` in Black espacial. -->
+    <attr name="gingaOutline" format="color" />
+    <!-- Card elevation standing in for shadow-card (none in Black espacial). -->
+    <attr name="gingaCardElevation" format="dimension" />
+    <!-- Monogram B for this background (the -dark file on dark backgrounds). -->
+    <attr name="gingaMonogram" format="reference" />
+    <!-- Switch thumb: white, #F2F3F8 in Black espacial. -->
+    <attr name="gingaSwitchThumb" format="color" />
+    <!-- Segmented thumb: surface with a shadow, cobalt-soft with a cobalt outline in Black espacial. -->
+    <attr name="gingaSegmentThumb" format="reference" />
+    <!-- Star dust in the corner of settings groups (Black espacial only). -->
+    <attr name="gingaGroupDust" format="reference" />
+    <!-- The stream's waiting sky: cosmos, or #000 in Black espacial. -->
+    <attr name="gingaSky" format="color" />
+    <!-- Black espacial: glows replace shadows (pairing digits, primary button). -->
+    <attr name="gingaIsSpace" format="boolean" />
+
+    <declare-styleable name="ColumnLayout">
+        <attr name="maxColumnWidth" format="dimension" />
+    </declare-styleable>
+</resources>

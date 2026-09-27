@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mark B, monograma "g" (brand/ginga-monogram.svg), for light backgrounds. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <group android:translateX="4" android:translateY="-1">
+        <path
+            android:pathData="M42,16 L70,16 A16,16 0 0 1 86,32 L86,54 A16,16 0 0 1 70,70 L42,70 A16,16 0 0 1 26,54 L26,32 A16,16 0 0 1 42,16 Z"
+            android:strokeColor="#141830"
+            android:strokeWidth="12" />
+        <path
+            android:pathData="M86,44 V80 Q86,106 58,106 Q42,106 32,96"
+            android:strokeColor="#2E47F5"
+            android:strokeLineCap="round"
+            android:strokeWidth="12" />
+        <group android:translateX="56" android:translateY="43" android:scaleX="0.9" android:scaleY="0.9">
+            <path
+                android:fillColor="#F2A900"
+                android:pathData="M0,-10C1.2,-2.4 2.4,-1.2 10,0C2.4,1.2 1.2,2.4 0,10C-1.2,2.4 -2.4,1.2 -10,0C-2.4,-1.2 -1.2,-2.4 0,-10Z" />
+        </group>
+    </group>
+</vector>

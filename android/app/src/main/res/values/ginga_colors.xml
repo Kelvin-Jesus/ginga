@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gerado de tokens.json (Ginga design system). Um conjunto por tema: _light, _dark, _space. -->
+<resources>
+    <!-- Claro -->
+    <color name="ginga_cobalt_light">#FF2E47F5</color>
+    <color name="ginga_on_cobalt_light">#FFFFFFFF</color>
+    <color name="ginga_cobalt_brand_light">#FF2E47F5</color>
+    <color name="ginga_cobalt_soft_light">#FFE3E7FE</color>
+    <color name="ginga_bg_light">#FFF2F3F8</color>
+    <color name="ginga_surface_light">#FFFFFFFF</color>
+    <color name="ginga_surface_2_light">#FFE8EAF3</color>
+    <color name="ginga_ink_light">#FF141830</color>
+    <color name="ginga_ink_muted_light">#FF565B78</color>
+    <color name="ginga_line_light">#FFDCDFEA</color>
+    <color name="ginga_star_light">#FFF2A900</color>
+    <color name="ginga_success_light">#FF138A52</color>
+    <color name="ginga_warning_light">#FFB26A00</color>
+    <color name="ginga_danger_light">#FFC23B3B</color>
+    <color name="ginga_cosmos_light">#FF0A0C1C</color>
+    <color name="ginga_stardust_light">#FFF2F3F8</color>
+    <!-- Escuro -->
+    <color name="ginga_cobalt_dark">#FF6F82FF</color>
+    <color name="ginga_on_cobalt_dark">#FF141830</color>
+    <color name="ginga_cobalt_brand_dark">#FF2E47F5</color>
+    <color name="ginga_cobalt_soft_dark">#FF252C66</color>
+    <color name="ginga_bg_dark">#FF141830</color>
+    <color name="ginga_surface_dark">#FF171A33</color>
+    <color name="ginga_surface_2_dark">#FF20244A</color>
+    <color name="ginga_ink_dark">#FFF2F3F8</color>
+    <color name="ginga_ink_muted_dark">#FFA4A9C8</color>
+    <color name="ginga_line_dark">#FF2A2E4D</color>
+    <color name="ginga_star_dark">#FFFFC43D</color>
+    <color name="ginga_success_dark">#FF4FD08E</color>
+    <color name="ginga_warning_dark">#FFF2B24C</color>
+    <color name="ginga_danger_dark">#FFF07474</color>
+    <color name="ginga_cosmos_dark">#FF0A0C1C</color>
+    <color name="ginga_stardust_dark">#FFF2F3F8</color>
+    <!-- Black espacial -->
+    <color name="ginga_cobalt_space">#FF6F82FF</color>
+    <color name="ginga_on_cobalt_space">#FF000000</color>
+    <color name="ginga_cobalt_brand_space">#FF2E47F5</color>
+    <color name="ginga_cobalt_soft_space">#FF161B45</color>
+    <color name="ginga_bg_space">#FF000000</color>
+    <color name="ginga_surface_space">#FF000000</color>
+    <color name="ginga_surface_2_space">#FF000000</color>
+    <color name="ginga_ink_space">#FFF2F3F8</color>
+    <color name="ginga_ink_muted_space">#FF9EA3C2</color>
+    <color name="ginga_line_space">#FF1C2040</color>
+    <color name="ginga_star_space">#FFFFC43D</color>
+    <color name="ginga_success_space">#FF4FD08E</color>
+    <color name="ginga_warning_space">#FFF2B24C</color>
+    <color name="ginga_danger_space">#FFF07474</color>
+    <color name="ginga_cosmos_space">#FF0A0C1C</color>
+    <color name="ginga_stardust_space">#FFF2F3F8</color>
+</resources>

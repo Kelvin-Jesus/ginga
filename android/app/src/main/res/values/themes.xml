@@ -1,13 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+        Ginga appearances (design/ginga-design/HANDOFF.md, "Temas"): Claro, Escuro, Black espacial,
+        and Sistema (Theme.Ginga.System, Claro here and Escuro in values-night). Framework Material
+        parents: the app has no AndroidX/Material Components dependency (android/CLAUDE.md).
+        The choice is ReceiverSettings.appearance, applied by Appearance.apply before setContentView.
+    -->
+    <style name="Theme.Ginga.Light" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="gingaCobalt">@color/ginga_cobalt_light</item>
+        <item name="gingaOnCobalt">@color/ginga_on_cobalt_light</item>
+        <item name="gingaCobaltBrand">@color/ginga_cobalt_brand_light</item>
+        <item name="gingaCobaltSoft">@color/ginga_cobalt_soft_light</item>
+        <item name="gingaBg">@color/ginga_bg_light</item>
+        <item name="gingaSurface">@color/ginga_surface_light</item>
+        <item name="gingaSurface2">@color/ginga_surface_2_light</item>
+        <item name="gingaInk">@color/ginga_ink_light</item>
+        <item name="gingaInkMuted">@color/ginga_ink_muted_light</item>
+        <item name="gingaLine">@color/ginga_line_light</item>
+        <item name="gingaStar">@color/ginga_star_light</item>
+        <item name="gingaSuccess">@color/ginga_success_light</item>
+        <item name="gingaWarning">@color/ginga_warning_light</item>
+        <item name="gingaDanger">@color/ginga_danger_light</item>
+        <item name="gingaCosmos">@color/ginga_cosmos_light</item>
+        <item name="gingaStardust">@color/ginga_stardust_light</item>
+        <item name="gingaOutline">@android:color/transparent</item>
+        <item name="gingaCardElevation">1dp</item>
+        <item name="gingaMonogram">@drawable/ic_ginga_monogram</item>
+        <item name="gingaSwitchThumb">#FFFFFFFF</item>
+        <item name="gingaSegmentThumb">@drawable/g_seg_thumb</item>
+        <item name="gingaGroupDust">@null</item>
+        <item name="gingaSky">@color/ginga_cosmos_light</item>
+        <item name="gingaIsSpace">false</item>
 
-    <!-- Framework themes only: the app has no AndroidX dependency. -->
-    <style name="Theme.Tab2Mac" parent="android:Theme.DeviceDefault.DayNight">
-        <item name="android:windowActionBar">false</item>
-        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/ginga_bg_light</item>
+        <item name="android:colorBackground">@color/ginga_bg_light</item>
+        <item name="android:colorBackgroundFloating">@color/ginga_surface_light</item>
+        <item name="android:colorPrimary">@color/ginga_cobalt_light</item>
+        <item name="android:colorAccent">@color/ginga_cobalt_light</item>
+        <item name="android:colorControlActivated">@color/ginga_cobalt_light</item>
+        <item name="android:textColorPrimary">@color/ginga_ink_light</item>
+        <item name="android:textColorSecondary">@color/ginga_ink_muted_light</item>
+        <item name="android:textColorHighlight">@color/ginga_cobalt_soft_light</item>
+        <item name="android:statusBarColor">@color/ginga_bg_light</item>
+        <item name="android:navigationBarColor">@color/ginga_bg_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
-    <style name="Theme.Tab2Mac.Stream" parent="android:Theme.DeviceDefault.NoActionBar.Fullscreen">
+    <style name="Theme.Ginga.Dark" parent="android:Theme.Material.NoActionBar">
+        <item name="gingaCobalt">@color/ginga_cobalt_dark</item>
+        <item name="gingaOnCobalt">@color/ginga_on_cobalt_dark</item>
+        <item name="gingaCobaltBrand">@color/ginga_cobalt_brand_dark</item>
+        <item name="gingaCobaltSoft">@color/ginga_cobalt_soft_dark</item>
+        <item name="gingaBg">@color/ginga_bg_dark</item>
+        <item name="gingaSurface">@color/ginga_surface_dark</item>
+        <item name="gingaSurface2">@color/ginga_surface_2_dark</item>
+        <item name="gingaInk">@color/ginga_ink_dark</item>
+        <item name="gingaInkMuted">@color/ginga_ink_muted_dark</item>
+        <item name="gingaLine">@color/ginga_line_dark</item>
+        <item name="gingaStar">@color/ginga_star_dark</item>
+        <item name="gingaSuccess">@color/ginga_success_dark</item>
+        <item name="gingaWarning">@color/ginga_warning_dark</item>
+        <item name="gingaDanger">@color/ginga_danger_dark</item>
+        <item name="gingaCosmos">@color/ginga_cosmos_dark</item>
+        <item name="gingaStardust">@color/ginga_stardust_dark</item>
+        <item name="gingaOutline">@android:color/transparent</item>
+        <item name="gingaCardElevation">0dp</item>
+        <item name="gingaMonogram">@drawable/ic_ginga_monogram_dark</item>
+        <item name="gingaSwitchThumb">#FFFFFFFF</item>
+        <item name="gingaSegmentThumb">@drawable/g_seg_thumb</item>
+        <item name="gingaGroupDust">@null</item>
+        <item name="gingaSky">@color/ginga_cosmos_dark</item>
+        <item name="gingaIsSpace">false</item>
+
+        <item name="android:windowBackground">@color/ginga_bg_dark</item>
+        <item name="android:colorBackground">@color/ginga_bg_dark</item>
+        <item name="android:colorBackgroundFloating">@color/ginga_surface_dark</item>
+        <item name="android:colorPrimary">@color/ginga_cobalt_dark</item>
+        <item name="android:colorAccent">@color/ginga_cobalt_dark</item>
+        <item name="android:colorControlActivated">@color/ginga_cobalt_dark</item>
+        <item name="android:textColorPrimary">@color/ginga_ink_dark</item>
+        <item name="android:textColorSecondary">@color/ginga_ink_muted_dark</item>
+        <item name="android:textColorHighlight">@color/ginga_cobalt_soft_dark</item>
+        <item name="android:statusBarColor">@color/ginga_bg_dark</item>
+        <item name="android:navigationBarColor">@color/ginga_bg_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+    </style>
+
+    <!-- Black espacial: #000000 for every area; cards and controls only by a 1px `line` outline. -->
+    <style name="Theme.Ginga.Space" parent="Theme.Ginga.Dark">
+        <item name="gingaCobalt">@color/ginga_cobalt_space</item>
+        <item name="gingaOnCobalt">@color/ginga_on_cobalt_space</item>
+        <item name="gingaCobaltBrand">@color/ginga_cobalt_brand_space</item>
+        <item name="gingaCobaltSoft">@color/ginga_cobalt_soft_space</item>
+        <item name="gingaBg">@color/ginga_bg_space</item>
+        <item name="gingaSurface">@color/ginga_surface_space</item>
+        <item name="gingaSurface2">@color/ginga_surface_2_space</item>
+        <item name="gingaInk">@color/ginga_ink_space</item>
+        <item name="gingaInkMuted">@color/ginga_ink_muted_space</item>
+        <item name="gingaLine">@color/ginga_line_space</item>
+        <item name="gingaStar">@color/ginga_star_space</item>
+        <item name="gingaSuccess">@color/ginga_success_space</item>
+        <item name="gingaWarning">@color/ginga_warning_space</item>
+        <item name="gingaDanger">@color/ginga_danger_space</item>
+        <item name="gingaCosmos">@color/ginga_cosmos_space</item>
+        <item name="gingaStardust">@color/ginga_stardust_space</item>
+        <item name="gingaOutline">@color/ginga_line_space</item>
+        <item name="gingaCardElevation">0dp</item>
+        <item name="gingaSwitchThumb">@color/ginga_stardust_space</item>
+        <item name="gingaSegmentThumb">@drawable/g_seg_thumb_space</item>
+        <item name="gingaGroupDust">@drawable/g_space_dust</item>
+        <item name="gingaSky">@color/ginga_bg_space</item>
+        <item name="gingaIsSpace">true</item>
+
+        <item name="android:windowBackground">@color/ginga_bg_space</item>
+        <item name="android:colorBackground">@color/ginga_bg_space</item>
+        <item name="android:colorBackgroundFloating">@color/ginga_surface_space</item>
+        <item name="android:colorPrimary">@color/ginga_cobalt_space</item>
+        <item name="android:colorAccent">@color/ginga_cobalt_space</item>
+        <item name="android:colorControlActivated">@color/ginga_cobalt_space</item>
+        <item name="android:textColorPrimary">@color/ginga_ink_space</item>
+        <item name="android:textColorSecondary">@color/ginga_ink_muted_space</item>
+        <item name="android:textColorHighlight">@color/ginga_cobalt_soft_space</item>
+        <item name="android:statusBarColor">@color/ginga_bg_space</item>
+        <item name="android:navigationBarColor">@color/ginga_bg_space</item>
+    </style>
+
+    <!-- Sistema: follows the system's dark mode (values-night/themes.xml). -->
+    <style name="Theme.Ginga.System" parent="Theme.Ginga.Light" />
+
+    <!-- The extended display: black behind the letterboxed video. -->
+    <style name="Theme.Ginga.Stream" parent="android:Theme.DeviceDefault.NoActionBar.Fullscreen">
         <item name="android:windowBackground">@android:color/black</item>
         <item name="android:windowLayoutInDisplayCutoutMode">always</item>
     </style>

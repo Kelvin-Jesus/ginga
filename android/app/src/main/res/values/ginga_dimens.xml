@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ginga_space_1">4dp</dimen>
+    <dimen name="ginga_space_2">8dp</dimen>
+    <dimen name="ginga_space_3">12dp</dimen>
+    <dimen name="ginga_space_4">16dp</dimen>
+    <dimen name="ginga_space_6">24dp</dimen>
+    <dimen name="ginga_space_8">32dp</dimen>
+    <dimen name="ginga_space_12">48dp</dimen>
+    <dimen name="ginga_radius_sm">8dp</dimen>
+    <dimen name="ginga_radius_md">12dp</dimen>
+    <dimen name="ginga_radius_lg">18dp</dimen>
+    <dimen name="ginga_radius_xl">28dp</dimen>
+    <dimen name="ginga_radius_pill">999dp</dimen>
+    <integer name="ginga_dur_tap">120</integer>
+    <integer name="ginga_dur_ui">220</integer>
+    <integer name="ginga_dur_sheet">420</integer>
+    <integer name="ginga_dur_orbit">2400</integer>
+    <integer name="ginga_dur_warp">1400</integer>
+</resources>

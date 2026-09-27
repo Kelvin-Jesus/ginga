@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Type (tokens.json "type"). The three families live in the three Font styles below: today the
+        platform's sans-serif, sans-serif-medium and monospace. To use the brand fonts, drop
+        Unbounded, Figtree and IBM Plex Mono into res/font/ (SIL OFL) and change only these three
+        fontFamily values (@font/unbounded_semibold, @font/figtree, @font/ibm_plex_mono).
+    -->
+    <style name="TextAppearance.Ginga.FontDisplay" parent="">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/gingaInk</item>
+    </style>
+    <style name="TextAppearance.Ginga.FontSans" parent="">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">?attr/gingaInk</item>
+    </style>
+    <style name="TextAppearance.Ginga.FontSansMedium" parent="">
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?attr/gingaInk</item>
+    </style>
+    <style name="TextAppearance.Ginga.FontMono" parent="">
+        <item name="android:fontFamily">monospace</item>
+        <item name="android:textColor">?attr/gingaInk</item>
+    </style>
+
+    <!-- Marca (display family). -->
+    <style name="TextAppearance.Ginga.Display" parent="TextAppearance.Ginga.FontDisplay">
+        <item name="android:textSize">34sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+    <style name="TextAppearance.Ginga.Title" parent="TextAppearance.Ginga.FontDisplay">
+        <item name="android:textSize">20sp</item>
+    </style>
+    <!-- Texto (sans family). -->
+    <style name="TextAppearance.Ginga.Headline" parent="TextAppearance.Ginga.FontSansMedium">
+        <item name="android:textSize">17sp</item>
+    </style>
+    <style name="TextAppearance.Ginga.Body" parent="TextAppearance.Ginga.FontSans">
+        <item name="android:textSize">15sp</item>
+    </style>
+    <style name="TextAppearance.Ginga.Label" parent="TextAppearance.Ginga.FontSansMedium">
+        <item name="android:textSize">13sp</item>
+    </style>
+    <style name="TextAppearance.Ginga.Caption" parent="TextAppearance.Ginga.FontSans">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">?attr/gingaInkMuted</item>
+    </style>
+    <!-- Números (mono family). -->
+    <style name="TextAppearance.Ginga.Mono" parent="TextAppearance.Ginga.FontMono">
+        <item name="android:textSize">13sp</item>
+    </style>
+    <style name="TextAppearance.Ginga.CodeDigits" parent="TextAppearance.Ginga.FontMono">
+        <item name="android:textSize">36sp</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+
+    <!-- TextView styles: the appearance plus the token's line height. -->
+    <style name="Ginga.Text" parent="" />
+    <style name="Ginga.Text.Display">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Display</item>
+        <item name="android:lineHeight">40sp</item>
+    </style>
+    <style name="Ginga.Text.Title">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Title</item>
+        <item name="android:lineHeight">26sp</item>
+    </style>
+    <style name="Ginga.Text.Headline">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Headline</item>
+        <item name="android:lineHeight">24sp</item>
+    </style>
+    <style name="Ginga.Text.Body">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Body</item>
+        <item name="android:lineHeight">22sp</item>
+    </style>
+    <style name="Ginga.Text.BodyMuted" parent="Ginga.Text.Body">
+        <item name="android:textColor">?attr/gingaInkMuted</item>
+    </style>
+    <style name="Ginga.Text.Label">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Label</item>
+        <item name="android:lineHeight">18sp</item>
+    </style>
+    <style name="Ginga.Text.Caption">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Caption</item>
+        <item name="android:lineHeight">16sp</item>
+    </style>
+    <style name="Ginga.Text.Mono">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Mono</item>
+        <item name="android:lineHeight">18sp</item>
+    </style>
+    <style name="Ginga.Text.MonoMuted" parent="Ginga.Text.Mono">
+        <item name="android:textColor">?attr/gingaInkMuted</item>
+    </style>
+    <!-- SettingsGroup title, outside the card. -->
+    <style name="Ginga.Text.GroupTitle">
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Label</item>
+        <item name="android:textColor">?attr/gingaInkMuted</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:layout_marginStart">@dimen/ginga_space_1</item>
+        <item name="android:layout_marginBottom">@dimen/ginga_space_2</item>
+        <item name="android:accessibilityHeading">true</item>
+    </style>
+
+    <!-- Buttons: pill, 44dp touch, press = 0.97 in dur-tap. One primary per screen. -->
+    <style name="Widget.Ginga.Button" parent="android:Widget.Material.Button.Borderless">
+        <item name="android:background">@drawable/g_btn_secondary</item>
+        <item name="android:foreground">@drawable/g_focus_ring</item>
+        <item name="android:stateListAnimator">@animator/g_press</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Label</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">?attr/gingaInk</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingStart">@dimen/ginga_space_6</item>
+        <item name="android:paddingEnd">@dimen/ginga_space_6</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+    <style name="Widget.Ginga.Button.Primary">
+        <item name="android:background">@drawable/g_btn_primary</item>
+        <item name="android:textColor">?attr/gingaOnCobalt</item>
+    </style>
+    <style name="Widget.Ginga.Button.Danger">
+        <item name="android:background">@drawable/g_btn_danger</item>
+        <item name="android:textColor">?attr/gingaDanger</item>
+    </style>
+    <style name="Widget.Ginga.Button.Ghost">
+        <item name="android:background">@drawable/g_btn_ghost</item>
+        <item name="android:textColor">?attr/gingaCobalt</item>
+    </style>
+    <!-- The same button in a row: smaller label and padding, still a 44dp touch target. -->
+    <style name="Widget.Ginga.Button.Primary.Small">
+        <item name="android:textSize">13sp</item>
+        <item name="android:paddingStart">@dimen/ginga_space_4</item>
+        <item name="android:paddingEnd">@dimen/ginga_space_4</item>
+    </style>
+
+    <!-- Method chips: Wi‑Fi · Cabo USB · Sem roteador. -->
+    <style name="Widget.Ginga.Chip" parent="">
+        <item name="android:background">@drawable/g_chip</item>
+        <item name="android:foreground">@drawable/g_focus_ring</item>
+        <item name="android:stateListAnimator">@animator/g_press</item>
+        <item name="android:textAppearance">@style/TextAppearance.Ginga.Label</item>
+        <item name="android:textColor">?attr/gingaInkMuted</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">44dp</item>
+        <item name="android:paddingStart">@dimen/ginga_space_4</item>
+        <item name="android:paddingEnd">@dimen/ginga_space_4</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <!-- SettingsGroup: the card, and its 56dp touch rows. -->
+    <style name="Widget.Ginga.Group" parent="">
+        <item name="android:background">@drawable/g_group</item>
+        <item name="android:foreground">?attr/gingaGroupDust</item>
+        <item name="android:foregroundGravity">top|right</item>
+        <item name="android:elevation">?attr/gingaCardElevation</item>
+        <item name="android:outlineProvider">background</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:divider">@drawable/g_divider</item>
+        <item name="android:showDividers">middle</item>
+    </style>
+    <style name="Widget.Ginga.Row" parent="">
+        <item name="android:minHeight">56dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">@dimen/ginga_space_4</item>
+        <item name="android:paddingEnd">@dimen/ginga_space_4</item>
+        <item name="android:paddingTop">@dimen/ginga_space_3</item>
+        <item name="android:paddingBottom">@dimen/ginga_space_3</item>
+    </style>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Black espacial: star dust in the top corner of a settings group (bundle.css .g-group::after), static. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="56dp"
+    android:alpha="0.55"
+    android:viewportWidth="120"
+    android:viewportHeight="56">
+    <path android:fillColor="#F2F3F8" android:pathData="M17.5,14a0.5,0.5 0 1,0 1,0a0.5,0.5 0 1,0 -1,0" />
+    <path android:fillColor="#F2F3F8" android:pathData="M63.5,30a0.5,0.5 0 1,0 1,0a0.5,0.5 0 1,0 -1,0" />
+    <path android:fillColor="#FFC43D" android:pathData="M95.25,10a0.75,0.75 0 1,0 1.5,0a0.75,0.75 0 1,0 -1.5,0" />
+    <path android:fillColor="#6F82FF" android:pathData="M107.5,42a0.5,0.5 0 1,0 1,0a0.5,0.5 0 1,0 -1,0" />
+    <path android:fillColor="#F2F3F8" android:pathData="M39.5,44a0.5,0.5 0 1,0 1,0a0.5,0.5 0 1,0 -1,0" />
+</vector>

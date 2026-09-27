@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Divider between rows of a group, inset space-4. -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android" android:insetLeft="@dimen/ginga_space_4">
+    <shape android:shape="rectangle">
+        <solid android:color="?attr/gingaLine" />
+        <size android:height="1dp" />
+    </shape>
+</inset>

@@ -45,5 +45,11 @@
     <string name="fast_decoder">Faster decoding (uses more battery)</string>
     <string name="show_diagnostics">Show diagnostics overlay</string>
 
+    <string name="appearance">Appearance</string>
+    <string name="appearance_system">System</string>
+    <string name="appearance_light">Light</string>
+    <string name="appearance_dark">Dark</string>
+    <string name="appearance_space">Space black</string>
+
     <string name="stream_waiting">Waiting for video…</string>
 </resources>

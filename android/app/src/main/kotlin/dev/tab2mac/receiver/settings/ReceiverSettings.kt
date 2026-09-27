@@ -2,6 +2,7 @@ package dev.tab2mac.receiver.settings
 
 import android.content.Context
 import android.content.SharedPreferences
+import dev.tab2mac.receiver.ui.Appearance
 import java.util.UUID
 
 /** User settings and the app-scoped device id, in SharedPreferences. */
@@ -35,6 +36,11 @@ class ReceiverSettings(context: Context) {
         get() = preferences.getBoolean(KEY_DIAGNOSTICS, false)
         set(value) = preferences.edit().putBoolean(KEY_DIAGNOSTICS, value).apply()
 
+    /** Sistema, Claro, Escuro or Black espacial; Sistema by default. */
+    var appearance: Appearance
+        get() = Appearance.fromStorage(preferences.getString(KEY_APPEARANCE, null))
+        set(value) = preferences.edit().putString(KEY_APPEARANCE, value.storageValue).apply()
+
     /**
      * HELLO `device.id`: a stable, app-scoped random id (§3.1). The Mac derives the virtual
      * display's serial number from it, so it must never change for this install.
@@ -53,5 +59,6 @@ class ReceiverSettings(context: Context) {
         const val KEY_DIAGNOSTICS = "show_diagnostics"
         const val KEY_FAST_DECODER = "fast_decoder"
         const val KEY_DEVICE_ID = "device_id"
+        const val KEY_APPEARANCE = "appearance"
     }
 }
