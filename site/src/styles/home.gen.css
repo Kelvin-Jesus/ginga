@@ -76,7 +76,7 @@ a { color: var(--cobalt); } a:hover { color: var(--ink); }
 .feat .hl .st { color: var(--star); }
 /* ---- cursor astronauta ---- */
 .site.astro-on, .site.astro-on a, .site.astro-on button, .site.astro-on label, .site.astro-on summary, .site.astro-on input, .site.astro-on .notes { cursor: none !important; }
-.astro { position: fixed; left: 0; top: 0; width: 44px; height: 44px; z-index: 9999; pointer-events: none; image-rendering: pixelated; opacity: 0; transition: opacity 160ms; will-change: transform; transform-origin: 4px 5px; }
+.astro { position: fixed; left: 0; top: 0; width: 48px; height: 48px; z-index: 9999; pointer-events: none; image-rendering: pixelated; opacity: 0; transition: opacity 160ms; will-change: transform; transform-origin: 31.5px 16.5px; }
 /* seleção de texto legível nos dois temas (o padrão do navegador fica escuro no tema claro quando o sistema está no escuro) */
 .site[data-theme="light"] { color-scheme: light; }
 .site[data-theme="dark"] { color-scheme: dark; }

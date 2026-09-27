@@ -4,6 +4,7 @@ Usage: python3 tools/prod_patch.py <Main.dc.html> <404.dc.html> <outdir>
 import sys, os
 
 main_src, nf_src, out = sys.argv[1:4]
+os.makedirs(out, exist_ok=True)  # tools/work is gitignored, so a fresh checkout has none
 
 
 def rep(s, a, b, label):

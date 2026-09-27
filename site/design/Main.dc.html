@@ -108,7 +108,7 @@ a { color: var(--cobalt); } a:hover { color: var(--ink); }
 .feat .hl .st { color: var(--star); }
 /* ---- cursor astronauta ---- */
 .site.astro-on, .site.astro-on a, .site.astro-on button, .site.astro-on label, .site.astro-on summary, .site.astro-on input, .site.astro-on .notes { cursor: none !important; }
-.astro { position: fixed; left: 0; top: 0; width: 44px; height: 44px; z-index: 9999; pointer-events: none; image-rendering: pixelated; opacity: 0; transition: opacity 160ms; will-change: transform; transform-origin: 4px 5px; }
+.astro { position: fixed; left: 0; top: 0; width: 48px; height: 48px; z-index: 9999; pointer-events: none; image-rendering: pixelated; opacity: 0; transition: opacity 160ms; will-change: transform; transform-origin: 31.5px 16.5px; }
 /* seleção de texto legível nos dois temas (o padrão do navegador fica escuro no tema claro quando o sistema está no escuro) */
 .site[data-theme="light"] { color-scheme: light; }
 .site[data-theme="dark"] { color-scheme: dark; }
@@ -409,7 +409,7 @@ a { color: var(--cobalt); } a:hover { color: var(--ink); }
 <div class="site g-root {{astroCls}}" data-theme="{{theme}}" style="width: 100%; min-height: 4700px; background: var(--bg); color: var(--ink);" onPointerMove="{{onRootMove}}" onPointerLeave="{{onRootLeave}}" onPointerOver="{{onRootOver}}">
 <canvas class="tether" ref="{{refTether}}" aria-hidden="true"></canvas>
 <span class="cstar" ref="{{refCstar}}" aria-hidden="true"></span>
-<img class="astro" ref="{{refAstro}}" src="/_blob/b9c20f802cc19b60c5609469490e4f54" alt="" aria-hidden="true">
+<img class="astro" ref="{{refAstro}}" src="/_blob/41866969bb412142d903f77df0c93400" alt="" aria-hidden="true">
 <span class="trail t0" ref="{{refTr0}}"></span><span class="trail t1" ref="{{refTr1}}"></span><span class="trail t2" ref="{{refTr2}}"></span><span class="trail t3" ref="{{refTr3}}"></span><span class="trail t4" ref="{{refTr4}}"></span><span class="trail t5" ref="{{refTr5}}"></span>
 
 <!-- ================= HERO ================= -->
@@ -1209,7 +1209,7 @@ class Component extends DCLogic {
     try { document.documentElement.lang = L === "pt" ? "pt-BR" : "en"; document.title = t.docTitle; } catch (e) {}
     try { var u = new URL(location.href); u.searchParams.set("lang", L); history.replaceState(null, "", u.pathname + u.search + u.hash); } catch (e) {}
   }
-  /* Cursor astronauta: ele É o ponteiro (a mão levantada é o ponto do clique). Uma cordinha solta presa às
+  /* Cursor astronauta: ele É o ponteiro (o visor do capacete é o ponto do clique, no meio do corpo). Uma cordinha solta presa às
      costas balança com física Verlet. Com o mouse parado, a gravidade do buraco negro puxa o astronauta numa
      espiral até o horizonte; mexer o mouse o traz de volta na hora. */
   setupAstro() {
@@ -1228,7 +1228,7 @@ class Component extends DCLogic {
     var sizeCanvas = function () { var c = self.r.tether; if (!c) return; W = window.innerWidth; H = window.innerHeight; c.width = W; c.height = H; };
     sizeCanvas(); window.addEventListener("resize", sizeCanvas); this._astroResize = sizeCanvas;
     var anchor = function () { /* ponto da corda nas costas (mochila), girando junto com o astronauta */
-      var a = A.rot * Math.PI / 180, ox = 20 * A.sc, oy = 26 * A.sc;
+      var a = A.rot * Math.PI / 180, ox = -5 * A.sc, oy = 17 * A.sc;
       return { x: A.x + ox * Math.cos(a) - oy * Math.sin(a), y: A.y + ox * Math.sin(a) + oy * Math.cos(a) };
     };
     var resetRope = function () { var an = anchor(); for (var i = 0; i < N; i++) { rope[i].x = rope[i].px = an.x - i * 2; rope[i].y = rope[i].py = an.y + i * SEG; } };
@@ -1246,7 +1246,7 @@ class Component extends DCLogic {
     };
     this._astroMoved = function () {
       A.lastMove = performance.now();
-      if (A.mode === "eaten") { A.x = A.tx; A.y = A.ty; A.vx = A.vy = 0; A.rot = 0; A.sc = 1; A.stretch = 1; resetRope(); burst(A.x + 10, A.y + 10, 6); }
+      if (A.mode === "eaten") { A.x = A.tx; A.y = A.ty; A.vx = A.vy = 0; A.rot = 0; A.sc = 1; A.stretch = 1; resetRope(); burst(A.x, A.y + 6, 6); }
       if (A.mode === "pulled") { A.orb = null; A.behind = false; }
       A.mode = "follow";
       if (self.bhLoop) self.bhLoop.shade.pullT = 0;
@@ -1319,11 +1319,9 @@ class Component extends DCLogic {
             ctx.fillRect(Math.round(x / 2) * 2, Math.round(y / 2) * 2, 2, 2);
           }
         }
-        /* a ponta solta da corda: um mosquetão dourado */
-        var T = rope[N - 1]; ctx.fillStyle = "#FFC43D"; ctx.fillRect(Math.round(T.x / 2) * 2 - 1, Math.round(T.y / 2) * 2 - 1, 4, 4);
       }
       var st = A.stretch || 1, sc0 = A.sc * (A.hot && A.mode === "follow" ? 1.15 : 1), rad = A.radial || 0;
-      el.style.transform = "translate(" + (A.x - 4).toFixed(1) + "px, " + (A.y - 5).toFixed(1) + "px)" +
+      el.style.transform = "translate(" + (A.x - 31.5).toFixed(1) + "px, " + (A.y - 16.5).toFixed(1) + "px)" +
         (st > 1.01 ? " rotate(" + rad.toFixed(1) + "deg) scale(" + st.toFixed(3) + ", " + (1 / Math.sqrt(st)).toFixed(3) + ") rotate(" + (-rad).toFixed(1) + "deg)" : "") +
         " rotate(" + A.rot.toFixed(1) + "deg) scale(" + sc0.toFixed(3) + ")";
       el.classList.toggle("on", A.mode !== "eaten" && !A.behind);
