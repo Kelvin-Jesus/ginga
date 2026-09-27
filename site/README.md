@@ -60,3 +60,11 @@ BASE_PATH=/ginga/ SITE_URL=https://<seu-usuário>.github.io npm run build && npm
 ## Transição 404 → home
 
 Na 404, a página “caída” é sugada pelo buraco negro. “Voltar para a órbita” faz o caminho inverso: os pedaços saem do horizonte em espiral e se encaixam; o navegador troca para a home (com View Transition em Chrome, Edge e Safari 18.2+), e a home chega “cuspida” pelo buraco negro, com a explosão de partículas. Com movimento reduzido tudo vira troca direta.
+
+## Som da 404
+
+Enquanto a página é engolida toca o mesmo som do vídeo: uma espiral grave (`public/assets/ginga-404-swallow.mp3`, 8 s) que é cortada seco quando o último pedaço some no horizonte, seguida do “gole” (`ginga-404-gulp.mp3`). Juntos têm cerca de 110 KB.
+
+- Só toca quando o navegador libera o áudio: ao clicar em “Ver de novo”, ou na primeira vez se a pessoa já interagiu com o site (por exemplo, chegou à 404 por um link dele). Sem essa liberação, a animação segue muda, sem aviso nem botão.
+- Não toca com movimento reduzido nem com a aba em segundo plano.
+- Os arquivos são mixados por `tools/sfx.sh` a partir dos efeitos do vídeo (`video/public/sfx`: sons sintetizados por `video/scripts/sfx.ts` e o pacote Sci-fi Sounds do Kenney, CC0). O script usa o ffmpeg do sistema ou o que o Remotion instala em `video/node_modules`; depois de mudar os sons, rode `npm run regen` (os nomes dos arquivos entram em `tools/blobs.json` pelo hash).

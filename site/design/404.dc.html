@@ -71,7 +71,7 @@ class Component extends DCLogic {
     if (ok) { try { this.swallow(); } catch (e) { this.setState({ anim: false, done: true }); } return; }
     if (tries < 40) this._wait = setTimeout(function () { self.startSwallow(tries + 1); }, 100);
   }
-  componentWillUnmount() { if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
+  componentWillUnmount() { if (this._sfx) this._sfx.ctx.close().catch(function () {}); if (this.sky) this.sky.stop(); if (this.loop) this.loop.stop(); if (this.swRaf) cancelAnimationFrame(this.swRaf); clearTimeout(this._wait); clearTimeout(this._safety); }
 
   /* desenha uma "página do Ginga" num canvas fora da tela, para ser engolida */
   drawPage(W, H) {
@@ -109,6 +109,33 @@ class Component extends DCLogic {
   }
   rr(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
 
+  /* Som do engolir, o mesmo do vídeo: uma espiral grave enquanto os ladrilhos giram, cortada seco quando o último
+     some, e o "gole". Só toca com o áudio liberado pelo navegador (clique em "Ver de novo", ou já ter interagido
+     com o site); sem liberação, a animação segue muda. Arquivos: tools/sfx.sh. */
+  sfx() {
+    if (this._sfx !== undefined) return this._sfx;
+    var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return (this._sfx = null);
+    var ctx = new AC(), s = this._sfx = { ctx: ctx, buf: {} };
+    var load = function (name, url) {
+      fetch(url).then(function (r) { return r.arrayBuffer(); })
+        .then(function (a) { return new Promise(function (ok, no) { ctx.decodeAudioData(a, ok, no); }); })
+        .then(function (b) { s.buf[name] = b; }).catch(function () {});
+    };
+    load("bed", "/_blob/723db187a5c6729e3ca9447afc164f08"); load("gulp", "/_blob/a3b0587d11548d3d2649e5ab7b04ce1f");
+    return s;
+  }
+  sfxPlay(name, offset, gain) {
+    var s = this._sfx, b = s && s.buf[name];
+    if (!b || s.ctx.state !== "running" || document.visibilityState !== "visible" || offset >= b.duration) return null;
+    var src = s.ctx.createBufferSource(), g = s.ctx.createGain();
+    src.buffer = b; g.gain.value = gain; src.connect(g); g.connect(s.ctx.destination); src.start(0, offset);
+    return { src: src, g: g };
+  }
+  sfxCut(h) {
+    if (!h) return;
+    var t = this._sfx.ctx.currentTime;
+    try { h.g.gain.setValueAtTime(h.g.gain.value, t); h.g.gain.linearRampToValueAtTime(0, t + 0.03); h.src.stop(t + 0.04); } catch (e) {}
+  }
   /* a página racha em ladrilhos que orbitam (Kepler), são esticados (espaguetificação) e somem no horizonte */
   swallow() {
     var self = this, cv = this.r.pieces; if (!cv) return;
@@ -118,7 +145,9 @@ class Component extends DCLogic {
     this.setState({ done: false, anim: true });
     clearTimeout(this._safety); this._safety = setTimeout(function () { self.setState({ done: true }); }, 6000);
     var W = cv.width = window.innerWidth, H = cv.height = window.innerHeight, ctx = cv.getContext("2d");
+    this.sfxCut(this._bed); this._bed = null;
     if (rm) { ctx.clearRect(0, 0, W, H); this.setState({ done: true }); return; }
+    var snd = this.sfx(); if (snd && snd.ctx.state === "suspended") snd.ctx.resume().catch(function () {});
     var page = this.drawPage(W, H);
     var bhr = this.r.bh.getBoundingClientRect(), hx = bhr.left + bhr.width / 2, hy = bhr.top + bhr.height * 0.52, R = Math.max(30, 0.28 * bhr.height / 2);
     var cols = W < 700 ? 8 : 14, rows = W < 700 ? 12 : 9, tw = W / cols, th = H / rows, T = [], maxD = 0;
@@ -128,10 +157,12 @@ class Component extends DCLogic {
     }
     T.forEach(function (p) { p.delay = 0.55 + (p.d / maxD) * 1.7 + p.seed * 0.35; });
     if (this.loop) this.loop.shade.pullT = 1;
-    var t0 = performance.now(), prev = t0, F = 0.42;
+    var t0 = performance.now(), prev = t0, F = 0.42, heard = false;
     var step = function (now) {
       var t = (now - t0) / 1000, dt = Math.min(0.05, (now - prev) / 1000); prev = now;
       ctx.clearRect(0, 0, W, H);
+      /* a espiral entra assim que o som estiver liberado e carregado, no ponto certo da animação (até 0,6 s) */
+      if (!self._bed && !heard && t < 0.6) { self._bed = self.sfxPlay("bed", t, 0.5); heard = !!self._bed; }
       var alive = 0, shake = t < 0.55 ? Math.sin(t * 60) * t * 3 : 0;
       for (var i = 0; i < T.length; i++) {
         var p = T[i]; if (p.gone) continue; alive++;
@@ -160,6 +191,7 @@ class Component extends DCLogic {
       if (alive < T.length * 0.35 && !self.state.done) self.setState({ done: true });
       if (alive === 0) {
         ctx.clearRect(0, 0, W, H);
+        if (heard) { self.sfxCut(self._bed); self._bed = null; self.sfxPlay("gulp", 0, 0.6); }
         if (self.loop) { self.loop.shade.pullT = 0.85; self.loop.shade.tb = self.loop.now(); }
         self.setState({ done: true }); self.swRaf = 0; return;
       }

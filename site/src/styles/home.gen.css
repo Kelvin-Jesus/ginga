@@ -20,7 +20,7 @@ a { color: var(--cobalt); } a:hover { color: var(--ink); }
 .gh:active, .cta:active { transform: scale(.97); }
 .herotext { position: relative; z-index: 3; text-align: left; padding: 72px 0 36px; max-width: 600px; }
 .dither { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
-.bh { position: absolute; z-index: 1; top: 64px; right: max(-160px, calc(50% - 760px)); width: 760px; height: 486px; transition: transform 900ms var(--ease-out); pointer-events: none; }
+.bh { position: absolute; z-index: 1; top: -179px; right: calc(max(-160px, calc(50% - 760px)) - 380px); width: 1520px; height: 972px; -webkit-mask-image: radial-gradient(closest-side, #000 58%, transparent 100%); mask-image: radial-gradient(closest-side, #000 58%, transparent 100%); transition: transform 900ms var(--ease-out); pointer-events: none; }
 .blast { position: absolute; z-index: 2; top: 232px; right: max(135px, calc(50% - 465px)); width: 170px; height: 170px; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
 .blast:focus-visible { outline: 2px solid #FFC43D; outline-offset: 4px; }
 .bhcap { display: none; position: absolute; z-index: 2; top: 500px; right: max(210px, calc(50% - 390px)); font: 500 11px/14px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; color: #6E7394; }
@@ -362,7 +362,7 @@ a { color: var(--cobalt); } a:hover { color: var(--ink); }
   .band { flex-direction: column; align-items: flex-start; padding: 48px 28px; }
   .band h2 { font-size: 32px; line-height: 38px; }
   .band .icon { width: 112px; height: 112px; }
-  .bh { width: 130%; height: auto; aspect-ratio: 760 / 486; right: -15%; top: 64px; opacity: 1; }
+  .bh { width: 260%; height: auto; aspect-ratio: 760 / 486; right: -80%; top: calc(64px - 41.57vw); opacity: 1; }
   .bhcap { display: none; }
   .blast { width: 120px; height: 120px; right: auto; left: calc(50% - 60px); top: calc(64px + 43vw - 60px); }
   .gal { width: 280px; height: 280px; margin: -20px auto -40px; }

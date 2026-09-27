@@ -72,6 +72,29 @@ s = rep(s, 'vidH: "O cometa: Mac e tablet entrando em órbita", vidAlt: "Animaç
         'vidH: "O Ginga em 30 segundos", vidAlt: "Vídeo de 30 segundos: o Mac aceita tablets por Wi‑Fi, o Galaxy Tab pareia com um código de 6 dígitos, o sinal chega como um cometa, uma janela passa para o tablet e a S Pen escreve nela.", vidTag: "demo · 30 s",', "vid pt")
 s = rep(s, 'vidH: "The comet: Mac and tablet entering orbit", vidAlt: "Animation: the Mac sends the signal like a comet to the Galaxy Tab, which warps in and shows the Notes window.", vidTag: "preview · full video soon",',
         'vidH: "Ginga in 30 seconds", vidAlt: "30-second video: the Mac accepts tablets over Wi‑Fi, the Galaxy Tab pairs with a 6-digit code, the signal arrives as a comet, a window moves onto the tablet and the S Pen writes on it.", vidTag: "demo · 30 s",', "vid en")
+# black hole without visible limits: a canvas twice as large around the same horizon (PAD = 2),
+# a radial mask, particles that fade before the edge, and pixels far from the disk skipped (cheap)
+s = rep(s, '<canvas class="dither bh" ref="{{refBh}}" width="190" height="122"', '<canvas class="dither bh" ref="{{refBh}}" width="380" height="244"', "bh canvas pad")
+s = rep(s, '.bh { position: absolute; z-index: 1; top: 64px; right: max(-160px, calc(50% - 760px)); width: 760px; height: 486px;',
+        '.bh { position: absolute; z-index: 1; top: -179px; right: calc(max(-160px, calc(50% - 760px)) - 380px); width: 1520px; height: 972px; -webkit-mask-image: radial-gradient(closest-side, #000 58%, transparent 100%); mask-image: radial-gradient(closest-side, #000 58%, transparent 100%);', "bh css pad")
+s = rep(s, '  .bh { width: 130%; height: auto; aspect-ratio: 760 / 486; right: -15%; top: 64px; opacity: 1; }',
+        '  .bh { width: 260%; height: auto; aspect-ratio: 760 / 486; right: -80%; top: calc(64px - 41.57vw); opacity: 1; }', "bh css pad mobile")
+s = rep(s, 'this.ditherLoop(this.r.bh, this.blackHole())', 'this.ditherLoop(this.r.bh, this.blackHole(2))', "bh pad call")
+s = rep(s, '  blackHole() {', '  blackHole(PAD) {\n    PAD = PAD || 1;', "bh pad arg")
+s = rep(s, 'shade.cx = W * 0.5; shade.cy = H * 0.52;', 'shade.cx = W * 0.5; shade.cy = H * (0.5 + 0.02 / PAD);', "bh pad cy")
+s = rep(s, 'var x = (xx - shade.cx) / (H / 2), y = (yy - shade.cy) / (H / 2), v = y / K, rs = Math.sqrt(x * x + y * y);',
+        'var x = (xx - shade.cx) / (H / 2 / PAD), y = (yy - shade.cy) / (H / 2 / PAD), v = y / K, rs = Math.sqrt(x * x + y * y);', "bh pad scale")
+s = rep(s, "g.st[i] = rs > R * 1.1 && rs < 1.05 && h > 0.985 ? 0.28 + (h - 0.985) * 40 : 0;",
+        "g.st[i] = rs > R * 1.1 && rs < 1.05 && h > 0.985 ? 0.28 + (h - 0.985) * 40 : 0;\n          g.far[i] = g.rd[i] > rOut * 1.02 && rs > 1.15 ? 1 : 0;", "bh far mask")
+s = rep(s, "st: new Float32Array(n) };", "st: new Float32Array(n), far: new Uint8Array(n) };", "bh far array")
+s = rep(s, '      at: function (g, i, t) {\n        var x = g.x[i], y = g.y[i], rd = g.rd[i]', '      at: function (g, i, t) {\n        if (g.far[i]) return 0;\n        var x = g.x[i], y = g.y[i], rd = g.rd[i]', "bh far skip")
+s = rep(s, 'var S = H / 2, dt = 0.042;', 'var S = H / 2 / PAD, dt = 0.042, EF = H * 0.16;', "bh pad splat")
+s = rep(s, 'buf[o] = Math.min(1, buf[o] + add);', 'buf[o] = Math.min(1, buf[o] + add * Math.min(1, Math.min(px, W - 1 - px, py, H - 1 - py) / EF));', "bh edge fade")
+s = rep(s, 'var r = c.getBoundingClientRect(); if (r.width < 10) return null;',
+        'var r = c.getBoundingClientRect(); if (r.width < 10) return null;\n      /* o canvas tem PAD = 2: o horizonte fica no retângulo central */\n      r = { left: r.left + r.width / 4, top: r.top + r.height / 4, width: r.width / 2, height: r.height / 2, right: r.right - r.width / 4, bottom: r.bottom - r.height / 4 };', "bh hole rect")
+s = rep(s, 'dy = e.clientY - (b.top + b.height * 0.52), d = Math.sqrt(dx * dx + dy * dy) / (b.width * 0.5);',
+        'dy = e.clientY - (b.top + b.height * 0.51), d = Math.sqrt(dx * dx + dy * dy) / (b.width * 0.25);', "bh pull pad")
+
 open(os.path.join(out, "Main.prod.dc.html"), "w").write(s)
 
 # ---------------- 404 ----------------
