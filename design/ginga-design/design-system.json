@@ -1,0 +1,85 @@
+{
+  "v": 3,
+  "assetGroups": {
+    "Logos": {
+      "files": {
+        "ginga-app-icon.png": {
+          "blob": "201d7e9134ab4d964058d6ff380ba498",
+          "name": "ginga-app-icon.png",
+          "size": 19431,
+          "type": "image/png"
+        },
+        "ginga-monogram-dark.png": {
+          "blob": "93ebd9eb2f0426aac95419a795066114",
+          "name": "ginga-monogram-dark.png",
+          "size": 9229,
+          "type": "image/png"
+        },
+        "ginga-monogram.png": {
+          "blob": "67d69a473c1d921aa9cef823d26d8859",
+          "name": "ginga-monogram.png",
+          "size": 10198,
+          "type": "image/png"
+        },
+        "ginga-orbit-dark.png": {
+          "blob": "18bb28588c9d7a529effc014ca8ecfc9",
+          "name": "ginga-orbit-dark.png",
+          "size": 7595,
+          "type": "image/png"
+        },
+        "ginga-orbit.png": {
+          "blob": "4c6d55fd385a06777d44c3f5d3f1041f",
+          "name": "ginga-orbit.png",
+          "size": 8181,
+          "type": "image/png"
+        },
+        "ginga-wordmark-dark.png": {
+          "blob": "93d9ae5987591ee26b8ac4e606a43c4b",
+          "name": "ginga-wordmark-dark.png",
+          "size": 16005,
+          "type": "image/png"
+        },
+        "ginga-wordmark.png": {
+          "blob": "3e41a171c26c3e66e4168f7e848a7af8",
+          "name": "ginga-wordmark.png",
+          "size": 18801,
+          "type": "image/png"
+        }
+      },
+      "name": "Logos",
+      "order": [
+        "ginga-app-icon.png",
+        "ginga-orbit.png",
+        "ginga-orbit-dark.png",
+        "ginga-monogram.png",
+        "ginga-monogram-dark.png",
+        "ginga-wordmark.png",
+        "ginga-wordmark-dark.png"
+      ],
+      "tile": "m"
+    }
+  },
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-09-26T23:50:00Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "groups": [
+    "Logos"
+  ],
+  "lastChange": {
+    "by": "Kelvin",
+    "at": "2026-09-27T00:40:00Z",
+    "via": "Claude",
+    "note": "DitherSpace: buraco negro e galáxia em dithering na espera do stream e na conexão sem roteador; Black espacial em preto puro"
+  },
+  "layout": "files",
+  "libraries": [],
+  "namespace": "Ginga",
+  "sections": {},
+  "title": "Ginga"
+}

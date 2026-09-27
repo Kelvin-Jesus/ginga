@@ -1,0 +1,543 @@
+<!-- @dsCard group="Fluxos" height=860 width=1200 page subtitle="Demo interativa: clique na UI do Mac e do tablet para conectar. O seletor de tema muda só a UI dos apps; o site fica igual." -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ginga — demo de conexão</title>
+<style>
+  html, body { margin: 0; background: var(--cosmos); }
+  * { box-sizing: border-box; }
+  .stage { position: relative; width: 1200px; height: 860px; overflow: hidden; font-family: var(--font-sans); }
+  .stage > canvas.sky { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* órbitas decorativas */
+  .orbits { position: absolute; inset: 0; pointer-events: none; }
+  .orbits .o { fill: none; stroke: var(--stardust); stroke-opacity: .07; stroke-width: 1; }
+  .orbits .o.dash { stroke-dasharray: 2 8; stroke-opacity: .16; }
+
+  /* barra superior */
+  .top { position: absolute; left: 48px; right: 48px; top: 28px; height: 44px; display: flex; align-items: center; gap: 24px; z-index: 6; }
+  .top img { height: 30px; display: block; }
+  .rail { display: flex; gap: 6px; margin-left: 8px; }
+  .rail span { white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; height: 30px; padding: 0 12px 0 8px; border-radius: var(--radius-pill); color: #A4A9C8; font: 500 13px/18px var(--font-sans); box-shadow: inset 0 0 0 1px rgba(242,243,248,.12); transition: color var(--dur-ui) var(--ease-out), background-color var(--dur-ui) var(--ease-out), box-shadow var(--dur-ui) var(--ease-out); }
+  .rail b { width: 18px; height: 18px; border-radius: 50%; display: grid; place-items: center; font: 500 11px/1 var(--font-mono); background: rgba(242,243,248,.1); }
+  .rail span.on { color: #F2F3F8; background: rgba(111,130,255,.16); box-shadow: inset 0 0 0 1px rgba(111,130,255,.55); }
+  .rail span.on b { background: #6F82FF; color: #0A0C1C; }
+  .rail span.done { color: #F2F3F8; }
+  .rail span.done b { background: #FFC43D; color: #0A0C1C; }
+  .top .spacer { flex: 1; }
+  .themes { background: rgba(242,243,248,.06) !important; box-shadow: inset 0 0 0 1px rgba(242,243,248,.12) !important; }
+  .themes button { color: #A4A9C8 !important; }
+  .themes button[aria-pressed="true"] { color: #F2F3F8 !important; }
+  .themes .g-seg__thumb { background: rgba(111,130,255,.28) !important; box-shadow: none !important; }
+  .reset { background: transparent !important; color: #F2F3F8 !important; box-shadow: inset 0 0 0 1px rgba(242,243,248,.2) !important; }
+
+  /* ---------- MacBook ---------- */
+  .mac { position: absolute; left: 48px; top: 118px; width: 660px; z-index: 2; }
+  .mac__lid { position: relative; height: 424px; padding: 14px 14px 18px; border-radius: 22px 22px 8px 8px; background: #1B1D2A; box-shadow: inset 0 0 0 2px #2C2F42, 0 30px 80px rgba(0,0,0,.5); }
+  .mac__notch { position: absolute; top: 14px; left: 50%; width: 110px; height: 16px; margin-left: -55px; background: #1B1D2A; border-radius: 0 0 8px 8px; z-index: 4; }
+  .mac__screen { position: relative; height: 100%; border-radius: 10px; overflow: hidden; background: #0A0C1C; }
+  .mac__base { height: 16px; margin: 0 -34px; border-radius: 0 0 16px 16px; background: #2A2D3E; box-shadow: inset 0 2px 0 #3A3E55; position: relative; }
+  .mac__base::after { content: ""; position: absolute; left: 50%; top: 0; width: 120px; margin-left: -60px; height: 6px; border-radius: 0 0 8px 8px; background: #1E2030; }
+
+  .wall { position: absolute; inset: 0; overflow: hidden; }
+  .wall .planet { position: absolute; right: -120px; bottom: -260px; width: 520px; height: 520px; border-radius: 50%; background: #2E47F5; opacity: .9; }
+  .wall .ring { position: absolute; right: -200px; bottom: -120px; width: 700px; height: 220px; border-radius: 50%; border: 2px solid rgba(255,196,61,.55); transform: rotate(-14deg); }
+  .wall .star4 { position: absolute; width: 14px; height: 14px; background: #FFC43D; clip-path: polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%); animation: g-twinkle 3.2s ease-in-out infinite; }
+
+  .menubar { position: absolute; top: 0; left: 0; right: 0; height: 24px; display: flex; align-items: center; gap: 14px; padding: 0 12px; background: rgba(10,12,28,.55); backdrop-filter: blur(12px); color: #F2F3F8; font: 600 11px/1 var(--font-sans); z-index: 3; }
+  .menubar .sp { flex: 1; }
+  .menubar .mi { opacity: .85; font-weight: 500; }
+  .menubar .gicon { width: 16px; height: 16px; border-radius: 4px; display: block; position: relative; }
+  .menubar .gicon.live::after { content: ""; position: absolute; right: -2px; bottom: -2px; width: 6px; height: 6px; border-radius: 50%; background: #4FD08E; box-shadow: 0 0 6px #4FD08E; }
+
+  /* janela do Ginga (compacta) */
+  .win { position: absolute; left: 26px; top: 34px; width: 318px; border-radius: 14px; background: var(--bg); color: var(--ink); box-shadow: var(--shadow-float), 0 0 0 1px rgba(0,0,0,.25); overflow: hidden; z-index: 2; }
+  .win__bar { height: 34px; display: flex; align-items: center; gap: 7px; padding: 0 12px; }
+  .win__bar i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+  .win__bar i:nth-child(1) { background: #FF5F57 } .win__bar i:nth-child(2) { background: #FEBC2E } .win__bar i:nth-child(3) { background: #28C840 }
+  .win__body { padding: 2px 14px 14px; }
+  .win__head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .win__head img { width: 28px; height: 28px; }
+  .win__head .t { font: 600 16px/20px var(--font-display); flex: 1; }
+  .win .g-status { height: 24px; font-size: 11px; padding: 0 10px 0 6px; }
+  .win .g-group-title { font-size: 10px; line-height: 14px; margin: 10px 0 5px 4px; }
+  .win .g-group { border-radius: 12px; }
+  .win .g-row { min-height: 36px; padding: 7px 12px; font-size: 12.5px; line-height: 17px; gap: 9px; }
+  .win .g-row + .g-row::before { left: 12px; }
+  .win .g-row__icon { width: 22px; height: 22px; border-radius: 6px; }
+  .win .g-row__icon svg { width: 13px; height: 13px; }
+  .win .g-row__value { font-size: 11.5px; }
+  .win .g-row__sub { font-size: 10.5px; line-height: 14px; }
+  .win .g-switch { transform: scale(.82); transform-origin: right center; margin-left: -8px; }
+  .win .g-seg button { height: 22px; padding: 0 9px; font-size: 11px; }
+  .win .g-device { padding: 7px 12px; gap: 9px; }
+  .win .g-device__name { font-size: 12.5px; line-height: 16px; }
+  .win .g-device__meta { font-size: 10px; line-height: 13px; }
+  .win .g-device__art { width: 30px; height: 22px; }
+  .win .empty { padding: 10px 12px; font-size: 11.5px; color: var(--ink-muted); }
+  .win .actions { display: flex; gap: 8px; margin-top: 12px; }
+  .win .actions .g-btn { height: 30px; font-size: 12px; padding: 0 12px; }
+
+  /* folha de pareamento no Mac */
+  .sheet { position: absolute; inset: 34px 0 0; display: grid; place-items: start center; padding-top: 30px; background: rgba(10,12,28,.38); opacity: 0; pointer-events: none; transition: opacity var(--dur-ui) var(--ease-out); z-index: 5; }
+  .sheet.show { opacity: 1; pointer-events: auto; }
+  .sheet__card { width: 270px; padding: 18px 18px 14px; border-radius: 18px; background: var(--surface); box-shadow: var(--shadow-float); text-align: center; transform: translateY(-10px) scale(.96); transition: transform var(--dur-sheet) var(--ease-ginga); }
+  .sheet.show .sheet__card { transform: none; }
+  .sheet__card img { width: 36px; height: 36px; }
+  .sheet__card h4 { margin: 6px 0 2px; font: 600 14px/19px var(--font-sans); }
+  .sheet__card p { margin: 0 0 10px; font-size: 11px; line-height: 15px; color: var(--ink-muted); }
+  .sheet__card .g-code { font-size: 28px; line-height: 34px; gap: 12px; }
+  .sheet__card .row { display: flex; gap: 8px; margin-top: 12px; }
+  .sheet__card .row .g-btn { flex: 1; height: 30px; font-size: 12px; }
+
+  /* janela que vai para o tablet */
+  .notes { position: absolute; right: 22px; top: 70px; width: 220px; height: 150px; border-radius: 12px; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-float); padding: 30px 14px 12px; font-size: 11px; line-height: 16px; transition: transform 900ms var(--ease-out), opacity 600ms var(--ease-out); z-index: 1; }
+  .notes::before { content: "Notas — Cálculo II"; position: absolute; top: 9px; left: 14px; font: 600 11px/14px var(--font-sans); color: var(--ink-muted); }
+  .notes .l { height: 6px; border-radius: 3px; background: var(--surface-2); margin: 7px 0; }
+  .notes .l.s { width: 60%; } .notes .l.c { background: var(--cobalt-soft); width: 80%; }
+  .notes.away { transform: translateX(300px); opacity: 0; }
+
+  /* ---------- Tablet ---------- */
+  .tab { position: absolute; left: 756px; top: 268px; width: 400px; height: 260px; z-index: 3; animation: g-sway 7s ease-in-out infinite; transform-origin: 50% 90%; }
+  .tab.docked { animation: none; transform: rotate(-3deg); transition: transform var(--dur-sheet) var(--ease-ginga); }
+  .tab__body { position: absolute; inset: 0; padding: 9px; border-radius: 22px; background: #1B1D2A; box-shadow: inset 0 0 0 2px #30344A, 0 30px 70px rgba(0,0,0,.55); }
+  .tab__cam { position: absolute; top: 50%; right: 3px; width: 4px; height: 4px; margin-top: -2px; border-radius: 50%; background: #3A3E55; }
+  .tab__screen { position: relative; height: 100%; border-radius: 14px; overflow: hidden; background: var(--bg); color: var(--ink); }
+  .scr { position: absolute; inset: 0; padding: 18px 20px; opacity: 0; pointer-events: none; transition: opacity 360ms var(--ease-out); }
+  .scr.show { opacity: 1; pointer-events: auto; }
+  .scr h5 { margin: 0; font: 600 15px/20px var(--font-display); }
+  .scr .sub { margin: 2px 0 0; font-size: 11px; line-height: 15px; color: var(--ink-muted); }
+  .tabhead { display: flex; align-items: center; gap: 10px; }
+  .tabhead img { width: 26px; height: 26px; }
+  .chips { display: flex; gap: 6px; position: absolute; left: 20px; bottom: 16px; }
+  .chip { height: 24px; padding: 0 10px; border-radius: var(--radius-pill); display: inline-flex; align-items: center; font: 500 10.5px/1 var(--font-sans); color: var(--ink-muted); box-shadow: inset 0 0 0 1px var(--line); }
+  .chip.on { color: var(--ink); background: var(--cobalt-soft); box-shadow: none; }
+
+  /* radar de busca */
+  .radar { position: absolute; right: 26px; top: 50%; width: 120px; height: 120px; margin-top: -60px; }
+  .radar .c { position: absolute; inset: 0; border-radius: 50%; border: 1px solid var(--line); }
+  .radar .c:nth-child(2) { inset: 22px; } .radar .c:nth-child(3) { inset: 44px; background: var(--cobalt-brand); border: 0; }
+  .radar .sat { position: absolute; inset: 0; animation: g-spin var(--dur-orbit) linear infinite; }
+  .radar .sat::after { content: ""; position: absolute; top: -4px; left: 50%; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: var(--star); box-shadow: var(--glow-star); }
+  .radar .sat.b { inset: 22px; animation-duration: 1700ms; animation-direction: reverse; }
+  .radar .sat.b::after { background: var(--cobalt); box-shadow: none; width: 6px; height: 6px; margin-left: -3px; top: -3px; }
+  .radar .ping { position: absolute; inset: 44px; border-radius: 50%; border: 1.5px solid var(--cobalt); animation: g-pulse 2.2s var(--ease-out) infinite; }
+
+  .tab .list { margin-top: 16px; width: 330px; }
+  .tab .g-group { border-radius: 14px; }
+  .tab .g-device { padding: 9px 12px; }
+  .tab .g-device__name { font-size: 13px; line-height: 17px; }
+  .tab .g-device__meta { font-size: 10px; }
+  .tab .g-btn--sm { height: 28px; border-radius: var(--radius-pill); padding: 0 14px; }
+
+  .pair { text-align: center; padding-top: 34px; }
+  .pair .g-code { font-size: 34px; line-height: 40px; margin: 10px 0 6px; }
+  .pair .g-status { height: 24px; font-size: 11px; }
+
+  .dialog { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10,12,28,.45); }
+  .dialog__card { width: 270px; border-radius: 22px; background: var(--surface); padding: 16px 18px 12px; box-shadow: var(--shadow-float); font-size: 12px; line-height: 17px; }
+  .dialog__card b { display: block; font-size: 13px; margin-bottom: 4px; }
+  .dialog__card label { display: flex; align-items: center; gap: 6px; margin-top: 8px; color: var(--ink-muted); font-size: 11px; }
+  .dialog__card label i { width: 14px; height: 14px; border-radius: 4px; background: var(--cobalt); display: grid; place-items: center; }
+  .dialog__card label i::after { content: ""; width: 6px; height: 3px; border: solid var(--on-cobalt); border-width: 0 0 1.6px 1.6px; transform: rotate(-45deg) translateY(-1px); }
+  .dialog__card .row { display: flex; justify-content: flex-end; gap: 6px; margin-top: 10px; }
+  .dialog__card .g-btn { height: 28px; font-size: 12px; border-radius: var(--radius-pill); }
+
+  /* stream: área de trabalho estendida */
+  .stream { padding: 0; background: #0A0C1C; }
+  .stream .wall .planet { right: auto; left: -180px; bottom: -300px; width: 460px; height: 460px; }
+  .stream .wall .ring { right: auto; left: -260px; bottom: -150px; width: 600px; }
+  .stream .notes { right: auto; left: 150px; top: 44px; transform: none; opacity: 1; }
+  .stream .notes.pre { transform: translateX(-260px); opacity: 0; }
+  .toast { position: absolute; left: 50%; top: 12px; transform: translateX(-50%); transition: opacity 500ms var(--ease-out), transform 500ms var(--ease-ginga); z-index: 3; }
+  .toast.hide { opacity: 0; transform: translate(-50%, -12px); }
+  .stream .g-status { background: rgba(10,12,28,.72); color: #F2F3F8; height: 24px; font-size: 11px; backdrop-filter: blur(8px); }
+  .warp { position: absolute; inset: 0; pointer-events: none; width: 100%; height: 100%; opacity: 0; transition: opacity 300ms; z-index: 4; }
+  .warp.on { opacity: 1; }
+
+  /* cabo USB e trajeto do cometa */
+  .fx { position: absolute; inset: 0; pointer-events: none; z-index: 4; }
+  .fx path { fill: none; }
+  .fx .route { stroke: #6F82FF; stroke-opacity: .5; stroke-width: 1.2; stroke-dasharray: 2 7; stroke-linecap: round; opacity: 0; transition: opacity 400ms; }
+  .fx .route.on { opacity: 1; }
+  .fx .tail { stroke: #FFC43D; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 6px #FFC43D); opacity: 0; }
+  .fx .cable { stroke: #3A3E55; stroke-width: 6; stroke-linecap: round; }
+  .fx .cable-glow { stroke: #6F82FF; stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 5px #6F82FF); opacity: 0; }
+  .fx .head { fill: #FFF6DA; filter: drop-shadow(0 0 10px #FFC43D) drop-shadow(0 0 3px #FFFFFF); opacity: 0; }
+  .fx .burst { fill: none; stroke: #FFC43D; stroke-width: 2; opacity: 0; }
+  .fx .plug { fill: #2A2D3E; stroke: #3A3E55; stroke-width: 1.5; }
+
+  /* dica: anel pulsante sobre o próximo alvo */
+  .hint { position: absolute; z-index: 8; pointer-events: none; border-radius: 999px; box-shadow: 0 0 0 2px #FFC43D; transition: all 420ms var(--ease-ginga); }
+  .hint::before { content: ""; position: absolute; inset: -2px; border-radius: inherit; border: 2px solid #FFC43D; animation: g-pulse 1.6s var(--ease-out) infinite; }
+  .hint span { position: absolute; left: 50%; top: calc(100% + 10px); transform: translateX(-50%); white-space: nowrap; padding: 5px 10px; border-radius: var(--radius-pill); background: #FFC43D; color: #0A0C1C; font: 600 11px/14px var(--font-sans); }
+  .hint.up span { top: auto; bottom: calc(100% + 10px); }
+  .hint.off { opacity: 0; }
+
+  /* narração embaixo */
+  .story { position: absolute; left: 48px; right: 48px; bottom: 34px; display: flex; align-items: flex-end; gap: 32px; z-index: 5; color: #F2F3F8; }
+  .story__txt { flex: 1; max-width: 640px; }
+  .story__k { font: 500 11px/14px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: #FFC43D; }
+  .story__h { margin: 6px 0 4px; font: 600 24px/30px var(--font-display); }
+  .story__p { margin: 0; font-size: 14px; line-height: 21px; color: #A4A9C8; }
+  .story__alt { display: flex; gap: 8px; }
+  .story .g-btn { background: rgba(242,243,248,.08); color: #F2F3F8; box-shadow: inset 0 0 0 1px rgba(242,243,248,.16); }
+  .story .g-btn:hover { box-shadow: inset 0 0 0 1px rgba(111,130,255,.7), 0 0 16px rgba(111,130,255,.3); }
+
+  .tab[data-theme="space"] .tab__screen { background: #000; }
+  .tab[data-theme="space"] .scr:not(.stream) { background-image: radial-gradient(1px 1px at 12% 20%, #F2F3F8 50%, transparent 51%), radial-gradient(1px 1px at 88% 12%, #F2F3F8 50%, transparent 51%), radial-gradient(1.4px 1.4px at 70% 84%, #FFC43D 50%, transparent 51%), radial-gradient(1px 1px at 40% 92%, #6F82FF 50%, transparent 51%), radial-gradient(1px 1px at 94% 60%, #F2F3F8 50%, transparent 51%); }
+  .mac[data-theme="space"] .win { box-shadow: var(--shadow-float); }
+  .tab[data-theme="space"] .stream { background: #000; }
+  [data-theme="space"] .notes .l { background: var(--line); }
+  .mac[data-theme="space"] .win, [data-theme="space"] .notes, [data-theme="space"] .sheet__card, [data-theme="space"] .dialog__card { box-shadow: inset 0 0 0 1px var(--line), var(--shadow-float); }
+  [data-theme="space"] .sheet, [data-theme="space"] .dialog { background: rgba(0,0,0,.6); }
+  @media (prefers-reduced-motion: reduce) { .tab { animation: none; } }
+</style>
+</head>
+<body class="g-root">
+<div class="stage" id="stage">
+  <canvas class="sky" id="sky"></canvas>
+
+  <svg class="orbits" viewBox="0 0 1200 860" aria-hidden="true">
+    <ellipse class="o" cx="600" cy="420" rx="560" ry="250"/>
+    <ellipse class="o dash" cx="600" cy="420" rx="470" ry="190" transform="rotate(-6 600 420)"/>
+    <ellipse class="o" cx="960" cy="400" rx="260" ry="120" transform="rotate(-10 960 400)"/>
+  </svg>
+
+  <div class="top">
+    <img src="/_blob/93d9ae5987591ee26b8ac4e606a43c4b" alt="ginga">
+    <div class="rail" id="rail">
+      <span data-s="1"><b>1</b>Ligar no Mac</span>
+      <span data-s="2"><b>2</b>Encontrar</span>
+      <span data-s="3"><b>3</b>Parear</span>
+      <span data-s="4"><b>4</b>Estender</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="g-seg themes" id="themes"><span class="g-seg__thumb"></span><button value="light" aria-pressed="false">Claro</button><button value="dark" aria-pressed="true">Escuro</button><button value="space" aria-pressed="false">Black espacial (apps)</button></div>
+    <button class="g-btn reset" id="reset">Recomeçar</button>
+  </div>
+
+  <!-- MacBook -->
+  <div class="mac" id="mac" data-theme="dark">
+    <div class="mac__lid">
+      <div class="mac__notch"></div>
+      <div class="mac__screen" id="macScreen">
+        <div class="wall"><div class="planet"></div><div class="ring"></div><div class="star4" style="left:470px;top:70px"></div><div class="star4" style="left:380px;top:190px;width:8px;height:8px;animation-delay:1.1s"></div></div>
+        <div class="menubar"><span></span><span>Finder</span><span class="mi">Arquivo</span><span class="mi">Editar</span><span class="mi">Ver</span><span class="sp"></span><img class="gicon" id="menuIcon" src="/_blob/201d7e9134ab4d964058d6ff380ba498" alt=""><span class="mi">sáb. 20:20</span></div>
+
+        <div class="notes" id="macNotes"><div class="l"></div><div class="l s"></div><div class="l c"></div><div class="l"></div><div class="l s"></div></div>
+
+        <div class="win" id="win">
+          <div class="win__bar"><i></i><i></i><i></i></div>
+          <div class="win__body">
+            <div class="win__head">
+              <img class="mono-l" src="/_blob/67d69a473c1d921aa9cef823d26d8859" alt="">
+              <span class="t">Ginga</span>
+              <span class="g-status" id="macStatus"><span class="g-status__orb"></span><span class="txt">Desligado</span></span>
+            </div>
+            <h3 class="g-group-title">Conexão</h3>
+            <div class="g-group">
+              <label class="g-row"><span class="g-row__icon"><svg viewBox="0 0 16 16"><path d="M2 6.2a8.5 8.5 0 0 1 12 0M4.3 8.6a5.2 5.2 0 0 1 7.4 0M6.6 11a2 2 0 0 1 2.8 0" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="g-row__label">Aceitar tablets por Wi‑Fi</span><span class="g-switch"><input type="checkbox" role="switch" id="macWifi"><span class="g-switch__track"></span><span class="g-switch__thumb"></span></span></label>
+              <label class="g-row"><span class="g-row__icon"><svg viewBox="0 0 16 16"><path d="M8 1.5v9M5.5 4 8 1.5 10.5 4M4 7.5v2.5l4 2.5 4-2.5V7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="g-row__label">Aceitar tablet por USB<span class="g-row__sub">Sem modo desenvolvedor</span></span><span class="g-switch"><input type="checkbox" role="switch" id="macUsb"><span class="g-switch__track"></span><span class="g-switch__thumb"></span></span></label>
+            </div>
+            <h3 class="g-group-title">Tablets</h3>
+            <div class="g-group" id="macTablets"><div class="empty">Nenhum tablet pareado ainda.</div></div>
+            <div class="actions"><button class="g-btn g-btn--primary" id="macMain" disabled>Criar display</button><button class="g-btn g-btn--ghost">Ajustes…</button></div>
+          </div>
+
+          <div class="sheet" id="sheet">
+            <div class="sheet__card">
+              <img src="/_blob/201d7e9134ab4d964058d6ff380ba498" alt="">
+              <h4>Parear com Galaxy Tab S11?</h4>
+              <p>O tablet mostra o mesmo código? Pareie só tablets seus.</p>
+              <div class="sheetcode"></div>
+              <div class="row"><button class="g-btn" id="noPair">Não parear</button><button class="g-btn g-btn--primary" id="doPair">Parear</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mac__base"></div>
+  </div>
+
+  <!-- Tablet -->
+  <div class="tab" id="tab" data-theme="dark">
+    <div class="tab__body">
+      <div class="tab__cam"></div>
+      <div class="tab__screen" id="tabScreen">
+        <!-- A: procurando -->
+        <div class="scr show" id="scrSearch">
+          <div class="tabhead"><img class="mono-l" src="/_blob/67d69a473c1d921aa9cef823d26d8859" alt=""><div><h5>Procurando seu Mac</h5><p class="sub">Ligue o Ginga no Mac. Ele aparece aqui.</p></div></div>
+          <div class="radar"><div class="c"></div><div class="c"></div><div class="c"></div><div class="ping"></div><div class="sat"></div><div class="sat b"></div></div>
+          <div class="chips"><span class="chip on">Wi‑Fi</span><span class="chip">Cabo USB</span><span class="chip">Sem roteador</span></div>
+        </div>
+        <!-- B: Mac encontrado -->
+        <div class="scr" id="scrFound">
+          <div class="tabhead"><img class="mono-l" src="/_blob/67d69a473c1d921aa9cef823d26d8859" alt=""><div><h5>Mac por perto</h5><p class="sub">Toque para usar este tablet como segunda tela.</p></div></div>
+          <div class="list g-group"><div class="g-device"><span class="g-device__art"></span><span class="g-device__name">MacBook Pro do Kelvin<span class="g-device__meta" id="foundMeta">não pareado · Wi‑Fi</span></span><button class="g-btn g-btn--sm g-btn--primary" id="tabConnect">Conectar</button></div></div>
+          <div class="chips"><span class="chip on">Wi‑Fi</span><span class="chip">Cabo USB</span><span class="chip">Sem roteador</span></div>
+        </div>
+        <!-- C: código -->
+        <div class="scr pair" id="scrPair">
+          <h5>Confirme no Mac</h5>
+          <div class="tabcode"></div>
+          <span class="g-status g-status--pairing"><span class="g-status__orb"></span>Aguardando o Mac</span>
+        </div>
+        <!-- USB: diálogo do Android -->
+        <div class="scr" id="scrUsb">
+          <div class="tabhead"><img class="mono-l" src="/_blob/67d69a473c1d921aa9cef823d26d8859" alt=""><div><h5>Cabo conectado</h5><p class="sub">O Mac pediu para virar display.</p></div></div>
+          <div class="dialog"><div class="dialog__card"><b>Abrir Ginga para “Segunda tela para seu Mac”?</b>Nenhuma depuração USB necessária.<label><i></i>Sempre, para este acessório</label><div class="row"><button class="g-btn g-btn--ghost">Cancelar</button><button class="g-btn g-btn--primary" id="usbOk">Abrir</button></div></div></div>
+        </div>
+        <!-- D: stream -->
+        <div class="scr stream" id="scrStream">
+          <div class="wall"><div class="planet"></div><div class="ring"></div><div class="star4" style="left:320px;top:40px"></div></div>
+          <div class="notes pre" id="tabNotes"><div class="l"></div><div class="l s"></div><div class="l c"></div><div class="l"></div><div class="l s"></div></div>
+          <div class="toast hide" id="toast"><span class="g-status g-status--connected"><span class="g-status__orb"></span><span id="toastTxt">Conectado · 60 Hz</span></span></div>
+        </div>
+        <canvas class="warp" id="warp"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <svg class="fx" id="fx" viewBox="0 0 1200 860" aria-hidden="true">
+    <path class="cable" id="cable" d=""/>
+    <path class="cable-glow" id="cableGlow" d=""/>
+    <path class="route" id="route" d=""/>
+    <path class="tail" id="tail" d=""/>
+    <circle class="head" id="head" r="5"/>
+    <circle class="burst" id="burst" r="10"/>
+  </svg>
+
+  <div class="hint off" id="hint"><span>Clique aqui</span></div>
+
+  <div class="story">
+    <div class="story__txt">
+      <div class="story__k" id="sk">Passo 1 de 4 · Mac</div>
+      <div class="story__h" id="sh">Ligue o Ginga no Mac</div>
+      <p class="story__p" id="sp">Ative “Aceitar tablets por Wi‑Fi” no painel. O Mac começa a se anunciar na rede e o tablet, que já está procurando, o encontra sozinho.</p>
+    </div>
+    <div class="story__alt"><button class="g-btn" id="altUsb">Prefiro o cabo USB</button></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var stage = $("stage"), RM = Ginga.reducedMotion;
+  Ginga.starfield($("sky"), { density: 0.00016 });
+  
+  /* ---- tema: claro / escuro / black espacial ---- */
+  var LOGO = { light: "/_blob/67d69a473c1d921aa9cef823d26d8859", dark: "/_blob/93ebd9eb2f0426aac95419a795066114", space: "/_blob/93ebd9eb2f0426aac95419a795066114" };
+  function setTheme(t) {
+    $("mac").setAttribute("data-theme", t); $("tab").setAttribute("data-theme", t);
+    document.querySelectorAll(".mono-l").forEach(function (i) { i.src = LOGO[t]; });
+  }
+  setTheme("dark");
+  Ginga.segmented($("themes"), setTheme);
+
+  /* ---- utilidades de geometria (o card pode estar escalado) ---- */
+  function box(el) {
+    var s = stage.getBoundingClientRect(), r = el.getBoundingClientRect(), k = stage.offsetWidth / s.width;
+    return { x: (r.left - s.left) * k, y: (r.top - s.top) * k, w: r.width * k, h: r.height * k };
+  }
+  var hintEl = $("hint"), hintTarget = null;
+  function hint(el, text, up) {
+    hintTarget = el;
+    if (!el) { hintEl.classList.add("off"); return; }
+    var b = box(el), pad = 6;
+    hintEl.style.left = (b.x - pad) + "px"; hintEl.style.top = (b.y - pad) + "px";
+    hintEl.style.width = (b.w + pad * 2) + "px"; hintEl.style.height = (b.h + pad * 2) + "px";
+    hintEl.querySelector("span").textContent = text || "Clique aqui";
+    hintEl.classList.toggle("up", !!up);
+    hintEl.classList.remove("off");
+  }
+  setInterval(function () { if (hintTarget) hint(hintTarget, hintEl.querySelector("span").textContent, hintEl.classList.contains("up")); }, 250);
+
+  function story(k, h, p) { $("sk").textContent = k; $("sh").textContent = h; $("sp").textContent = p; }
+  function rail(n) {
+    document.querySelectorAll("#rail span").forEach(function (s) {
+      var i = +s.dataset.s; s.classList.toggle("on", i === n); s.classList.toggle("done", i < n);
+    });
+  }
+  function screen(id) { document.querySelectorAll(".scr").forEach(function (s) { s.classList.toggle("show", s.id === id); }); }
+  function status(kind, txt) {
+    var s = $("macStatus"); s.className = "g-status" + (kind ? " g-status--" + kind : ""); s.querySelector(".txt").textContent = txt;
+  }
+
+  var st = { phase: "off", via: null, paired: false, timers: [] };
+  function later(fn, ms) { st.timers.push(setTimeout(fn, RM ? Math.min(ms, 60) : ms)); }
+  function clearTimers() { st.timers.forEach(clearTimeout); st.timers = []; }
+
+  /* ---- cometa Mac → tablet ---- */
+  function routePath() {
+    var m = box($("macScreen")), t = box($("tabScreen"));
+    var x1 = m.x + m.w - 40, y1 = m.y + 60, x2 = t.x + t.w * 0.45, y2 = t.y + t.h * 0.4;
+    return "M" + x1 + " " + y1 + " C " + (x1 + 90) + " " + (y1 - 150) + ", " + (x2 - 40) + " " + (y2 - 190) + ", " + x2 + " " + y2;
+  }
+  function comet(done) {
+    var route = $("route"), tail = $("tail"), head = $("head"), d = routePath();
+    route.setAttribute("d", d); tail.setAttribute("d", d); route.classList.add("on");
+    if (RM) { done(); return; }
+    var L = tail.getTotalLength(), T = 1400, t0 = performance.now(), TL = 90;
+    tail.style.strokeDasharray = TL + " " + (L + TL);
+    tail.style.opacity = 1; head.style.opacity = 1;
+    (function step(now) {
+      var p = Math.min(1, (now - t0) / T), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+      var at = e * L, pt = tail.getPointAtLength(at);
+      head.setAttribute("cx", pt.x); head.setAttribute("cy", pt.y);
+      tail.style.strokeDashoffset = (TL - at);
+      if (p < 1) requestAnimationFrame(step);
+      else { tail.style.opacity = 0; head.style.opacity = 0; burst(pt); done(); }
+    })(t0);
+  }
+  function burst(pt) {
+    var b = $("burst"); b.setAttribute("cx", pt.x); b.setAttribute("cy", pt.y);
+    b.animate([{ r: 6, opacity: 1, strokeWidth: 3 }, { r: 70, opacity: 0, strokeWidth: .5 }], { duration: 700, easing: "cubic-bezier(0.2,0.8,0.2,1)" });
+  }
+
+  /* ---- cabo USB ---- */
+  function cablePath() {
+    var m = box($("mac")), t = box($("tab"));
+    var x1 = m.x + m.w - 18, y1 = m.y + m.h - 8, x2 = t.x + t.w * 0.5, y2 = t.y + t.h + 6;
+    return "M" + x1 + " " + y1 + " C " + (x1 + 30) + " " + (y1 + 110) + ", " + (x2 - 20) + " " + (y2 + 150) + ", " + x2 + " " + y2;
+  }
+  function drawCable(done) {
+    var c = $("cable"), d = cablePath(); c.setAttribute("d", d); $("cableGlow").setAttribute("d", d);
+    var L = c.getTotalLength(); c.style.strokeDasharray = L; c.style.strokeDashoffset = L; c.style.opacity = 1;
+    c.animate([{ strokeDashoffset: L }, { strokeDashoffset: 0 }], { duration: RM ? 1 : 900, easing: "cubic-bezier(0.2,0.8,0.2,1)", fill: "forwards" }).onfinish = done;
+  }
+  function cablePulse(done) {
+    var g = $("cableGlow"), L = g.getTotalLength();
+    g.style.opacity = 1; g.style.strokeDasharray = "40 " + L;
+    var a = g.animate([{ strokeDashoffset: 40 }, { strokeDashoffset: -L }], { duration: RM ? 1 : 1000, easing: "cubic-bezier(0.4,0,0.2,1)" });
+    a.onfinish = function () { g.style.opacity = 0; var e = g.getPointAtLength(L); burst(e); done(); };
+  }
+  function removeCable() { var c = $("cable"); c.getAnimations().forEach(function (a) { a.cancel(); }); c.style.opacity = 0; }
+
+  /* ---- warp no tablet ---- */
+  function warp(done) {
+    var cv = $("warp"), ctx = cv.getContext("2d"), r = cv.getBoundingClientRect();
+    if (RM) { done(); return; }
+    var w = cv.width = Math.round(cv.offsetWidth * 1.5), h = cv.height = Math.round(cv.offsetHeight * 1.5);
+    var stars = []; for (var i = 0; i < 140; i++) stars.push({ a: Math.random() * 6.283, d: Math.random() * 40, v: 0.6 + Math.random() * 1.6, c: Math.random() < .15 ? "255,196,61" : Math.random() < .3 ? "111,130,255" : "242,243,248" });
+    cv.classList.add("on"); var t0 = performance.now(), T = 1100;
+    (function step(now) {
+      var p = Math.min(1, (now - t0) / T), sp = Math.pow(p, 2) * 26 + 1;
+      ctx.fillStyle = "rgba(0,0,0," + (0.35 + p * 0.3) + ")"; ctx.fillRect(0, 0, w, h);
+      stars.forEach(function (s) {
+        var d0 = s.d; s.d += s.v * sp; var cx = w / 2, cy = h / 2;
+        ctx.strokeStyle = "rgba(" + s.c + "," + Math.min(1, .3 + p) + ")"; ctx.lineWidth = 1 + p * 1.5;
+        ctx.beginPath(); ctx.moveTo(cx + Math.cos(s.a) * d0, cy + Math.sin(s.a) * d0); ctx.lineTo(cx + Math.cos(s.a) * s.d, cy + Math.sin(s.a) * s.d); ctx.stroke();
+        if (s.d > w) s.d = Math.random() * 20;
+      });
+      if (p < 1) requestAnimationFrame(step);
+      else { done(); setTimeout(function () { cv.classList.remove("on"); ctx.clearRect(0, 0, w, h); }, 120); }
+    })(t0);
+  }
+
+  /* ---- fluxo ---- */
+  function toOff() {
+    clearTimers(); st.phase = "off"; st.via = null;
+    $("macWifi").checked = false; $("macUsb").checked = false; $("sheet").classList.remove("show");
+    status(null, "Desligado"); screen("scrSearch"); rail(1); removeCable();
+    $("route").classList.remove("on"); $("tab").classList.remove("docked"); $("menuIcon").classList.remove("live");
+    $("macNotes").classList.remove("away"); $("tabNotes").classList.add("pre"); $("toast").classList.add("hide");
+    $("macMain").disabled = true; $("macMain").textContent = "Criar display"; $("macMain").className = "g-btn g-btn--primary";
+    if (!st.paired) $("macTablets").innerHTML = '<div class="empty">Nenhum tablet pareado ainda.</div>';
+    story("Passo 1 de 4 · Mac", "Ligue o Ginga no Mac", "Ative “Aceitar tablets por Wi‑Fi” no painel. O Mac começa a se anunciar na rede e o tablet, que já está procurando, o encontra sozinho.");
+    hint($("macWifi").parentNode, "Ligue o Wi‑Fi");
+  }
+
+  function wifiOn() {
+    st.phase = "advertising"; st.via = "wifi"; rail(2);
+    status("searching", "Anunciando na rede");
+    story("Passo 2 de 4 · Tablet", "O tablet encontra o Mac", "Em segundos o Mac aparece na lista do tablet, com um satélite de status orbitando. Nada de IP, porta ou adb.");
+    hint(null);
+    later(function () {
+      st.phase = "found"; screen("scrFound");
+      $("foundMeta").textContent = st.paired ? "pareado · Wi‑Fi" : "não pareado · Wi‑Fi";
+      later(function () { hint($("tabConnect"), st.paired ? "Reconectar" : "Toque em Conectar"); }, 380);
+    }, 1100);
+  }
+
+  function tabConnect() {
+    if (st.paired) { connect("wifi"); return; }
+    st.phase = "pairing"; rail(3); hint(null);
+    screen("scrPair");
+    document.querySelector(".tabcode").innerHTML = Ginga.pairingCode("482913");
+    status("pairing", "Aguardando código");
+    story("Passo 3 de 4 · Os dois", "Os mesmos 6 dígitos nas duas telas", "Na primeira vez o Mac e o tablet mostram o mesmo código. Se bater, é o seu tablet. A conexão é criptografada com TLS e o par fica salvo.");
+    later(function () {
+      document.querySelector(".sheetcode").innerHTML = Ginga.pairingCode("482913");
+      $("sheet").classList.add("show");
+      later(function () { hint($("doPair"), "Os códigos batem? Parear"); }, 420);
+    }, 500);
+  }
+
+  function connect(via) {
+    st.phase = "connecting"; st.via = via; rail(4); hint(null); $("sheet").classList.remove("show");
+    status("searching", "Conectando…");
+    story("Passo 4 de 4 · Conexão", "Mac e tablet entram em órbita", via === "usb" ? "Pelo cabo, o sinal viaja direto: o Android abre o Ginga como acessório, sem modo desenvolvedor." : "O Mac cria o display virtual e o sinal atravessa a rede como um cometa até o tablet.");
+    $("tab").classList.add("docked");
+    var go = function () {
+      warp(function () {
+        screen("scrStream"); connected();
+      });
+    };
+    later(function () { via === "usb" ? cablePulse(go) : comet(go); }, 250);
+  }
+
+  function connected() {
+    st.phase = "connected"; st.paired = st.paired || st.via === "wifi";
+    status("connected", "Conectado · 60 Hz");
+    $("menuIcon").classList.add("live");
+    $("macTablets").innerHTML = '<div class="g-device"><span class="g-device__art"></span><span class="g-device__name">Galaxy Tab S11<span class="g-device__meta">' + (st.via === "usb" ? "USB direto" : "Wi‑Fi · TLS") + ' · 2560×1600</span></span><button class="g-btn g-btn--sm g-btn--danger">Esquecer</button></div>';
+    var btn = $("macMain"); btn.disabled = false; btn.textContent = "Desconectar"; btn.className = "g-btn g-btn--danger";
+    $("toastTxt").textContent = "Conectado · 60 Hz · " + (st.via === "usb" ? "USB" : "Wi‑Fi");
+    later(function () { $("toast").classList.remove("hide"); }, 150);
+    later(function () { $("toast").classList.add("hide"); }, 3200);
+    later(function () { $("macNotes").classList.add("away"); later(function () { $("tabNotes").classList.remove("pre"); }, 420); }, 700);
+    story("Conectado", "Seu tablet agora é tela do Mac", "Arraste janelas para a direita e elas continuam no tablet. Quando nada aparece na tela do tablet, o Mac para de enviar quadros e poupa bateria.");
+    rail(5);
+    later(function () { hint(btn, "Desconectar e tentar de novo", true); }, 1800);
+  }
+
+  function disconnect() {
+    clearTimers(); hint(null);
+    $("tabNotes").classList.add("pre"); $("macNotes").classList.remove("away");
+    $("tab").classList.remove("docked"); $("route").classList.remove("on"); $("menuIcon").classList.remove("live");
+    var btn = $("macMain"); btn.disabled = true; btn.textContent = "Criar display"; btn.className = "g-btn g-btn--primary";
+    $("macTablets").innerHTML = st.paired ? '<div class="g-device"><span class="g-device__art"></span><span class="g-device__name">Galaxy Tab S11<span class="g-device__meta">pareado · fora de alcance</span></span><button class="g-btn g-btn--sm g-btn--danger">Esquecer</button></div>' : '<div class="empty">Nenhum tablet pareado ainda.</div>';
+    if (st.via === "usb") { removeCable(); $("macUsb").checked = false; if ($("macWifi").checked) { wifiOn(); } else toOff(); return; }
+    screen("scrSearch"); wifiOn();
+    story("Pareado", "Da próxima vez, sem código", "O tablet já é conhecido. Toque em Reconectar: o cometa sai direto, sem pedir os 6 dígitos de novo.");
+  }
+
+  /* ---- eventos ---- */
+  $("macWifi").addEventListener("change", function (e) {
+    if (e.target.checked) { Ginga.spark(e.target.parentNode); if (st.phase === "off" || st.phase === "advertising") wifiOn(); }
+    else if (st.via !== "usb" || st.phase === "off") { toOff(); }
+  });
+  $("macUsb").addEventListener("change", function (e) {
+    if (e.target.checked) {
+      Ginga.spark(e.target.parentNode); clearTimers(); hint(null); st.via = "usb"; rail(2);
+      $("sheet").classList.remove("show");
+      status("searching", "Esperando o cabo");
+      story("Cabo USB", "Plugue o cabo", "Com o USB direto, o Android pergunta uma vez se abre o Ginga. Marque “Sempre” e da próxima vez a tela abre sozinha.");
+      drawCable(function () { screen("scrUsb"); rail(3); status("pairing", "Tablet aprovando"); later(function () { hint($("usbOk"), "Toque em Abrir"); }, 400); });
+    } else { if (st.via === "usb") { if (st.phase === "connected") disconnect(); else toOff(); } }
+  });
+  $("tabConnect").addEventListener("click", tabConnect);
+  $("doPair").addEventListener("click", function () { connect("wifi"); });
+  $("noPair").addEventListener("click", function () { $("sheet").classList.remove("show"); wifiOn(); });
+  $("usbOk").addEventListener("click", function (e) { Ginga.spark(e.target); connect("usb"); });
+  $("macMain").addEventListener("click", function () { if (st.phase === "connected") disconnect(); });
+  $("altUsb").addEventListener("click", function () { if (!$("macUsb").checked) { $("macUsb").checked = true; $("macUsb").dispatchEvent(new Event("change")); } });
+  $("reset").addEventListener("click", function () { st.paired = false; toOff(); });
+
+  setTimeout(toOff, 60);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!-- @dsCard group="Status" height=120 subtitle="Seis estados de conexão" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>StatusOrbit</title>
+<style>html,body{margin:0} body{background:var(--bg);padding:24px;} </style></head>
+<body class="g-root">
+
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+  <span class="g-status"><span class="g-status__orb"></span>Desligado</span>
+  <span class="g-status g-status--searching"><span class="g-status__orb"></span>Procurando tablets</span>
+  <span class="g-status g-status--pairing"><span class="g-status__orb"></span>Aguardando código</span>
+  <span class="g-status g-status--connected"><span class="g-status__orb"></span>Conectado · <span class="g-mono">60 Hz</span></span>
+  <span class="g-status g-status--paused"><span class="g-status__orb"></span>Pausado</span>
+  <span class="g-status g-status--error"><span class="g-status__orb"></span>Cabo desconectado</span>
+</div>
+</body>
+</html>

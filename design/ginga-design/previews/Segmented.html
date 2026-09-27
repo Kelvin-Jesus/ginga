@@ -1,0 +1,14 @@
+<!-- @dsCard group="Controles" height=110 subtitle="Orientação e taxa de atualização" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Segmented</title>
+<style>html,body{margin:0} body{background:var(--bg);padding:24px;} </style></head>
+<body class="g-root">
+
+<div style="display:flex;gap:16px;flex-wrap:wrap">
+  <div class="g-seg" id="a"><span class="g-seg__thumb"></span><button aria-pressed="true">Paisagem</button><button aria-pressed="false">Retrato</button></div>
+  <div class="g-seg" id="b"><span class="g-seg__thumb"></span><button aria-pressed="false">Mac decide</button><button aria-pressed="true">60 Hz</button><button aria-pressed="false">120 Hz</button></div>
+</div>
+<script>Ginga.segmented(document.getElementById('a'));Ginga.segmented(document.getElementById('b'));</script>
+</body>
+</html>

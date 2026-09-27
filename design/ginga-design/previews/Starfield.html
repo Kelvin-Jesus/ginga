@@ -1,0 +1,17 @@
+<!-- @dsCard group="Marca" height=220 subtitle="Céu em canvas, pausa fora da tela" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Starfield</title>
+<style>html,body{margin:0} body{background:var(--bg);padding:24px;} body{background:var(--bg)}</style></head>
+<body class="g-root">
+
+<div class="g-sky" style="height:180px;border-radius:var(--radius-xl);display:grid;place-items:center">
+  <canvas id="s"></canvas>
+  <div style="position:relative;text-align:center">
+    <div class="display" style="color:var(--stardust)">Transmitindo</div>
+    <div class="g-mono" style="opacity:.75;margin-top:4px">2560×1600 · hevc · 60 fps</div>
+  </div>
+</div>
+<script>Ginga.starfield(document.getElementById('s'));</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!-- @dsCard group="Controles" height=130 subtitle="Toggle com faísca ao ligar" -->
+<!doctype html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"><title>Switch</title>
+<style>html,body{margin:0} body{background:var(--bg);padding:24px;} </style></head>
+<body class="g-root">
+
+<div class="g-group" style="max-width:420px">
+  <label class="g-row"><span class="g-row__label">Aceitar tablet por USB</span><span class="g-switch"><input type="checkbox" role="switch" checked><span class="g-switch__track"></span><span class="g-switch__thumb"></span></span></label>
+  <label class="g-row"><span class="g-row__label">Aceitar tablets pareados por Wi‑Fi</span><span class="g-switch"><input type="checkbox" role="switch"><span class="g-switch__track"></span><span class="g-switch__thumb"></span></span></label>
+</div>
+<script>
+document.querySelectorAll('.g-switch input').forEach(function(i){i.addEventListener('change',function(){ if(i.checked) Ginga.spark(i.parentNode); });});
+</script>
+</body>
+</html>

@@ -3,7 +3,7 @@ name: site
 on:
   push:
     branches: [main]
-    paths: ["site/**", ".github/workflows/site.yml"]
+    paths: ["site/**", "design/ginga-design/ginga-design-system.html", ".github/workflows/site.yml"]
   workflow_dispatch:
 
 permissions:
@@ -34,6 +34,8 @@ jobs:
           cache-dependency-path: site/package-lock.json
       - run: npm ci
       - run: npm run build
+      # the design system exported from Claude, one self-contained page (design/ginga-design/tools/export_html.py)
+      - run: mkdir -p dist/design-system && cp ../design/ginga-design/ginga-design-system.html dist/design-system/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist

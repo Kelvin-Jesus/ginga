@@ -7,6 +7,7 @@ Este pasta é a fonte de verdade da nova UI do Ginga. Leia nesta ordem antes de 
 3. `components/*.md`: cada componente (o que é, quando usar, estados, microinteração).
 4. `tokens.json`: valores exatos. Não invente cor, raio, espaçamento ou duração fora dele.
 5. `reference/demo-conexao.html` e `reference/dither-espaco.html`: abra no navegador. São a referência viva de layout, estados e animações (cometa, warp, faíscas, órbitas, buraco negro e galáxia em dithering). `reference/bundle.css` e `bundle.js` mostram cada microinteração em código; `Ginga.blackHole`, `Ginga.galaxy`, `Ginga.ditherLoop` e `Ginga.pixelSky` são o algoritmo a portar.
+6. `ginga-design-system.html`: o design system inteiro numa página só, como no Claude (marca, fluxos, tokens, logos e cada componente com a prévia ao vivo, nos três temas). Abre offline e está publicado em https://kelvin-jesus.github.io/ginga/design-system/. É gerado por `tools/export_html.py` a partir dos arquivos desta pasta (`previews/` são as prévias de cada componente, exatamente como estão no Claude); rode de novo depois de mudar qualquer um deles.
 
 ## Arquivos prontos para copiar
 

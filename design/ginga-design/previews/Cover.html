@@ -1,0 +1,58 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Ginga</title>
+<style>
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-sans); overflow: hidden; }
+  .cover { position: relative; height: 288px; width: 960px; overflow: hidden; }
+  .art { position: absolute; top: 0; left: 480px; width: 480px; height: 288px; }
+  .art svg { display: block; width: 480px; height: 288px; overflow: visible; }
+  .deep { fill: var(--ink); }
+  .brand { fill: var(--cobalt-brand); }
+  .tint { fill: var(--cobalt-soft); }
+  .blk-xl { rx: var(--radius-xl); }
+  .blk-lg { rx: var(--radius-lg); }
+  .orbit { fill: none; stroke: var(--cobalt); stroke-width: 1.5; stroke-dasharray: 2 8; stroke-linecap: round; }
+  .star { fill: var(--star); }
+  .words { position: absolute; left: var(--space-8); bottom: var(--space-8); max-width: 440px; }
+  .name { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 104px; line-height: .92; letter-spacing: -0.02em; color: var(--ink); }
+  .tag { margin: var(--space-3) 0 0 4px; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="art" aria-hidden="true">
+    <svg viewBox="0 0 480 288" width="480" height="288">
+      <!--
+        blocks      ink 216×212 (the Mac screen, bleeding off the top and right) · cobalt-brand 208×136 (the tablet, tilted −10° like every mark) · cobalt-soft 120×72 (relief) — ≈38% of 960×288
+        arrangement one tall ink slab with the cobalt tablet overlapping its lower-left corner off-axis, the tint as a small satellite up-left
+        pattern     literal motif: “a Galaxy tablet in the Mac's orbit” — nine four-point stars in `star` riding one dotted orbit in `cobalt` around the pair
+        scales      sides in space-2 multiples; slab and tablet corners radius-xl, tint radius-lg; orbit dash space-2; star sizes space-2 to space-4
+      -->
+      <ellipse class="orbit" cx="252" cy="160" rx="230" ry="92" transform="rotate(-10 252 160)"/>
+      <rect class="deep blk-xl" x="288" y="-24" width="216" height="212" rx="28"/>
+      <rect class="brand blk-xl" x="168" y="120" width="208" height="136" rx="28" transform="rotate(-10 272 188)"/>
+      <rect class="tint blk-lg" x="56" y="40" width="120" height="72" rx="18"/>
+      <g class="star">
+        <path d="M232 36c1.4 6 3 7.6 9 9-6 1.4-7.6 3-9 9-1.4-6-3-7.6-9-9 6-1.4 7.6-3 9-9z"/>
+        <path d="M40 150c1 4.2 2.1 5.3 6.3 6.3-4.2 1-5.3 2.1-6.3 6.3-1-4.2-2.1-5.3-6.3-6.3 4.2-1 5.3-2.1 6.3-6.3z"/>
+        <path d="M60 214c.8 3.2 1.6 4 4.8 4.8-3.2.8-4 1.6-4.8 4.8-.8-3.2-1.6-4-4.8-4.8 3.2-.8 4-1.6 4.8-4.8z"/>
+        <path d="M414 232c1.2 5 2.5 6.3 7.5 7.5-5 1.2-6.3 2.5-7.5 7.5-1.2-5-2.5-6.3-7.5-7.5 5-1.2 6.3-2.5 7.5-7.5z"/>
+        <path d="M456 206c.8 3.2 1.6 4 4.8 4.8-3.2.8-4 1.6-4.8 4.8-.8-3.2-1.6-4-4.8-4.8 3.2-.8 4-1.6 4.8-4.8z"/>
+        <path d="M150 262c.8 3.2 1.6 4 4.8 4.8-3.2.8-4 1.6-4.8 4.8-.8-3.2-1.6-4-4.8-4.8 3.2-.8 4-1.6 4.8-4.8z"/>
+        <path d="M262 14c.8 3.2 1.6 4 4.8 4.8-3.2.8-4 1.6-4.8 4.8-.8-3.2-1.6-4-4.8-4.8 3.2-.8 4-1.6 4.8-4.8z"/>
+        <path d="M384 96c1.6 6.8 3.4 8.6 10.2 10.2-6.8 1.6-8.6 3.4-10.2 10.2-1.6-6.8-3.4-8.6-10.2-10.2 6.8-1.6 8.6-3.4 10.2-10.2z" style="fill:var(--bg)"/>
+        <path d="M24 92c.8 3.2 1.6 4 4.8 4.8-3.2.8-4 1.6-4.8 4.8-.8-3.2-1.6-4-4.8-4.8 3.2-.8 4-1.6 4.8-4.8z"/>
+      </g>
+    </svg>
+  </div>
+  <div class="words">
+    <h1 class="name">Ginga</h1>
+    <p class="tag">Seu tablet na órbita do Mac.</p>
+  </div>
+</div>
+</body>
+</html>
