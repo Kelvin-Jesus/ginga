@@ -208,3 +208,19 @@ struct GingaConfigurationTests {
         }
     }
 }
+
+@Suite("Configuration migration")
+struct ConfigurationMigrationTests {
+    /// The settings saved before the rename are carried over once; an existing file is never replaced.
+    @Test func settingsFromTheFormerFolderAreCarriedOver() throws {
+        let base = FileManager.default.temporaryDirectory.appendingPathComponent("ginga-migration-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: base) }
+        let former = base.appendingPathComponent("\(ConfigurationStore.formerFolderName)/config.json")
+        try FileManager.default.createDirectory(at: former.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data(#"{"version":1}"#.utf8).write(to: former)
+        #expect(ConfigurationStore.migrateFromFormerName(supportDirectory: base))
+        #expect(FileManager.default.fileExists(atPath: base.appendingPathComponent("Ginga/config.json").path))
+        #expect(!ConfigurationStore.migrateFromFormerName(supportDirectory: base))  // once
+        #expect(FileManager.default.fileExists(atPath: former.path))  // the old file stays
+    }
+}

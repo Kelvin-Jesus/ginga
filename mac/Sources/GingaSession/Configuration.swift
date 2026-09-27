@@ -391,18 +391,42 @@ extension DiagnosticsSettings: Codable {
 public struct ConfigurationStore: Sendable {
     public let fileURL: URL
 
-    public static var defaultURL: URL {
-        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+    public static var defaultURL: URL { supportDirectory.appendingPathComponent("Ginga/config.json") }
+
+    private static var supportDirectory: URL {
+        FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
             ?? URL(fileURLWithPath: NSHomeDirectory()).appendingPathComponent("Library/Application Support")
-        return base.appendingPathComponent("Ginga/config.json")
     }
+
+    /// The folder the settings lived in before the project was renamed Ginga (2026-09). Read once,
+    /// to carry the settings over; the only place the former name is still needed.
+    static let formerFolderName = "Tab2Mac"
 
     public init(fileURL: URL = ConfigurationStore.defaultURL) {
         self.fileURL = fileURL
     }
 
+    /// Copies the settings from the former folder when this one has none yet (the old file stays).
+    /// Returns whether it did. `supportDirectory` is for tests.
+    @discardableResult
+    public static func migrateFromFormerName(supportDirectory: URL? = nil) -> Bool {
+        let base = supportDirectory ?? Self.supportDirectory
+        let target = base.appendingPathComponent("Ginga/config.json")
+        let former = base.appendingPathComponent("\(formerFolderName)/config.json")
+        let files = FileManager.default
+        guard !files.fileExists(atPath: target.path), files.fileExists(atPath: former.path) else { return false }
+        do {
+            try files.createDirectory(at: target.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try files.copyItem(at: former, to: target)
+            return true
+        } catch {
+            return false
+        }
+    }
+
     /// The stored configuration, or the defaults when no file exists yet.
     public func load() throws -> GingaConfiguration {
+        if fileURL == Self.defaultURL { Self.migrateFromFormerName() }
         guard FileManager.default.fileExists(atPath: fileURL.path) else { return GingaConfiguration() }
         let configuration = try JSONDecoder().decode(GingaConfiguration.self, from: Data(contentsOf: fileURL))
         try configuration.validate()
