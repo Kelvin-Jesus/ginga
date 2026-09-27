@@ -137,8 +137,18 @@ class CursorLayer : CursorSink {
             view.scaleX = scale
             view.scaleY = scale
         }
-        view.translationX = CursorGeometry.left(px, image.hotspotX, rect, scale)
-        view.translationY = CursorGeometry.top(py, image.hotspotY, rect, scale)
+        val left = CursorGeometry.left(px, image.hotspotX, rect, scale)
+        val top = CursorGeometry.top(py, image.hotspotY, rect, scale)
+        if (view.translationX != left || view.translationY != top) {
+            view.translationX = left
+            view.translationY = top
+            // The video's SurfaceView sits below the window, which tells the compositor which of
+            // its areas are transparent. That hint is only recomputed on a layout pass, and a
+            // translation isn't one: without this the pointer, once moved, lands in an area still
+            // marked transparent and the compositor skips it (it showed only where it last had a
+            // layout). One cheap pass per frame, and only while the pointer moves.
+            view.requestLayout()
+        }
         if (view.visibility != View.VISIBLE) view.visibility = View.VISIBLE
     }
 }
