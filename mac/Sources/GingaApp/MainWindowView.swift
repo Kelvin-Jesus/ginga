@@ -123,11 +123,11 @@ struct MainWindowView: View {
 
     private var tablets: some View {
         VStack(alignment: .leading, spacing: GingaSpace.s2) {
-            GingaGroupTitle(text: tr("Tablets", "Tablets"))
+            GingaGroupTitle(text: tr("Aparelhos", "Devices"))
             GingaGroup {
                 let items = model.tablets
                 if items.isEmpty {
-                    Text(tr("Nenhum tablet pareado ainda.", "No tablets paired yet."))
+                    Text(tr("Nenhum aparelho pareado ainda.", "No devices paired yet."))
                         .font(.system(size: 13))
                         .foregroundStyle(palette.inkMuted)
                         .padding(GingaSpace.s4)

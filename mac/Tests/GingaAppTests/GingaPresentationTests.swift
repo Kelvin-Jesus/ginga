@@ -36,6 +36,14 @@ struct GingaPresentationTests {
         #expect(AppModel.usbDeviceName(nil, serial: nil, remembered: [:]) == tr("Aparelho Android", "Android device"))
     }
 
+    /// Only the device on the cable is online: one USB session never marks every approved serial.
+    @Test @MainActor func theConnectedUSBDeviceIsFoundBySerial() {
+        #expect(AppModel.accessorySerial(endpoint: "usb-accessory:R52Y80EE15V") == "R52Y80EE15V")
+        #expect(AppModel.accessorySerial(endpoint: "usb-accessory:") == nil)
+        #expect(AppModel.accessorySerial(endpoint: "127.0.0.1:52050") == nil)
+        #expect(AppModel.accessorySerial(endpoint: "192.168.49.1:52610") == nil)
+    }
+
     /// Black espacial is pure black everywhere that is an area, and a dark appearance.
     @Test func themes() {
         #expect(GingaAppearance.space.palette(for: .light).bg == Color(red: 0, green: 0, blue: 0))

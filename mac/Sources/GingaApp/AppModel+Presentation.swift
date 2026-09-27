@@ -75,6 +75,13 @@ extension AppModel {
 
     static let accessoryEndpointPrefix = "usb-accessory:"
 
+    /// The USB serial number in a direct-USB endpoint (`usb-accessory:R52Y80EE15V`).
+    static func accessorySerial(endpoint: String) -> String? {
+        guard endpoint.hasPrefix(accessoryEndpointPrefix) else { return nil }
+        let serial = endpoint.dropFirst(accessoryEndpointPrefix.count)
+        return serial.isEmpty ? nil : String(serial)
+    }
+
     /// The device's own name when it sent one (HELLO `device.name`), else [friendlyName] of its model.
     static func deviceName(name: String?, model: String?) -> String {
         if let name, !name.isEmpty { return name }
@@ -115,6 +122,7 @@ extension AppModel {
         let connection = streaming.connection.flatMap { $0.phase == .streaming ? $0 : nil }
         let connectedName = connection.map { Self.deviceName(name: $0.clientName, model: $0.clientModel) }
         let connectedLink = connection.map { Link(endpoint: $0.endpoint) }
+        let connectedSerial = connection.flatMap { Self.accessorySerial(endpoint: $0.endpoint) }
         let size = connection?.streamSize.map { "\($0.width)×\($0.height)" }
         var items: [TabletItem] = pairedTablets.map { tablet in
             let name = Self.friendlyName(tablet.name)
@@ -124,7 +132,7 @@ extension AppModel {
         }
         for serial in approvedUSBDevices {
             let device = usbCandidates.first { $0.serialNumber == serial }
-            let online = connectedLink == .usb
+            let online = connectedSerial == serial  // only the device on this cable, not every approved one
             let name = online ? (connectedName ?? "tablet") : Self.usbDeviceName(device, serial: serial, remembered: applied.streaming.usbDeviceNames)
             let meta = online ? [tr("USB direto", "Direct USB"), size].compactMap { $0 }.joined(separator: " · ") : tr("aprovado · USB", "approved · USB") + " · \(serial.suffix(4))"
             items.append(TabletItem(id: "usb-\(serial)", name: name, meta: meta, action: .revokeUSB(serial)))

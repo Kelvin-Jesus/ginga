@@ -259,10 +259,9 @@ final class AppModel {
     /// it changes; the stream settings themselves are untouched).
     private func rememberUSBDeviceName() {
         guard let connection = streaming.connection, connection.phase == .streaming,
-              connection.endpoint.hasPrefix(Self.accessoryEndpointPrefix) else { return }
-        let serial = String(connection.endpoint.dropFirst(Self.accessoryEndpointPrefix.count))
+              let serial = Self.accessorySerial(endpoint: connection.endpoint) else { return }
         let name = Self.deviceName(name: connection.clientName, model: connection.clientModel)
-        guard !serial.isEmpty, name != "tablet", applied.streaming.usbDeviceNames[serial] != name else { return }
+        guard name != "tablet", applied.streaming.usbDeviceNames[serial] != name else { return }
         draft.streaming.usbDeviceNames[serial] = name
         var updated = applied
         updated.streaming.usbDeviceNames[serial] = name
