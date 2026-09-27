@@ -51,8 +51,8 @@ public final class CursorTracker {
     private var settlePending = false
     /// After the pointer stops: a first look once apps had time to set their image, and a later
     /// one for those that update lazily (terminals, web views).
-    static let settleDelay: Duration = .milliseconds(100)
-    static let lateSettleDelay: Duration = .milliseconds(300)
+    var settleDelay: Duration = .milliseconds(100)
+    var lateSettleDelay: Duration = .milliseconds(300)
     private static let events: NSEvent.EventTypeMask = [.mouseMoved, .leftMouseDragged, .rightMouseDragged, .otherMouseDragged]
 
     public convenience init(scale: CGFloat, onSample: @escaping @MainActor (Sample) -> Void) {
@@ -108,21 +108,21 @@ public final class CursorTracker {
         onSample(Sample(location: location, shape: shape))
         if !settlePending {
             settlePending = true
-            after(Self.settleDelay) { $0.settle() }
+            after(settleDelay) { $0.settle() }
         }
     }
 
     /// One pending check at a time, pushed back while the pointer keeps moving.
     private func settle() {
-        let idle = lastMove.map { MediaTime.now() - $0 } ?? Self.settleDelay
-        if idle < Self.settleDelay {
-            after(Self.settleDelay - idle) { $0.settle() }
+        let idle = lastMove.map { MediaTime.now() - $0 } ?? settleDelay
+        if idle < settleDelay {
+            after(settleDelay - idle) { $0.settle() }
             return
         }
         settlePending = false
         recheckShape()
         let movesNow = moves
-        after(Self.lateSettleDelay) { tracker in
+        after(lateSettleDelay) { tracker in
             if tracker.moves == movesNow { tracker.recheckShape() }
         }
     }

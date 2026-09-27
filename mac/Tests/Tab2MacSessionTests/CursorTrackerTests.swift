@@ -61,10 +61,11 @@ struct CursorTrackerSettlingTests {
         var reads = 0
         var samples: [CursorTracker.Sample] = []
         let tracker = CursorTracker(scale: 2, readShape: { _ in reads += 1; return system }) { samples.append($0) }
+        tracker.lateSettleDelay = .seconds(1)  // room to change the image between the two looks, even on a busy machine
         tracker.report(CGPoint(x: 1, y: 1))
-        #expect(await eventually { reads >= 2 })  // the move, then the first look: still 3
+        #expect(await eventually(timeout: .seconds(5)) { reads >= 2 })  // the move, then the first look: still 3
         system = Self.shape(7)
-        #expect(await eventually { samples.map(\.shape?.id) == [3, 7] })
+        #expect(await eventually(timeout: .seconds(5)) { samples.map(\.shape?.id) == [3, 7] })
         withExtendedLifetime(tracker) {}
     }
 }
