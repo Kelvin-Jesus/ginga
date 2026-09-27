@@ -53,7 +53,7 @@ struct PairingSheet: View {
     }
 }
 
-/// Mark A on its cobalt tile: the app icon (brand/ginga-app-icon.svg).
+/// Mark A on its cobalt tile: the app icon (design/brand/ginga-app-icon.svg).
 struct GingaAppIcon: View {
     @Environment(\.ginga) private var palette
 

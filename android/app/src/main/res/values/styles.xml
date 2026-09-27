@@ -3,7 +3,7 @@
     <!--
         Type (tokens.json "type"): the brand fonts in res/font/ (Unbounded and Figtree are variable
         fonts, instanced by weight in their font-family XML; IBM Plex Mono 400/500), all SIL OFL,
-        licenses in assets/licenses/. Source of truth: brand/fonts/.
+        licenses in assets/licenses/. Source of truth: design/brand/fonts/.
     -->
     <style name="TextAppearance.Ginga.FontDisplay" parent="">
         <item name="android:fontFamily">@font/unbounded_semibold</item>

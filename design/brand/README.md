@@ -45,8 +45,8 @@ Stay away from Samsung's blue (`#1428A0`) and from Apple's gradients: the brand 
 ```sh
 python3 -m venv /tmp/v && /tmp/v/bin/pip install fonttools resvg_py
 curl -L -o /tmp/Unbounded.ttf "https://github.com/google/fonts/raw/main/ofl/unbounded/Unbounded%5Bwght%5D.ttf"
-/tmp/v/bin/python brand/tools/wordmark.py /tmp/Unbounded.ttf   # outlines the wordmark SVGs
-/tmp/v/bin/python brand/tools/export.py                        # png/ and mac/Resources/AppIcon.icns
+/tmp/v/bin/python design/brand/tools/wordmark.py /tmp/Unbounded.ttf   # outlines the wordmark SVGs
+/tmp/v/bin/python design/brand/tools/export.py                        # png/ and mac/Resources/AppIcon.icns
 ```
 
 The Android launcher icon is a hand-written vector copy of mark A (`android/app/src/main/res/drawable/ic_launcher_foreground.xml`, `ic_launcher_monochrome.xml`); change it together with `ginga-app-icon.svg`.

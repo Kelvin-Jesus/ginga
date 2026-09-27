@@ -3,7 +3,7 @@ import CoreText
 import Foundation
 import SwiftUI
 
-/// The brand fonts (brand/fonts, SIL OFL): Unbounded for the title and the brand, IBM Plex Mono
+/// The brand fonts (design/brand/fonts, SIL OFL): Unbounded for the title and the brand, IBM Plex Mono
 /// for numbers, specs and the pairing code. The app bundle registers them through
 /// `ATSApplicationFontsPath`; a development build run from `.build` registers them from the
 /// source tree. The rest of the UI stays in SF Pro, as the brand book allows on the Mac.

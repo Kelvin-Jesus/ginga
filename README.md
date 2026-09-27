@@ -1,7 +1,7 @@
 <h1 align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="brand/ginga-lockup-dark.svg">
-    <img alt="Ginga" src="brand/ginga-lockup.svg" width="336">
+    <source media="(prefers-color-scheme: dark)" srcset="design/brand/ginga-lockup-dark.svg">
+    <img alt="Ginga" src="design/brand/ginga-lockup.svg" width="336">
   </picture>
 </h1>
 
@@ -16,7 +16,7 @@
 
 </div>
 
-Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. Brand and design system: [brand/README.md](brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md), and the whole system on one page: [design system](https://kelvin-jesus.github.io/ginga/design-system/) (also [a single HTML file](design/ginga-design/ginga-design-system.html) that opens offline).
+Ginga turns a **Samsung Galaxy Tab S11 into a real second display for an Apple Silicon Mac**. It is an independent project in the spirit of Sidecar and Duet. Brand and design system: [design/brand/README.md](design/brand/README.md), [design/ginga-design/](design/ginga-design/HANDOFF.md), and the whole system on one page: [design system](https://kelvin-jesus.github.io/ginga/design-system/) (also [a single HTML file](design/ginga-design/ginga-design-system.html) that opens offline).
 
 macOS gets a genuine extended display:
 
@@ -99,8 +99,7 @@ mac/         Swift package: GingaCore, VirtualDisplay, CGVirtualDisplayShim, CGV
              GingaRuntime, EnergyMeter, GingaApp (app), ginga (CLI, incl. headless `ginga run`), Tests
 scripts/     bootstrap.sh (environment), check-all.sh (both suites + vectors), docker-android.sh, setup-release-signing.sh
 .claude/     slash commands for agents (check-all, protocol-change, device-test); see CLAUDE.md
-brand/       Ginga brand: logos, app-icon source, colours, usage rules
-design/      Ginga design system (tokens, components, DitherSpace reference) and UI screenshots
+design/      Ginga brand (design/brand: logos, app-icon source, fonts, usage rules) and design system (design/ginga-design)
 site/        website (Astro, pt/en), deployed to GitHub Pages by .github/workflows/site.yml
 video/       demo videos (Remotion)
 .github/     CI (mac, android), release (tag → APK + universal Ginga.app), site
@@ -131,4 +130,4 @@ android/     Kotlin receiver app (Gradle modules: protocol, transport, decoder, 
 
 Ginga is free software: you can redistribute it and/or modify it under the terms of the **GNU Affero General Public License, version 3** ([LICENSE](LICENSE), SPDX `AGPL-3.0-only`). Any fork or modified version you distribute, or let people use over a network, must be released under the same license with its complete source code. The author can also offer the software under other terms.
 
-Not covered by the AGPL: the brand fonts in `brand/fonts/` (SIL Open Font License 1.1, their licenses alongside) and the Ginga name and marks, which identify this project: forks must use another name and logo. See [NOTICE](NOTICE).
+Not covered by the AGPL: the brand fonts in `design/brand/fonts/` (SIL Open Font License 1.1, their licenses alongside) and the Ginga name and marks, which identify this project: forks must use another name and logo. See [NOTICE](NOTICE).

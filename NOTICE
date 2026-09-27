@@ -10,11 +10,11 @@ Affero General Public License for more details. You should have received a copy 
 LICENSE file; if not, see <https://www.gnu.org/licenses/>.
 
 Third-party components
-- Unbounded, Figtree, IBM Plex Mono (brand/fonts, bundled in both apps): SIL Open Font License 1.1,
-  license texts in brand/fonts/OFL-*.txt, mac/Resources/Fonts and android/app/src/main/assets/licenses.
+- Unbounded, Figtree, IBM Plex Mono (design/brand/fonts, bundled in both apps): SIL Open Font License 1.1,
+  license texts in design/brand/fonts/OFL-*.txt, mac/Resources/Fonts and android/app/src/main/assets/licenses.
 - The Gradle wrapper (android/gradle/wrapper): Apache License 2.0.
 
 Trademarks
-The Ginga name, the logotype and the marks in brand/ identify this project and are not licensed
+The Ginga name, the logotype and the marks in design/brand/ identify this project and are not licensed
 under the AGPL: a fork must use its own name and marks. "Galaxy", "Samsung", "Mac", "macOS" and
 "Sidecar" are trademarks of their owners and are used only to describe compatibility.

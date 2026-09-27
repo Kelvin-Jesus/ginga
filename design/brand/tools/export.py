@@ -1,7 +1,7 @@
-"""Renders the brand SVGs to brand/png/ and builds mac/Resources/AppIcon.icns.
+"""Renders the brand SVGs to design/brand/png/ and builds mac/Resources/AppIcon.icns.
 
     python3 -m venv /tmp/v && /tmp/v/bin/pip install resvg_py
-    /tmp/v/bin/python brand/tools/export.py
+    /tmp/v/bin/python design/brand/tools/export.py
 
 resvg, not ImageMagick: ImageMagick's built-in SVG renderer drops nested transforms.
 """
@@ -36,7 +36,7 @@ with tempfile.TemporaryDirectory() as tmp:
     for points in (16, 32, 128, 256, 512):
         render("ginga-app-icon.svg", iconset / f"icon_{points}x{points}.png", points)
         render("ginga-app-icon.svg", iconset / f"icon_{points}x{points}@2x.png", points * 2)
-    icns = brand.parent / "mac" / "Resources" / "AppIcon.icns"
+    icns = brand.parents[1] / "mac" / "Resources" / "AppIcon.icns"
     subprocess.run(["iconutil", "-c", "icns", str(iconset), "-o", str(icns)], check=True)
     print("wrote", icns)
 print("wrote", png)

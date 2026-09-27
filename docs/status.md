@@ -38,7 +38,7 @@ Legend: ✅ verified on the device · 🧪 unit/loopback-tested, not yet on the 
 | Main window, Ajustes, pairing sheet, Sem roteador sheet, menu bar by state | ✅ Mac (🧪 pairing sheet on the device) | renders; 380 Mac tests |
 | Microinteractions: switch spark, press scale, orbit/pulse, pairing digits, row rise, comet | ✅ Mac | only while visible, off with reduced motion |
 | Black espacial scenery: dithered galaxy (Mac main window, tablet home) and black hole (Mac pairing / Sem roteador, tablet stream waiting) | ✅ Mac, ✅ Android | ~0.4 ms/frame at 10 fps only while visible; still with reduced motion |
-| Brand fonts (Unbounded, Figtree, IBM Plex Mono) | ✅ Mac, ✅ Android (🧪 on the device) | bundled under SIL OFL (`brand/fonts/`) |
+| Brand fonts (Unbounded, Figtree, IBM Plex Mono) | ✅ Mac, ✅ Android (🧪 on the device) | bundled under SIL OFL (`design/brand/fonts/`) |
 
 ## Distribution, 2026‑09‑27
 

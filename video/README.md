@@ -9,7 +9,6 @@ Vídeos de demonstração do Ginga, feitos com o design system em `../design/gin
 | `GingaLoop-pt` | 1600×1000, 30 fps | 8 s, loop perfeito | fundo do topo do site (sem texto; `-en` é idêntico) |
 | `GingaTeaser-pt` / `-en` | 3840×2160, 60 fps | 6 s | teaser cinético (3 palavras + logo) |
 | `GingaKeynote-pt` / `-en` | 3840×2160, 60 fps | 10 s | teaser 3D estilo keynote (Three.js + pós-produção) |
-| `CometPreview-pt` / `-en` | 1920×1080, 60 fps | 3 s | a cena do cometa isolada |
 
 ## Renderizar
 

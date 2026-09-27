@@ -4,7 +4,6 @@ import { World, type WorldProps } from "./World";
 import { GingaLoop } from "./Loop";
 import { GingaTeaser } from "./Teaser";
 import { GingaKeynote, KeynoteSound } from "./keynote/GingaKeynote";
-import { SceneComet } from "./scenes/SceneComet";
 import { HERO, HERO_LAYOUT, VERTICAL, VERTICAL_LAYOUT } from "./timeline";
 import type { Lang } from "./i18n";
 import "./fonts";
@@ -28,7 +27,6 @@ export const Root: React.FC = () => (
         <Composition id={`GingaLoop-${lang}`} component={Loop} durationInFrames={8 * 30} fps={30} width={1600} height={1000} defaultProps={{ lang, repoUrl: REPO_URL }} />
         <Composition id={`GingaTeaser-${lang}`} component={GingaTeaser} durationInFrames={360} fps={60} width={3840} height={2160} defaultProps={{ lang }} />
         <Composition id={`GingaKeynote-${lang}`} component={GingaKeynote} durationInFrames={600} fps={60} width={3840} height={2160} defaultProps={{ lang, sfx: true }} />
-        <Composition id={`CometPreview-${lang}`} component={SceneComet} durationInFrames={180} fps={60} width={1920} height={1080} defaultProps={{ lang }} />
       </React.Fragment>
     ))}
   </>

@@ -1,6 +1,6 @@
 # Logos
 
-Exports PNG oficiais da marca (os SVGs vivem em `brand/` no repositório).
+Exports PNG oficiais da marca (os SVGs vivem em `design/brand/` no repositório).
 
 - `ginga-app-icon.png` — mark A na placa `cobalt-brand` (1024 px). Ícone dos apps, lojas, favicon.
 - `ginga-orbit.png` / `ginga-orbit-dark.png` — mark A sem placa. Tinta Noite + tablet Cobalto no claro; branco + Cobalto noturno no escuro.

@@ -1,9 +1,9 @@
-"""Regenerates brand/ginga-wordmark*.svg: "ginga" in Unbounded ExtraBold (SIL OFL 1.1),
+"""Regenerates design/brand/ginga-wordmark*.svg: "ginga" in Unbounded ExtraBold (SIL OFL 1.1),
 outlined to paths, with the dot of the i replaced by the tilted tablet.
 
     python3 -m venv /tmp/v && /tmp/v/bin/pip install fonttools
     curl -L -o /tmp/Unbounded.ttf "https://github.com/google/fonts/raw/main/ofl/unbounded/Unbounded%5Bwght%5D.ttf"
-    /tmp/v/bin/python brand/tools/wordmark.py /tmp/Unbounded.ttf
+    /tmp/v/bin/python design/brand/tools/wordmark.py /tmp/Unbounded.ttf
 """
 import sys
 from pathlib import Path

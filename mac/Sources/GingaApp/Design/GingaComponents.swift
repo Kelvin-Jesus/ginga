@@ -6,7 +6,7 @@ import SwiftUI
 
 // MARK: Marks
 
-/// Mark B, the monogram "g": a screen-shaped bowl with an S Pen tail and the star (brand/ginga-monogram.svg).
+/// Mark B, the monogram "g": a screen-shaped bowl with an S Pen tail and the star (design/brand/ginga-monogram.svg).
 struct GingaMonogram: View {
     @Environment(\.ginga) private var palette
 
@@ -29,7 +29,7 @@ struct GingaMonogram: View {
     }
 }
 
-/// Mark A, the orbit: the Mac's screen outline, the tilted tablet and the star (brand/ginga-orbit.svg).
+/// Mark A, the orbit: the Mac's screen outline, the tilted tablet and the star (design/brand/ginga-orbit.svg).
 struct GingaOrbitMark: View {
     @Environment(\.ginga) private var palette
 

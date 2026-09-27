@@ -15,7 +15,7 @@ Este pasta é a fonte de verdade da nova UI do Ginga. Leia nesta ordem antes de 
 |---|---|
 | `platform/apple/GingaTheme.swift` | `mac/Sources/GingaApp/Design/` |
 | `platform/android/values/ginga_colors.xml`, `ginga_dimens.xml` | `android/app/src/main/res/values/` |
-| `logos/ginga-app-icon.png` e demais | ícone do app já existe via `brand/`; use `ginga-monogram*.png` no cabeçalho das telas (ou os SVGs de `brand/`, preferíveis) |
+| `logos/ginga-app-icon.png` e demais | ícone do app já existe via `design/brand/`; use `ginga-monogram*.png` no cabeçalho das telas (ou os SVGs de `design/brand/`, preferíveis) |
 
 ## Temas
 

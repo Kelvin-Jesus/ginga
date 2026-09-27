@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Ginga brand (brand/README.md): cobalt tile, white mark, star -->
+    <!-- Ginga brand (design/brand/README.md): cobalt tile, white mark, star -->
     <color name="launcher_background">#FF2E47F5</color>
     <color name="launcher_foreground">#FFFFFFFF</color>
     <color name="launcher_star">#FFFFC43D</color>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Ginga mark "Órbita" (brand/ginga-app-icon.svg): the Mac screen outlined, the tablet tilted
+<!-- Ginga mark "Órbita" (design/brand/ginga-app-icon.svg): the Mac screen outlined, the tablet tilted
      in front of it, and a star. Mark space is 120 units, scaled by 0.5 and centred so the whole
      mark stays inside the 66 dp adaptive-icon safe zone. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
